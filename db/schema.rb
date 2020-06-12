@@ -29,6 +29,7 @@ ActiveRecord::Schema.define(version: 2020_06_12_060702) do
 
   create_table "teams", force: :cascade do |t|
     t.string "name"
+    t.string "acronym"
     t.integer "external_id"
     t.index ["external_id"], name: "index_teams_on_external_id"
   end

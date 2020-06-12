@@ -42,7 +42,8 @@ matches = lcs_spring_2020_game_data
 matches.each do |match|
   teams = []
   match["opponents"].each do |opponent|
-    teams << Team.find_or_create_by(name: opponent["opponent"]["name"], external_id: opponent["opponent"]["id"])
+    team_data = opponent["opponent"]
+    teams << Team.find_or_create_by(name: team_data["name"], external_id: team_data["id"], acronym: team_data["acronym"])
   end
 
   match["games"].each do |game|
