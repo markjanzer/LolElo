@@ -49,14 +49,19 @@ class ChartData
         opponent_2 = teams.find { |t| t[:id] == game.opponent_2_id }
 
         opponent_1_win_expectancy = team_1_win_expectancy(opponent_1[:elo], opponent_2[:elo])
-        opponent_2_win_expectancy = (1 - opponent_1_win_expectancy) * -1
+        opponent_2_win_expectancy = (1 - opponent_1_win_expectancy).abs
+
+        # I should look into how C9 advances so much on 2020-04-11
+        # if date == "2020-04-11"
+        #   byebug
+        # end
 
         if game.winner.id == opponent_1[:id]
-          change_in_rating = rating_change(1, opponent_1_win_expectancy)
+          change_in_rating = rating_change(opponent_1_win_expectancy)
           opponent_1[:elo] = (opponent_1[:elo] + change_in_rating).to_i
           opponent_2[:elo] = (opponent_2[:elo] - change_in_rating).to_i
         else
-          change_in_rating = rating_change(1, opponent_2_win_expectancy)
+          change_in_rating = rating_change(opponent_2_win_expectancy)
           opponent_1[:elo] = (opponent_1[:elo] - change_in_rating).to_i
           opponent_2[:elo] = (opponent_2[:elo] + change_in_rating).to_i
         end
@@ -75,8 +80,8 @@ class ChartData
     return 1 / (10**((team_2_elo - team_1_elo) / 400.to_f) + 1)
   end
 
-  def rating_change(result, expectancy)
-    k * (result - expectancy)
+  def rating_change(expectancy)
+    k * (1 - expectancy)
   end
 
   # This is some elo calculation shit

@@ -1,2 +1,8 @@
 <h1>LCS Spring Split 2020 Elos</h1>
 <%= javascript_pack_tag 'chart' %>
+<%= content_tag :div,
+  id: "chart",
+  data: {
+    chartData: @chart_data
+  }.to_json do %>
+<% end %>

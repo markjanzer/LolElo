@@ -1,8 +1,11 @@
 class ApplicationController < ActionController::Base
   def index
+    @chart_data = chart_data
   end
 
+  private 
+
   def chart_data
-    render json: ChartData.new.call
+    ChartData.new.call
   end
 end

@@ -8,8 +8,8 @@ import ReactDOM from "react-dom";
 import Chart from "../components/Chart";
 
 document.addEventListener("DOMContentLoaded", () => {
-  ReactDOM.render(
-    <Chart />,
-    document.body.appendChild(document.createElement("div"))
-  );
+  const node = document.getElementById("chart");
+  const data = JSON.parse(node.getAttribute("data"));
+
+  ReactDOM.render(<Chart {...data} />, node);
 });
