@@ -44,23 +44,21 @@ class ChartData
       games = Game.all.select { |g| g.date.strftime("%F") == date }
 
       games.each do |game|
-        teams_in_game = teams.filter { |t| t[:id] == game.opponent_1_id || t[:id] == game.opponent_2_id }
-        opponent_1 = teams_in_game.find { |t| t[:id] == game.opponent_1_id }
-        opponent_2 = teams_in_game.find { |t| t[:id] == game.opponent_2_id }
+        # teams_in_game = teams.filter { |t| t[:id] == game.opponent_1_id || t[:id] == game.opponent_2_id }
+        opponent_1 = teams.find { |t| t[:id] == game.opponent_1_id }
+        opponent_2 = teams.find { |t| t[:id] == game.opponent_2_id }
 
         opponent_1_win_expectancy = team_1_win_expectancy(opponent_1[:elo], opponent_2[:elo])
         opponent_2_win_expectancy = (1 - opponent_1_win_expectancy) * -1
 
-        # byebug
-
         if game.winner.id == opponent_1[:id]
-          change_in_rating = rating_change(1, opponent_1_win_expectancy).to_i
-          opponent_1[:elo] += change_in_rating
-          opponent_2[:elo] -= change_in_rating
+          change_in_rating = rating_change(1, opponent_1_win_expectancy)
+          opponent_1[:elo] = (opponent_1[:elo] + change_in_rating).to_i
+          opponent_2[:elo] = (opponent_2[:elo] - change_in_rating).to_i
         else
-          change_in_rating = rating_change(1, opponent_2_win_expectancy).to_i
-          opponent_1[:elo] -= change_in_rating
-          opponent_2[:elo] += change_in_rating
+          change_in_rating = rating_change(1, opponent_2_win_expectancy)
+          opponent_1[:elo] = (opponent_1[:elo] - change_in_rating).to_i
+          opponent_2[:elo] = (opponent_2[:elo] + change_in_rating).to_i
         end
       end
 

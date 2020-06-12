@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_12_060702) do
+ActiveRecord::Schema.define(version: 2020_06_12_081642) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,6 +31,7 @@ ActiveRecord::Schema.define(version: 2020_06_12_060702) do
     t.string "name"
     t.string "acronym"
     t.integer "external_id"
+    t.string "color"
     t.index ["external_id"], name: "index_teams_on_external_id"
   end
 

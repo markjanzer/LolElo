@@ -42,7 +42,7 @@ export default function Charts() {
             key={team.id}
             type="monotone"
             dataKey={team.acronym}
-            stroke="#8884d8"
+            stroke={team.color}
           />
         );
       })}
