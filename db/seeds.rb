@@ -39,15 +39,18 @@ end
 
 matches = lcs_spring_2020_game_data
 
+team_colors = {"TSM"=>"#231f20", "C9"=>"#229bd6", "100"=>"#eb3131", "CLG"=>"#00b4e5", "IMT"=>"#00b1a9", "GG"=>"#d3a755", "FLY"=>"#14542b", "DIG"=>"#ffde01", "EG"=>"#3b415d", "TL"=>"#2d4a72"}
+
 matches.each do |match|
   teams = []
   match["opponents"].each do |opponent|
     team_data = opponent["opponent"]
-    teams << Team.find_or_create_by(name: team_data["name"], external_id: team_data["id"], acronym: team_data["acronym"])
+    team = Team.find_or_create_by(name: team_data["name"], external_id: team_data["id"], acronym: team_data["acronym"], color: team_colors[team_data["acronym"]])
+    teams << team
   end
 
   match["games"].each do |game|
-    new_game = Game.find_or_create_by(external_id: game["id"])
+    new_game = Game.find_or_create_by(external_id: game["id"], external_match_id: match["id"])
     # This isn't getting the right date
     new_game.date = game["begin_at"]
     new_game.opponent_1 = teams.first
@@ -59,3 +62,4 @@ end
 
 # File.write("./db/lcs_2020_spring_regular_season.json", lcs_spring_2020_game_data.as_json)
 
+# https://medium.com/@ethanryan/split-your-rails-seeds-file-into-separate-files-in-different-folders-3c57be765818

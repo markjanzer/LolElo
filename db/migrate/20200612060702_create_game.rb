@@ -6,8 +6,7 @@ class CreateGame < ActiveRecord::Migration[6.0]
       t.references :opponent_2
       t.references :winner
       t.integer :external_id
-
-      t.index(:external_id)
+      t.integer :external_match_id
     end
   end
 end

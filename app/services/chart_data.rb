@@ -25,6 +25,7 @@ class ChartData
   # end
 
   def data
+    Time.zone = "US/Pacific"
     result = []
     teams = Team.all.map do |team|
       { acronym: team.acronym, elo: 1500, id: team.id }
@@ -50,11 +51,6 @@ class ChartData
 
         opponent_1_win_expectancy = team_1_win_expectancy(opponent_1[:elo], opponent_2[:elo])
         opponent_2_win_expectancy = (1 - opponent_1_win_expectancy).abs
-
-        # I should look into how C9 advances so much on 2020-04-11
-        # if date == "2020-04-11"
-        #   byebug
-        # end
 
         if game.winner.id == opponent_1[:id]
           change_in_rating = rating_change(opponent_1_win_expectancy)
