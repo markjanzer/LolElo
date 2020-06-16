@@ -1,10 +1,17 @@
 # require "./app/services/chart_data.rb"
 
 class ChartData
+  attr_accessor :game_data
+  
+  def initialize
+    @game_data = []
+  end
+  
   def call
     { 
       data: data,
-      teams: team_json 
+      teams: team_json,
+      games: game_data,
     }
   end
 
@@ -39,13 +46,12 @@ class ChartData
     result << start
     
     dates.each do |date|
-      d = { name: date }
+      date_data = { name: date }
 
       # Play matches
-      games = Game.all.select { |g| g.date.strftime("%F") == date }
+      games = Game.all.includes(:opponent_1, :opponent_2).select { |g| g.date.strftime("%F") == date }
 
       games.each do |game|
-        # teams_in_game = teams.filter { |t| t[:id] == game.opponent_1_id || t[:id] == game.opponent_2_id }
         opponent_1 = teams.find { |t| t[:id] == game.opponent_1_id }
         opponent_2 = teams.find { |t| t[:id] == game.opponent_2_id }
 
@@ -53,20 +59,36 @@ class ChartData
         opponent_2_win_expectancy = (1 - opponent_1_win_expectancy).abs
 
         if game.winner.id == opponent_1[:id]
-          change_in_rating = rating_change(opponent_1_win_expectancy)
-          opponent_1[:elo] = (opponent_1[:elo] + change_in_rating).to_i
-          opponent_2[:elo] = (opponent_2[:elo] - change_in_rating).to_i
+          victor = 1
+          change_in_rating = rating_change(opponent_1_win_expectancy).round
+          opponent_1_elo_change = change_in_rating
+          opponent_2_elo_change = change_in_rating * -1
         else
-          change_in_rating = rating_change(opponent_2_win_expectancy)
-          opponent_1[:elo] = (opponent_1[:elo] - change_in_rating).to_i
-          opponent_2[:elo] = (opponent_2[:elo] + change_in_rating).to_i
+          victor = 2
+          change_in_rating = rating_change(opponent_2_win_expectancy).round
+          opponent_1_elo_change = change_in_rating * -1
+          opponent_2_elo_change = change_in_rating
         end
+
+        game_data << {
+          opponent_1: opponent_1[:acronym],
+          opponent_1_elo: opponent_1[:elo],
+          opponent_1_elo_change: opponent_1_elo_change,
+          opponent_2: opponent_2[:acronym],
+          opponent_2_elo: opponent_2[:elo],
+          opponent_2_elo_change: opponent_2_elo_change,
+          victor: victor,
+          date: date
+        }
+
+        opponent_1[:elo] = (opponent_1[:elo] + opponent_1_elo_change).to_i
+        opponent_2[:elo] = (opponent_2[:elo] + opponent_2_elo_change).to_i
       end
 
       teams.each do |team|
-        d[team[:acronym]] = team[:elo]
+        date_data[team[:acronym]] = team[:elo]
       end
-      result << d
+      result << date_data
     end
 
     result

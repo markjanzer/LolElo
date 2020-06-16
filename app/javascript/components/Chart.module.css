@@ -1,0 +1,23 @@
+.customToolTip {
+  border: 1px solid black;
+}
+
+.games {
+  list-style: none;
+}
+
+.game {
+  display: flex;
+}
+
+.opponent {
+}
+
+.opponentAcronym {
+}
+
+.opponentElo {
+}
+
+.opponentEloChange {
+}
