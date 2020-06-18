@@ -3,17 +3,22 @@
 }
 
 .games {
-  list-style: none;
 }
 
 .game {
   display: flex;
+  border: 1px solid black;
+}
+
+.gameResult {
+  font-size: 2rem;
 }
 
 .opponent {
 }
 
 .opponentAcronym {
+  font-size: 1.5rem;
 }
 
 .opponentElo {

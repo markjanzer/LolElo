@@ -33,7 +33,6 @@ export default function Charts({ chartData }) {
   function hideToolTip() {}
 
   function customToolTip(props) {
-    console.log(props);
     return (
       <div className={styles.customToolTip}>
         <ul className={styles.games}>
