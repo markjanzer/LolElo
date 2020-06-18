@@ -35,7 +35,7 @@ class ChartData
     Time.zone = "US/Pacific"
     result = []
     teams = Team.all.map do |team|
-      { acronym: team.acronym, elo: 1500, id: team.id }
+      { acronym: team.acronym, elo: 1500, id: team.id, color: team.color }
     end
     
     start = { name: "Start of Spring Split" }
@@ -74,9 +74,11 @@ class ChartData
           opponent_1: opponent_1[:acronym],
           opponent_1_elo: opponent_1[:elo],
           opponent_1_elo_change: opponent_1_elo_change,
+          opponent_1_color: opponent_1[:color],
           opponent_2: opponent_2[:acronym],
           opponent_2_elo: opponent_2[:elo],
           opponent_2_elo_change: opponent_2_elo_change,
+          opponent_2_color: opponent_2[:color],
           victor: victor,
           date: date
         }

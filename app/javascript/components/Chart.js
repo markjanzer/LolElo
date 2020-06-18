@@ -14,27 +14,15 @@ import {
 } from "recharts";
 
 export default function Charts({ chartData }) {
-  // useEffect(() => {
-  //   ax.get("/chart_data").then((result) => {
-  //     console.log(result.data);
-  //     setChartData(result.data);
-  //   });
-  // }, []);
-
-  // const [chartData, setChartData] = useState({ data: [], teams: [] });
-
   const lineChartData = chartData.data;
   const teamData = chartData.teams;
   const gameData = chartData.games;
   console.log(gameData);
 
-  function showToolTip() {}
-
-  function hideToolTip() {}
-
   function customToolTip(props) {
     return (
-      <div className={styles.customToolTip}>
+      <div className={styles.toolTip}>
+        <div className={styles.toolTipTitle}>{props.label}</div>
         <ul className={styles.games}>
           {gameData
             .filter((d) => d.date == props.label)
@@ -44,6 +32,19 @@ export default function Charts({ chartData }) {
         </ul>
       </div>
     );
+  }
+
+  function renderEloChange(changeAmount) {
+    let changeStyle, formattedAmount;
+    if (changeAmount < 0) {
+      changeStyle = styles.negativeChange;
+      formattedAmount = changeAmount.toString();
+    } else {
+      changeStyle = styles.positiveChange;
+      formattedAmount = "+ " + changeAmount.toString();
+    }
+
+    return <div className={changeStyle}>{formattedAmount}</div>;
   }
 
   function renderGame(game) {
@@ -57,18 +58,28 @@ export default function Charts({ chartData }) {
     return (
       <li className={styles.game}>
         <div className={styles.opponent}>
-          <div className={styles.opponentAcronym}>{game.opponent_1}</div>
-          <div className={styles.opponentElo}>{game.opponent_1_elo}</div>
-          <div className={styles.opponentEloChange}>
-            {game.opponent_1_elo_change}
+          <div
+            className={styles.opponentAcronym}
+            style={{ borderBottom: `2px solid ${game.opponent_1_color}` }}
+          >
+            {game.opponent_1}
+          </div>
+          <div className={styles.opponentEloData}>
+            <div className={styles.opponentElo}>{game.opponent_1_elo}</div>
+            {renderEloChange(game.opponent_1_elo_change)}
           </div>
         </div>
         <div className={styles.gameResult}>{score}</div>
         <div className={styles.opponent}>
-          <div className={styles.opponentAcronym}>{game.opponent_2}</div>
-          <div className={styles.opponentElo}>{game.opponent_2_elo}</div>
-          <div className={styles.opponentEloChange}>
-            {game.opponent_2_elo_change}
+          <div
+            className={styles.opponentAcronym}
+            style={{ borderBottom: `2px solid ${game.opponent_2_color}` }}
+          >
+            {game.opponent_2}
+          </div>
+          <div className={styles.opponentEloData}>
+            <div className={styles.opponentElo}>{game.opponent_2_elo}</div>
+            {renderEloChange(game.opponent_2_elo_change)}
           </div>
         </div>
       </li>
@@ -91,15 +102,10 @@ export default function Charts({ chartData }) {
               strokeWidth={2}
               dataKey={team.acronym}
               stroke={team.color}
-              activeDot={{
-                onMouseOver: () => console.log("onMouseOver"),
-                onMouseLeave: () => console.log("onMouseLeave"),
-              }}
             />
           );
         })}
       </LineChart>
-      <ul className={styles.games}>{renderGame(gameData[0])}</ul>
     </>
   );
 }
