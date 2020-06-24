@@ -1,12 +1,9 @@
 class CreateGame < ActiveRecord::Migration[6.0]
   def change
     create_table :games do |t|
-      t.datetime :date
-      t.references :opponent_1
-      t.references :opponent_2
+      t.referneces :match
       t.references :winner
       t.integer :external_id
-      t.integer :external_match_id
     end
   end
 end
