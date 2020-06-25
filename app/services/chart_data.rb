@@ -24,7 +24,7 @@ class ChartData
   end
 
   def dates
-    Game.all.order(:date).pluck(:date).map { |d| d.strftime("%F") }.uniq
+    Match.all.order(:date).pluck(:date).map { |d| d.strftime("%F") }.uniq
   end
 
   # def teams
@@ -48,43 +48,44 @@ class ChartData
     dates.each do |date|
       date_data = { name: date }
 
-      # Play matches
-      games = Game.all.includes(:opponent_1, :opponent_2).select { |g| g.date.strftime("%F") == date }
+      matches = Match.all.includes(:opponent_1, :opponent_2).select { |g| g.date.strftime("%F") == date }
 
-      games.each do |game|
-        opponent_1 = teams.find { |t| t[:id] == game.opponent_1_id }
-        opponent_2 = teams.find { |t| t[:id] == game.opponent_2_id }
+      matches.each do |match|
+        opponent_1 = teams.find { |t| t[:id] == match.opponent_1_id }
+        opponent_2 = teams.find { |t| t[:id] == match.opponent_2_id }
 
-        opponent_1_win_expectancy = team_1_win_expectancy(opponent_1[:elo], opponent_2[:elo])
-        opponent_2_win_expectancy = (1 - opponent_1_win_expectancy).abs
+        match.games.order(:begin_at).each do |game|
+          opponent_1_win_expectancy = team_1_win_expectancy(opponent_1[:elo], opponent_2[:elo])
+          opponent_2_win_expectancy = (1 - opponent_1_win_expectancy).abs
 
-        if game.winner.id == opponent_1[:id]
-          victor = 1
-          change_in_rating = rating_change(opponent_1_win_expectancy).round
-          opponent_1_elo_change = change_in_rating
-          opponent_2_elo_change = change_in_rating * -1
-        else
-          victor = 2
-          change_in_rating = rating_change(opponent_2_win_expectancy).round
-          opponent_1_elo_change = change_in_rating * -1
-          opponent_2_elo_change = change_in_rating
+          if game.winner.id == opponent_1[:id]
+            victor = 1
+            change_in_rating = rating_change(opponent_1_win_expectancy).round
+            opponent_1_elo_change = change_in_rating
+            opponent_2_elo_change = change_in_rating * -1
+          else
+            victor = 2
+            change_in_rating = rating_change(opponent_2_win_expectancy).round
+            opponent_1_elo_change = change_in_rating * -1
+            opponent_2_elo_change = change_in_rating
+          end
+
+          game_data << {
+            opponent_1: opponent_1[:acronym],
+            opponent_1_elo: opponent_1[:elo],
+            opponent_1_elo_change: opponent_1_elo_change,
+            opponent_1_color: opponent_1[:color],
+            opponent_2: opponent_2[:acronym],
+            opponent_2_elo: opponent_2[:elo],
+            opponent_2_elo_change: opponent_2_elo_change,
+            opponent_2_color: opponent_2[:color],
+            victor: victor,
+            date: date
+          }
+
+          opponent_1[:elo] = (opponent_1[:elo] + opponent_1_elo_change).to_i
+          opponent_2[:elo] = (opponent_2[:elo] + opponent_2_elo_change).to_i
         end
-
-        game_data << {
-          opponent_1: opponent_1[:acronym],
-          opponent_1_elo: opponent_1[:elo],
-          opponent_1_elo_change: opponent_1_elo_change,
-          opponent_1_color: opponent_1[:color],
-          opponent_2: opponent_2[:acronym],
-          opponent_2_elo: opponent_2[:elo],
-          opponent_2_elo_change: opponent_2_elo_change,
-          opponent_2_color: opponent_2[:color],
-          victor: victor,
-          date: date
-        }
-
-        opponent_1[:elo] = (opponent_1[:elo] + opponent_1_elo_change).to_i
-        opponent_2[:elo] = (opponent_2[:elo] + opponent_2_elo_change).to_i
       end
 
       teams.each do |team|

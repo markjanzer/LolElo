@@ -16,14 +16,12 @@ ActiveRecord::Schema.define(version: 2020_06_24_010833) do
   enable_extension "plpgsql"
 
   create_table "games", force: :cascade do |t|
-    t.datetime "date"
-    t.bigint "opponent_1_id"
-    t.bigint "opponent_2_id"
+    t.bigint "match_id"
     t.bigint "winner_id"
     t.integer "external_id"
-    t.integer "external_match_id"
-    t.index ["opponent_1_id"], name: "index_games_on_opponent_1_id"
-    t.index ["opponent_2_id"], name: "index_games_on_opponent_2_id"
+    t.datetime "started_at"
+    t.index ["external_id"], name: "index_games_on_external_id"
+    t.index ["match_id"], name: "index_games_on_match_id"
     t.index ["winner_id"], name: "index_games_on_winner_id"
   end
 

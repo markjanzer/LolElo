@@ -5,7 +5,7 @@ class CreateTeam < ActiveRecord::Migration[6.0]
       t.string :acronym
       t.integer :external_id
       
-      t.index(:external_id)
+      t.index :external_id
     end
   end
 end

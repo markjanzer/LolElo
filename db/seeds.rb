@@ -41,6 +41,7 @@ class LeagueCreator
     
       match_data["games"].each do |game|
         new_game = Game.find_or_initialize_by(external_id: game["id"])
+        new_game.begin_at = game["begin_at"]
         new_game.winner = Team.find_by(external_id: game["winner"]["id"])
         new_game.save!
       end
