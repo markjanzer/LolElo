@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_29_003353) do
+ActiveRecord::Schema.define(version: 2020_06_29_043852) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,8 +30,17 @@ ActiveRecord::Schema.define(version: 2020_06_29_003353) do
     t.bigint "opponent_1_id"
     t.bigint "opponent_2_id"
     t.integer "external_id"
+    t.bigint "serie_id"
     t.index ["opponent_1_id"], name: "index_matches_on_opponent_1_id"
     t.index ["opponent_2_id"], name: "index_matches_on_opponent_2_id"
+    t.index ["serie_id"], name: "index_matches_on_serie_id"
+  end
+
+  create_table "series", force: :cascade do |t|
+    t.integer "external_id"
+    t.datetime "begin_at"
+    t.string "full_name"
+    t.integer "year"
   end
 
   create_table "snapshots", force: :cascade do |t|

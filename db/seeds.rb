@@ -1,14 +1,20 @@
-class LeagueCreator
-  attr_reader :league_data
+class SerieCreator
+  attr_reader :serie_external_id, :serie
 
-  def initialize(league_id)
-    @league_data = get_league_data(league_id)
+  def initialize(serie_external_id)
+    @serie_external_id = serie_external_id
+  end
+
+  def call
+    create_serie
+    create_games
   end
 
   def create_games
-    league_data.each do |match_data|
+    matches_data.each do |match_data|
       new_match = Match.find_or_initialize_by(external_id: match_data["id"])
       new_match.date = match_data["scheduled_at"]
+      new_match.serie_id = serie.id
 
       teams = []
       match_data["opponents"].each do |opponent|
@@ -45,26 +51,40 @@ class LeagueCreator
     {"TSM"=>"#231f20", "C9"=>"#229bd6", "100"=>"#eb3131", "CLG"=>"#00b4e5", "IMT"=>"#00b1a9", "GG"=>"#d3a755", "FLY"=>"#14542b", "DIG"=>"#ffde01", "EG"=>"#3b415d", "TL"=>"#2d4a72"}
   end
 
-  def get_league_data(league_id)
+  def serie_data
+    @serie_data ||= get_data(path: "/lol/series", params: { "filter[id]": serie_external_id }).first
+  end
+
+  def create_serie
+    @serie = Serie.find_or_initialize_by(external_id: serie_external_id)
+    @serie.year = serie_data["year"]
+    @serie.begin_at = serie_data["begin_at"]
+    @serie.full_name = serie_data["full_name"]
+    @serie.save!
+  end
+
+  def matches_data
+    @matches_data ||= get_matches_data
+  end
+
+  def get_matches_data
     data = []
 
     page_number = 1
-    response = get_data(path: "/lol/matches", params: { "filter[serie_id]": league_id, "page": page_number })
+    response = get_data(path: "/lol/matches", params: { "filter[serie_id]": serie_external_id, "page": page_number })
     while !response.empty?
       response.each do |game|
         data << game
       end
       page_number += 1
-      response = get_data(path: "/lol/matches", params: { "filter[serie_id]": league_id, "page": page_number})
+      response = get_data(path: "/lol/matches", params: { "filter[serie_id]": serie_external_id, "page": page_number})
     end
 
     data
   end
 end
 
-lcs_2020_spring = LeagueCreator.new(2347).create_games
-
-
+lcs_2020_spring = SerieCreator.new(2347).call
 
 class SnapshotCreator
   def call
