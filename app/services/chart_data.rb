@@ -1,11 +1,10 @@
 # require "./app/services/chart_data.rb"
 
 class ChartData
-  attr_accessor :match_data, :serie
+  attr_accessor :serie
   
   def initialize(serie)
     @serie = serie
-    @match_data = []
   end
   
   def call
@@ -23,7 +22,7 @@ class ChartData
   end
 
   def unique_dates
-    serie.matches.order(:date).pluck(:date).map { |d| format_date(d) }.uniq
+    matches.order(:date).pluck(:date).map { |d| format_date(d) }.uniq
   end
 
   def format_date(date)
@@ -34,8 +33,12 @@ class ChartData
     serie.teams
   end
 
+  def matches
+    serie.matches.where("date < ?", Time.now).order(:date)
+  end
+
   def match_data
-    serie.matches.order(:date).map do |match|
+    matches.order(:date).map do |match|
       match_datum(match)
     end
   end

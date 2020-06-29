@@ -85,6 +85,7 @@ class SerieCreator
 end
 
 lcs_2020_spring = SerieCreator.new(2347).call
+lcs_2020_summer = SerieCreator.new(2372).call
 
 class SnapshotCreator
   def call

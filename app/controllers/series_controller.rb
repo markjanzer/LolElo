@@ -5,6 +5,6 @@ class SeriesController < ApplicationController
 
   def show
     @serie = Serie.find(params[:id])
-    @chart_data = ChartData.new.call(@serie)
+    @chart_data = ChartData.new(@serie).call
   end
 end
