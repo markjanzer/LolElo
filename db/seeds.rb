@@ -1,21 +1,3 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
-#   Character.create(name: 'Luke', movie: movies.first)
-
-# class CreateGames
-#   include HTTParty
-#   base_uri 'api.pandascore.co'
-
-#   # def call
-#   #   self.class.get
-#   # end
-# end
-
-
 class LeagueCreator
   attr_reader :league_data
 
@@ -80,8 +62,83 @@ class LeagueCreator
   end
 end
 
-
 lcs_2020_spring = LeagueCreator.new(2347).create_games
+
+
+
+class SnapshotCreator
+  def call
+    Team.all.each do |team|
+      Snapshot.create(team: team, elo: 1500, date: "2020-01-01")
+    end
+
+    Match.order(:date).each do |match|
+      opponent_1 = match.opponent_1
+      opponent_2 = match.opponent_2
+      
+      match.games.each do |game|
+        if game.winner == opponent_1
+          opponent_1_win_expectancy = team_1_win_expectancy(opponent_1.elo, opponent_2.elo)
+          change_in_rating = rating_change(opponent_1_win_expectancy).round
+          Snapshot.create(
+            team: opponent_1,
+            game: game,
+            # I want to change this to end_at
+            date: game.begin_at,
+            elo: opponent_1.elo + change_in_rating
+          )
+          Snapshot.create(
+            team: opponent_2,
+            game: game,
+            # I want to change this to end_at
+            date: game.begin_at,
+            elo: opponent_2.elo - change_in_rating
+          )
+        elsif game.winner == opponent_2
+          opponent_2_win_expectancy = team_1_win_expectancy(opponent_2.elo, opponent_1.elo)
+          change_in_rating = rating_change(opponent_2_win_expectancy).round
+          Snapshot.create(
+            team: opponent_1,
+            game: game,
+            # I want to change this to end_at
+            date: game.begin_at,
+            elo: opponent_1.elo - change_in_rating
+          )
+          Snapshot.create(
+            team: opponent_2,
+            game: game,
+            # I want to change this to end_at
+            date: game.begin_at,
+            elo: opponent_2.elo + change_in_rating
+          )
+        end
+      end
+    end
+  end
+
+
+  private
+
+
+  def team_1_win_expectancy(team_1_elo, team_2_elo)
+    return 1 / (10**((team_2_elo - team_1_elo) / 400.to_f) + 1)
+  end
+
+  def rating_change(expectancy)
+    k * (1 - expectancy)
+  end
+
+  # This is some elo calculation shit
+  def k
+    32
+  end
+
+end
+
+Snapshot.transaction do
+  SnapshotCreator.new.call
+end
+
 
 
 # File.write("./db/lcs_2020_spring_regular_season.json", lcs_spring_2020_game_data.as_json)
