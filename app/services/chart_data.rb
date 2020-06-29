@@ -55,11 +55,11 @@ class ChartData
         opponent_1 = teams.find { |t| t[:id] == match.opponent_1_id }
         opponent_2 = teams.find { |t| t[:id] == match.opponent_2_id }
 
-        opponent_1_initial_elo = match.opponent_1.elo_before(match.games.first.begin_at)
-        opponent_2_initial_elo = match.opponent_2.elo_before(match.games.first.begin_at)
+        opponent_1_initial_elo = match.opponent_1.elo_before(match.games.first.end_at)
+        opponent_2_initial_elo = match.opponent_2.elo_before(match.games.first.end_at)
 
-        opponent_1_final_elo = match.opponent_1.elo_after(match.games.last.begin_at)
-        opponent_2_final_elo = match.opponent_2.elo_after(match.games.last.begin_at)
+        opponent_1_final_elo = match.opponent_1.elo_after(match.games.last.end_at)
+        opponent_2_final_elo = match.opponent_2.elo_after(match.games.last.end_at)
 
         opponent_1_elo_change = opponent_1_final_elo - opponent_1_initial_elo
         opponent_2_elo_change = opponent_2_final_elo - opponent_2_initial_elo

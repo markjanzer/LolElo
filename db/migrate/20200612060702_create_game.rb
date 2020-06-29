@@ -4,7 +4,7 @@ class CreateGame < ActiveRecord::Migration[6.0]
       t.references :match
       t.references :winner
       t.integer :external_id
-      t.datetime :begin_at
+      t.datetime :end_at
 
       t.index :external_id
     end

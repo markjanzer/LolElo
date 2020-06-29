@@ -24,7 +24,7 @@ class LeagueCreator
       match_data["games"].each do |game|
         new_game = Game.find_or_initialize_by(external_id: game["id"])
         new_game.match = new_match
-        new_game.begin_at = game["begin_at"]
+        new_game.end_at = game["end_at"]
         new_game.winner = Team.find_by(external_id: game["winner"]["id"])
         new_game.save!
       end
@@ -84,14 +84,14 @@ class SnapshotCreator
             team: opponent_1,
             game: game,
             # I want to change this to end_at
-            date: game.begin_at,
+            date: game.end_at,
             elo: opponent_1.elo + change_in_rating
           )
           Snapshot.create(
             team: opponent_2,
             game: game,
             # I want to change this to end_at
-            date: game.begin_at,
+            date: game.end_at,
             elo: opponent_2.elo - change_in_rating
           )
         elsif game.winner == opponent_2
@@ -101,14 +101,14 @@ class SnapshotCreator
             team: opponent_1,
             game: game,
             # I want to change this to end_at
-            date: game.begin_at,
+            date: game.end_at,
             elo: opponent_1.elo - change_in_rating
           )
           Snapshot.create(
             team: opponent_2,
             game: game,
             # I want to change this to end_at
-            date: game.begin_at,
+            date: game.end_at,
             elo: opponent_2.elo + change_in_rating
           )
         end
