@@ -1,11 +1,11 @@
 class ApplicationController < ActionController::Base
-  def index
-    @chart_data = chart_data
-  end
+  # def index
+  #   @chart_data = chart_data
+  # end
 
-  private 
+  # private 
 
-  def chart_data
-    ChartData.new.call
-  end
+  # def chart_data
+  #   ChartData.new.call
+  # end
 end

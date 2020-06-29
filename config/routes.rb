@@ -1,4 +1,4 @@
 Rails.application.routes.draw do
-  get "/chart_data" => "application#chart_data"
-  root "application#index"
+  resources :series, only: [:index, :show]
+  root "series#index"
 end
