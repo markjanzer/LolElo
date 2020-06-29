@@ -33,6 +33,7 @@ class ChartData
   end
 
   def data
+    # Time zone should be tied to the League
     Time.zone = "US/Pacific"
     result = []
     # teams = Team.all.map do |team|
