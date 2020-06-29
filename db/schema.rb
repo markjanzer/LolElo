@@ -19,7 +19,7 @@ ActiveRecord::Schema.define(version: 2020_06_24_010833) do
     t.bigint "match_id"
     t.bigint "winner_id"
     t.integer "external_id"
-    t.datetime "started_at"
+    t.datetime "begin_at"
     t.index ["external_id"], name: "index_games_on_external_id"
     t.index ["match_id"], name: "index_games_on_match_id"
     t.index ["winner_id"], name: "index_games_on_winner_id"

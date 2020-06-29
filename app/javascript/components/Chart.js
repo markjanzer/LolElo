@@ -16,18 +16,17 @@ import {
 export default function Charts({ chartData }) {
   const lineChartData = chartData.data;
   const teamData = chartData.teams;
-  const gameData = chartData.games;
-  console.log(gameData);
+  const matchData = chartData.matches;
 
   function customToolTip(props) {
     return (
       <div className={styles.toolTip}>
         <div className={styles.toolTipTitle}>{props.label}</div>
-        <ul className={styles.games}>
-          {gameData
+        <ul className={styles.matches}>
+          {matchData
             .filter((d) => d.date == props.label)
             .map((datum) => {
-              return renderGame(datum);
+              return renderMatch(datum);
             })}
         </ul>
       </div>
@@ -47,39 +46,34 @@ export default function Charts({ chartData }) {
     return <div className={changeStyle}>{formattedAmount}</div>;
   }
 
-  function renderGame(game) {
-    let score;
-    if (game.victor == 1) {
-      score = "1 - 0";
-    } else {
-      score = "0 - 1";
-    }
+  function renderMatch(match) {
+    let score = `${match.opponent_1.score} - ${match.opponent_2.score}`;
 
     return (
-      <li className={styles.game}>
+      <li className={styles.match}>
         <div className={styles.opponent}>
           <div
             className={styles.opponentAcronym}
-            style={{ borderBottom: `2px solid ${game.opponent_1_color}` }}
+            style={{ borderBottom: `2px solid ${match.opponent_1.color}` }}
           >
-            {game.opponent_1}
+            {match.opponent_1.acronym}
           </div>
           <div className={styles.opponentEloData}>
-            <div className={styles.opponentElo}>{game.opponent_1_elo}</div>
-            {renderEloChange(game.opponent_1_elo_change)}
+            <div className={styles.opponentElo}>{match.opponent_1.elo}</div>
+            {renderEloChange(match.opponent_1.elo_change)}
           </div>
         </div>
-        <div className={styles.gameResult}>{score}</div>
+        <div className={styles.matchResult}>{score}</div>
         <div className={styles.opponent}>
           <div
             className={styles.opponentAcronym}
-            style={{ borderBottom: `2px solid ${game.opponent_2_color}` }}
+            style={{ borderBottom: `2px solid ${match.opponent_2.color}` }}
           >
-            {game.opponent_2}
+            {match.opponent_2.acronym}
           </div>
           <div className={styles.opponentEloData}>
-            <div className={styles.opponentElo}>{game.opponent_2_elo}</div>
-            {renderEloChange(game.opponent_2_elo_change)}
+            <div className={styles.opponentElo}>{match.opponent_2.elo}</div>
+            {renderEloChange(match.opponent_2.elo_change)}
           </div>
         </div>
       </li>
