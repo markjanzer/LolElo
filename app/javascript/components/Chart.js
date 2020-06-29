@@ -47,8 +47,6 @@ export default function Charts({ chartData }) {
   }
 
   function renderMatch(match) {
-    console.log(match);
-
     let score = `${match.opponent_1_score} - ${match.opponent_2_score}`;
 
     return (
