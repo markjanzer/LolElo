@@ -47,7 +47,9 @@ export default function Charts({ chartData }) {
   }
 
   function renderMatch(match) {
-    let score = `${match.opponent_1.score} - ${match.opponent_2.score}`;
+    console.log(match);
+
+    let score = `${match.opponent_1_score} - ${match.opponent_2_score}`;
 
     return (
       <li className={styles.match}>
@@ -59,8 +61,8 @@ export default function Charts({ chartData }) {
             {match.opponent_1.acronym}
           </div>
           <div className={styles.opponentEloData}>
-            <div className={styles.opponentElo}>{match.opponent_1.elo}</div>
-            {renderEloChange(match.opponent_1.elo_change)}
+            <div className={styles.opponentElo}>{match.opponent_1_elo}</div>
+            {renderEloChange(match.opponent_1_elo_change)}
           </div>
         </div>
         <div className={styles.matchResult}>{score}</div>
@@ -72,8 +74,8 @@ export default function Charts({ chartData }) {
             {match.opponent_2.acronym}
           </div>
           <div className={styles.opponentEloData}>
-            <div className={styles.opponentElo}>{match.opponent_2.elo}</div>
-            {renderEloChange(match.opponent_2.elo_change)}
+            <div className={styles.opponentElo}>{match.opponent_2_elo}</div>
+            {renderEloChange(match.opponent_2_elo_change)}
           </div>
         </div>
       </li>

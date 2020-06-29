@@ -6,6 +6,18 @@ class Team < ApplicationRecord
     last_snapshot.elo
   end
 
+  def elo_at(datetime)
+    snapshots.where("date <= ?", datetime).order(:date).last.elo
+  end
+
+  def elo_after(date)
+    snapshots.where("date >= ?", date).order(:date).first.elo
+  end
+
+  def elo_before(date)
+    snapshots.where("date < ?", date).order(:date).last.elo
+  end
+
   private
 
   def last_snapshot
