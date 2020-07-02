@@ -26,7 +26,7 @@ class ChartData
   end
 
   def format_date(date)
-    date.strftime("%F")
+    date.strftime("%b %-d")
   end
 
   def teams
