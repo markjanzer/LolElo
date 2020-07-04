@@ -22,7 +22,7 @@ class ChartData
   end
 
   def unique_dates
-    matches.order(:date).pluck(:date).map { |d| format_date(d) }.uniq
+    matches.order(:date).map { |m| m.date.to_date }.uniq
   end
 
   def format_date(date)
@@ -94,10 +94,10 @@ class ChartData
     result << start
     
     unique_dates.each do |date|
-      date_data = { name: date }
+      date_data = { name: format_date(date) }
 
       teams.each do |team|
-        date_data[team.acronym] = team.elo_at(Date.parse(date).end_of_day)
+        date_data[team.acronym] = team.elo_at(date.end_of_day)
       end
       result << date_data
     end

@@ -19,7 +19,10 @@ class SerieCreator
       teams = []
       match_data["opponents"].each do |opponent|
         team_data = opponent["opponent"]
-        team = Team.find_or_create_by(name: team_data["name"], external_id: team_data["id"], acronym: team_data["acronym"], color: team_colors[team_data["acronym"]])
+        team = Team.find_or_create_by(name: team_data["name"], external_id: team_data["id"], acronym: team_data["acronym"])
+        if team.color.nil?
+          team.update(color: unique_team_color(serie))
+        end
         teams << team
       end
       new_match.opponent_1 = teams.first
@@ -39,6 +42,14 @@ class SerieCreator
 
   private
 
+  def unique_team_color(serie)
+    (unique_colors - serie.reload.teams.pluck(:color)).sample
+  end
+
+  def unique_colors
+    ['#e6194B', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#42d4f4', '#f032e6', '#bfef45', '#fabed4', '#469990', '#dcbeff', '#9A6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#a9a9a9', '#000000']
+  end
+
   def get_data(path: "", params: {})
     response = HTTParty.get(
       'http://api.pandascore.co' + path, 
@@ -47,9 +58,9 @@ class SerieCreator
     JSON.parse(response.body)
   end
 
-  def team_colors
-    {"TSM"=>"#231f20", "C9"=>"#229bd6", "100"=>"#eb3131", "CLG"=>"#00b4e5", "IMT"=>"#00b1a9", "GG"=>"#d3a755", "FLY"=>"#14542b", "DIG"=>"#ffde01", "EG"=>"#3b415d", "TL"=>"#2d4a72"}
-  end
+  # def team_colors
+  #   {"TSM"=>"#231f20", "C9"=>"#229bd6", "100"=>"#eb3131", "CLG"=>"#00b4e5", "IMT"=>"#00b1a9", "GG"=>"#d3a755", "FLY"=>"#14542b", "DIG"=>"#ffde01", "EG"=>"#3b415d", "TL"=>"#2d4a72"}
+  # end
 
   def serie_data
     @serie_data ||= get_data(path: "/lol/series", params: { "filter[id]": serie_external_id }).first
@@ -84,77 +95,11 @@ class SerieCreator
   end
 end
 
+lcs_2019_spring = SerieCreator.new(1705).call
+lcs_2019_summer = SerieCreator.new(1795).call
 lcs_2020_spring = SerieCreator.new(2347).call
 lcs_2020_summer = SerieCreator.new(2372).call
 
-class SnapshotCreator
-  def call
-    Team.all.each do |team|
-      Snapshot.create(team: team, elo: 1500, date: "2020-01-01")
-    end
-
-    Match.order(:date).each do |match|
-      opponent_1 = match.opponent_1
-      opponent_2 = match.opponent_2
-      
-      match.games.each do |game|
-        if game.winner == opponent_1
-          opponent_1_win_expectancy = team_1_win_expectancy(opponent_1.elo, opponent_2.elo)
-          change_in_rating = rating_change(opponent_1_win_expectancy).round
-          Snapshot.create(
-            team: opponent_1,
-            game: game,
-            # I want to change this to end_at
-            date: game.end_at,
-            elo: opponent_1.elo + change_in_rating
-          )
-          Snapshot.create(
-            team: opponent_2,
-            game: game,
-            # I want to change this to end_at
-            date: game.end_at,
-            elo: opponent_2.elo - change_in_rating
-          )
-        elsif game.winner == opponent_2
-          opponent_2_win_expectancy = team_1_win_expectancy(opponent_2.elo, opponent_1.elo)
-          change_in_rating = rating_change(opponent_2_win_expectancy).round
-          Snapshot.create(
-            team: opponent_1,
-            game: game,
-            # I want to change this to end_at
-            date: game.end_at,
-            elo: opponent_1.elo - change_in_rating
-          )
-          Snapshot.create(
-            team: opponent_2,
-            game: game,
-            # I want to change this to end_at
-            date: game.end_at,
-            elo: opponent_2.elo + change_in_rating
-          )
-        end
-      end
-    end
-  end
-
-
-  private
-
-
-  def team_1_win_expectancy(team_1_elo, team_2_elo)
-    return 1 / (10**((team_2_elo - team_1_elo) / 400.to_f) + 1)
-  end
-
-  def rating_change(expectancy)
-    k * (1 - expectancy)
-  end
-
-  # This is some elo calculation shit
-  def k
-    32
-  end
-
-end
 
 Snapshot.transaction do
   SnapshotCreator.new.call
