@@ -1,4 +1,5 @@
 class Serie < ApplicationRecord
+  belongs_to :league
   has_many :matches
 
   def teams
@@ -6,7 +7,7 @@ class Serie < ApplicationRecord
   end
 
   def pandascore_data
-    get_data(path: "/lol/series", params: { "filter[id]": external_id })
+    self.get_data(path: "/lol/series", params: { "filter[id]": external_id })
   end
 end
 

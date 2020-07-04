@@ -1,4 +1,9 @@
 class SnapshotCreator
+  attr_reader :league
+  def initialize(league)
+    @league = league
+  end
+
   def call
     ordered_series.each_with_index do |serie, index|
       if index == 0
@@ -65,7 +70,7 @@ class SnapshotCreator
   private
   
   def ordered_series
-    Serie.order(:begin_at)
+    league.series.order(:begin_at)
   end
 
   def previous_serie(index)
@@ -107,5 +112,3 @@ class SnapshotCreator
   end
 
 end
-
-s = SnapshotCreator.new

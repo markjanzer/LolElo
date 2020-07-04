@@ -1,3 +1,36 @@
+class LeagueCreator
+  attr_reader :league_external_id, :league
+  
+  def initialize(league_external_id)
+    @league_external_id = league_external_id
+  end
+
+  def call
+    create_league
+    create_series
+  end
+
+  def league_data
+    league_data = League.pandascore_data(league_external_id)
+  end
+
+  def create_league
+    @league = League.find_or_initialize_by(external_id: league_external_id)
+    @league.name = league_data["name"]
+    @league.save!
+  end
+
+  def create_series
+    series_ids.each do |series_id|
+      SerieCreator.new(series_id).call
+    end
+  end
+
+  def series_ids
+    league_data["series"].pluck("id")
+  end
+end
+
 class SerieCreator
   attr_reader :serie_external_id, :serie
 
@@ -68,6 +101,7 @@ class SerieCreator
 
   def create_serie
     @serie = Serie.find_or_initialize_by(external_id: serie_external_id)
+    @serie.league = League.find_by(external_id: serie_data["league_id"])
     @serie.year = serie_data["year"]
     @serie.begin_at = serie_data["begin_at"]
     @serie.full_name = serie_data["full_name"]
@@ -95,14 +129,20 @@ class SerieCreator
   end
 end
 
-lcs_2019_spring = SerieCreator.new(1705).call
-lcs_2019_summer = SerieCreator.new(1795).call
-lcs_2020_spring = SerieCreator.new(2347).call
-lcs_2020_summer = SerieCreator.new(2372).call
+lcs = LeagueCreator.new(4198).call
+lec = LeagueCreator.new(4197).call
+# lcs.create_series
+
+# lcs_2019_spring = SerieCreator.new(1705).call
+# lcs_2019_summer = SerieCreator.new(1795).call
+# lcs_2020_spring = SerieCreator.new(2347).call
+# lcs_2020_summer = SerieCreator.new(2372).call
 
 
 Snapshot.transaction do
-  SnapshotCreator.new.call
+  League.all.each do |league|
+    SnapshotCreator.new(league).call
+  end
 end
 
 
