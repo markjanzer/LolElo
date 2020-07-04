@@ -1,10 +1,7 @@
 class SeriesController < ApplicationController
-  def index
-    @series = Serie.all
-  end
-
   def show
-    @serie = Serie.find(params[:id])
+    @league = League.find(params[:league_id])
+    @serie = @league.series.find(params[:id])
     @chart_data = ChartData.new(@serie).call
   end
 end

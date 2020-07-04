@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
-  resources :series, only: [:index, :show]
-  root "series#index"
+  resources :leagues, only: [:index, :show] do
+    resources :series, only: [:show]
+  end
+  # resources :series, only: [:index, :show]
+  root "leagues#index"
 end
