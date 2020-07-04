@@ -13,7 +13,7 @@ class SerieCreator
   def create_games
     matches_data.each do |match_data|
       new_match = Match.find_or_initialize_by(external_id: match_data["id"])
-      new_match.date = match_data["scheduled_at"]
+      new_match.end_at = match_data["end_at"]
       new_match.serie_id = serie.id
 
       teams = []

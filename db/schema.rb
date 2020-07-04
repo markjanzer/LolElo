@@ -26,7 +26,7 @@ ActiveRecord::Schema.define(version: 2020_06_29_043852) do
   end
 
   create_table "matches", force: :cascade do |t|
-    t.datetime "date"
+    t.datetime "end_at"
     t.bigint "opponent_1_id"
     t.bigint "opponent_2_id"
     t.integer "external_id"

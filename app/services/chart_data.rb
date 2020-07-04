@@ -22,7 +22,7 @@ class ChartData
   end
 
   def unique_dates
-    matches.order(:date).map { |m| m.date.to_date }.uniq
+    past_matches.order(:end_at).map { |m| m.end_at.to_date }.uniq
   end
 
   def format_date(date)
@@ -33,12 +33,12 @@ class ChartData
     serie.teams
   end
 
-  def matches
-    serie.matches.where("date < ?", Time.now).order(:date)
+  def past_matches
+    serie.matches.where("end_at < ?", Time.now)
   end
 
   def match_data
-    matches.order(:date).map do |match|
+    past_matches.order(:end_at).map do |match|
       match_datum(match)
     end
   end
@@ -67,7 +67,7 @@ class ChartData
     end
 
     match_hash = {
-      date: format_date(match.date),
+      date: format_date(match.end_at),
       opponent_1: opponent_1,
       opponent_2: opponent_2,
       opponent_1_elo: opponent_1_initial_elo,

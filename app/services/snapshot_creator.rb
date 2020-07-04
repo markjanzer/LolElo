@@ -17,7 +17,7 @@ class SnapshotCreator
         end
       end
 
-      serie.matches.includes(:opponent_1, :opponent_2).order(:date).each do |match|
+      serie.matches.includes(:opponent_1, :opponent_2).order(:end_at).each do |match|
         opponent_1 = match.opponent_1
         opponent_2 = match.opponent_2
         
