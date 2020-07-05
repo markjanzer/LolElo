@@ -1,4 +1,4 @@
-class SnapshotCreator
+class SnapshotFactory
   attr_reader :league
   def initialize(league)
     @league = league
