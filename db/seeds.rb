@@ -43,6 +43,10 @@ class SerieCreator
     create_games
   end
 
+  def create_teams
+    team_data
+  end
+
   def create_games
     matches_data.each do |match_data|
       new_match = Match.find_or_initialize_by(external_id: match_data["id"])
@@ -112,6 +116,10 @@ class SerieCreator
     @matches_data ||= get_matches_data
   end
 
+  def team_data
+    matches_data.flat_map { |match_datum| match_datum["opponents"] }.uniq
+  end
+
   def get_matches_data
     data = []
 
@@ -131,6 +139,8 @@ end
 
 lcs = LeagueCreator.new(4198).call
 lec = LeagueCreator.new(4197).call
+lck = LeagueCreator.new(293).call
+lpl = LeagueCreator.new(294).call
 # lcs.create_series
 
 # lcs_2019_spring = SerieCreator.new(1705).call
