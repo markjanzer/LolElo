@@ -8,7 +8,7 @@ class SerieFactory
   def call
     create_serie
     create_teams
-    create_games
+    create_matches
   end
 
   def create_serie
@@ -22,21 +22,29 @@ class SerieFactory
 
   def create_teams
     team_data.each do |team_datum|
-      team = Team.find_or_create_by(name: team_datum["name"], external_id: team_datum["id"], acronym: team_datum["acronym"])
-      team.series << serie
-      if team.color.nil?
-        team.update!(color: unique_team_color)
-      end
+      create_team(team_datum)
     end
   end
 
-  def create_games
+  def create_matches
     matches_data.each do |match_datum|
-      MatchFactory.new(match_data: match_datum, serie: serie).create
+      create_match(match_datum)
     end
   end
 
   private
+
+  def create_match(match_datum)
+    MatchFactory.new(match_data: match_datum, serie: serie).create
+  end
+
+  def create_team(team_datum)
+    team = Team.find_or_create_by(name: team_datum["name"], external_id: team_datum["id"], acronym: team_datum["acronym"])
+    team.series << serie
+    if team.color.nil?
+      team.update!(color: unique_team_color)
+    end
+  end
 
   def unique_team_color
     (unique_colors - serie.teams.pluck(:color)).sample
