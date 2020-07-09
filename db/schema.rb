@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_05_030736) do
+ActiveRecord::Schema.define(version: 2020_07_09_102245) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(version: 2020_07_05_030736) do
   create_table "leagues", force: :cascade do |t|
     t.string "name"
     t.integer "external_id"
+    t.string "time_zone"
     t.index ["external_id"], name: "index_leagues_on_external_id"
   end
 

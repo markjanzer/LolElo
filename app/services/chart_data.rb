@@ -82,7 +82,7 @@ class ChartData
 
   def elos_at_dates
     # Time zone should be tied to the League
-    Time.zone = "US/Pacific"
+    Time.zone = serie.league.time_zone
     result = []
     
     start = { name: "Start of #{serie.full_name}" }

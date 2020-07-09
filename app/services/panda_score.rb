@@ -1,12 +1,20 @@
 class PandaScore
   def self.get_data_for(object)
     path = object_path(object)
-    params = { "filter[id]": object.external_id }
-    response = request(path: path, params: params)
-    return response.first
+    get_data(path: path, id: object.external_id)
+  end
+
+  def self.league_data(id)
+    get_data(path: "/lol/leagues", id: id)
   end
 
   private
+
+  def self.get_data(path:, id:)
+    params = { "filter[id]": id }
+    response = request(path: path, params: params)
+    return response.first
+  end
 
   def self.object_path(object)
     object.class.name.downcase.pluralize
@@ -37,3 +45,5 @@ class PandaScore
   #   end
   # end
 end
+
+# Maybe I should be documenting the different ways I'm going to want to get this data.

@@ -1,8 +1,9 @@
 class LeagueFactory
-  attr_reader :league_external_id, :league
+  attr_reader :league_id, :time_zone
   
-  def initialize(league_external_id)
-    @league_external_id = league_external_id
+  def initialize(league_id:, time_zone:)
+    @league_id = league_id
+    @time_zone = time_zone
   end
 
   def call
@@ -10,14 +11,20 @@ class LeagueFactory
     create_series
   end
 
+  private
+
   def league_data
-    league_data = League.panda_score_data(league_external_id)
+    @league_data ||= PandaScore.league_data(league_id)
+  end
+
+  def league
+    @league ||= League.find_or_initialize_by(external_id: league_id)
   end
 
   def create_league
-    @league = League.find_or_initialize_by(external_id: league_external_id)
-    @league.name = league_data["name"]
-    @league.save!
+    league.name = league_data["name"]
+    league.time_zone = time_zone
+    league.save!
   end
 
   def create_series
