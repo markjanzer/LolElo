@@ -16,9 +16,7 @@ class MatchFactory
 
     match.save!
   
-    completed_games_data(match_data).each do |game_datum|
-      GameFactory.new(game_data: game_datum, match: match).create
-    end
+    create_games
   end
 
   private
@@ -39,7 +37,17 @@ class MatchFactory
     serie.teams.find_by(external_id: match_data["opponents"].second["opponent"]["id"])
   end
 
+  def create_games
+    completed_games_data(match_data).each do |game_datum|
+      create_game(game_datum)
+    end
+  end
+
   def completed_games_data(match_data)
     match_data["games"].reject { |game| game["forfeit"] }
+  end
+
+  def create_game(game_datum)
+    GameFactory.new(game_data: game_datum, match: match).create
   end
 end
