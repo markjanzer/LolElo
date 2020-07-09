@@ -32,22 +32,7 @@ class SerieFactory
 
   def create_games
     matches_data.each do |match_datum|
-      new_match = Match.find_or_initialize_by(external_id: match_datum["id"])
-      new_match.end_at = match_datum["end_at"]
-      new_match.serie_id = serie.id
-
-      new_match.opponent_1 = serie.teams.find_by(external_id: opponents(match_datum).first["id"])
-      new_match.opponent_2 = serie.teams.find_by(external_id: opponents(match_datum).second["id"])
-
-      new_match.save!
-    
-      match_datum["games"].each do |game|
-        new_game = Game.find_or_initialize_by(external_id: game["id"])
-        new_game.match = new_match
-        new_game.end_at = game["end_at"]
-        new_game.winner = Team.find_by(external_id: game["winner"]["id"])
-        new_game.save!
-      end
+      MatchFactory.new(match_data: match_datum, serie: serie).create
     end
   end
 
@@ -73,6 +58,11 @@ class SerieFactory
   #   {"TSM"=>"#231f20", "C9"=>"#229bd6", "100"=>"#eb3131", "CLG"=>"#00b4e5", "IMT"=>"#00b1a9", "GG"=>"#d3a755", "FLY"=>"#14542b", "DIG"=>"#ffde01", "EG"=>"#3b415d", "TL"=>"#2d4a72"}
   # end
 
+
+  def opponents(match_datum)
+    match_datum["opponents"].map { |o| o["opponent"] }
+  end
+
   def serie_data
     @serie_data ||= get_data(path: "/lol/series", params: { "filter[id]": serie_external_id }).first
   end
@@ -87,21 +77,17 @@ class SerieFactory
     end.uniq
   end
 
-  def opponents(match_datum)
-    match_datum["opponents"].map { |o| o["opponent"] }
-  end
-
   def get_matches_data
     data = []
 
     page_number = 1
-    response = get_data(path: "/lol/matches", params: { "filter[serie_id]": serie_external_id, "page": page_number })
+    response = get_data(path: "/lol/matches/past", params: { "filter[serie_id]": serie_external_id, "page": page_number })
     while !response.empty?
       response.each do |game|
         data << game
       end
       page_number += 1
-      response = get_data(path: "/lol/matches", params: { "filter[serie_id]": serie_external_id, "page": page_number})
+      response = get_data(path: "/lol/matches/past", params: { "filter[serie_id]": serie_external_id, "page": page_number})
     end
 
     data

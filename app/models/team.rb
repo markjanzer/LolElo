@@ -2,6 +2,7 @@ class Team < ApplicationRecord
   has_many :snapshots
   has_many :series_teams
   has_many :series, :through => :series_teams, :source => :serie
+  # has_many :games, foreign_keys: [:opponent_1_id, :opponent_2_id]
 
   def elo
     return nil if last_snapshot.nil?

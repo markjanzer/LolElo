@@ -25,7 +25,7 @@ class SnapshotFactory
       serie.matches.includes(:opponent_1, :opponent_2).order(:end_at).each do |match|
         opponent_1 = match.opponent_1
         opponent_2 = match.opponent_2
-        
+
         match.games.each do |game|
           if game.winner == opponent_1
             opponent_1_win_expectancy = team_1_win_expectancy(opponent_1.elo, opponent_2.elo)

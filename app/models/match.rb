@@ -6,6 +6,6 @@ class Match < ApplicationRecord
   has_many :games
 
   def pandascore_data
-    self.get_data(path: "/lol/matches", params: { "filter[id]": external_id }).first
+    Match.get_data(path: "/lol/matches", params: { "filter[id]": external_id }).first
   end
 end
