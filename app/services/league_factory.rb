@@ -11,7 +11,7 @@ class LeagueFactory
   end
 
   def league_data
-    league_data = League.pandascore_data(league_external_id)
+    league_data = League.panda_score_data(league_external_id)
   end
 
   def create_league

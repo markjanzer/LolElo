@@ -21,6 +21,10 @@ class Team < ApplicationRecord
     snapshots.where("date < ?", date).order(:date).last.elo
   end
 
+  def matches
+    Match.where("opponent_1_id = ? OR opponent_2_id = ?", id, id)
+  end
+
   private
 
   def last_snapshot
