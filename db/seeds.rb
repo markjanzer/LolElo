@@ -1,5 +1,5 @@
 lcs = LeagueFactory.new(4198).call
-# lec = LeagueFactory.new(4197).call
+lec = LeagueFactory.new(4197).call
 # lck = LeagueFactory.new(293).call
 # lpl = LeagueFactory.new(294).call
 

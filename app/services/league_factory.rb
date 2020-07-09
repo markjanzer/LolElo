@@ -21,12 +21,18 @@ class LeagueFactory
   end
 
   def create_series
-    series_ids.each do |series_id|
+    filtered_series_ids.each do |series_id|
       SerieFactory.new(series_id).call
     end
   end
 
-  def series_ids
-    league_data["series"].pluck("id")
+  def filtered_series
+    league_data["series"].filter do |series|
+      series["full_name"].split.first.match?("Spring|Summer")
+    end
+  end
+
+  def filtered_series_ids
+    filtered_series.pluck("id")
   end
 end

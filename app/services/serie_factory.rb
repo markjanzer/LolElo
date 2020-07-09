@@ -54,7 +54,6 @@ class SerieFactory
   private
 
   def unique_team_color
-    puts serie.teams.pluck(:color)
     (unique_colors - serie.teams.pluck(:color)).sample
   end
 
