@@ -1,15 +1,15 @@
 class MatchFactory
-  attr_reader :serie, :match_data
+  attr_reader :tournament, :match_data
   
-  def initialize(serie:, match_data:)
-    @serie = serie
+  def initialize(tournament:, match_data:)
+    @tournament = tournament
     @match_data = match_data
   end
 
   def create
     match.assign_attributes({
       end_at: end_at,
-      serie: serie,
+      tournament: tournament,
       opponent_1: opponent_1,
       opponent_2: opponent_2,
     })
@@ -30,11 +30,11 @@ class MatchFactory
   end
 
   def opponent_1
-    serie.teams.find_by(external_id: match_data["opponents"].first["opponent"]["id"])
+    tournament.teams.find_by(external_id: match_data["opponents"].first["opponent"]["id"])
   end
 
   def opponent_2
-    serie.teams.find_by(external_id: match_data["opponents"].second["opponent"]["id"])
+    tournament.teams.find_by(external_id: match_data["opponents"].second["opponent"]["id"])
   end
 
   def create_games

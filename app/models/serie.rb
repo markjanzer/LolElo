@@ -1,8 +1,9 @@
 class Serie < ApplicationRecord
   belongs_to :league
-  has_many :matches
-  has_many :series_teams
-  has_many :teams, through: :series_teams
+  has_many :tournaments
+  has_many :teams, -> { distinct }, through: :tournaments
+  has_many :matches, through: :tournaments
+
 end
 
 

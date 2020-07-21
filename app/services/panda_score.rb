@@ -5,7 +5,7 @@ class PandaScore
   end
 
   def self.league_data(id)
-    get_data(path: "/lol/leagues", id: id)
+    get_data(path: "leagues", id: id)
   end
 
   private

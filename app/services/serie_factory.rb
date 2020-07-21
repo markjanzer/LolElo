@@ -7,8 +7,8 @@ class SerieFactory
 
   def call
     create_serie
-    create_teams
-    create_matches
+    # create_teams
+    create_tournaments
   end
 
   def create_serie
@@ -20,39 +20,38 @@ class SerieFactory
     @serie.save!
   end
 
-  def create_teams
-    team_data.each do |team_datum|
-      create_team(team_datum)
+  # def create_teams
+  #   team_data.each do |team_datum|
+  #     create_team(team_datum)
+  #   end
+  # end
+
+  def create_tournaments
+    tournaments_data.each do |tournament_data|
+      create_tournament(tournament_data)
     end
   end
 
-  def create_matches
-    matches_data.each do |match_datum|
-      create_match(match_datum)
-    end
-  end
+  # def create_matches
+  #   matches_data.each do |match_datum|
+  #     create_match(match_datum)
+  #   end
+  # end
 
   private
 
-  def create_match(match_datum)
-    MatchFactory.new(match_data: match_datum, serie: serie).create
+  # def create_match(match_datum)
+  #   MatchFactory.new(match_data: match_datum, serie: serie).create
+  # end
+
+  def create_tournament(tournament_data)
+    TournamentFactory.new(tournament_data: tournament_data, serie: serie).create
   end
 
-  def create_team(team_datum)
-    team = Team.find_or_create_by(name: team_datum["name"], external_id: team_datum["id"], acronym: team_datum["acronym"])
-    team.series << serie
-    if team.color.nil?
-      team.update!(color: unique_team_color)
-    end
-  end
 
-  def unique_team_color
-    (unique_colors - serie.teams.pluck(:color)).sample
-  end
-
-  def unique_colors
-    ['#e6194B', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#42d4f4', '#f032e6', '#bfef45', '#fabed4', '#469990', '#dcbeff', '#9A6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#a9a9a9', '#000000']
-  end
+  # def team_colors
+  #   {"TSM"=>"#231f20", "C9"=>"#229bd6", "100"=>"#eb3131", "CLG"=>"#00b4e5", "IMT"=>"#00b1a9", "GG"=>"#d3a755", "FLY"=>"#14542b", "DIG"=>"#ffde01", "EG"=>"#3b415d", "TL"=>"#2d4a72"}
+  # end
 
   def get_data(path: "", params: {})
     response = HTTParty.get(
@@ -62,42 +61,41 @@ class SerieFactory
     JSON.parse(response.body)
   end
 
-  # def team_colors
-  #   {"TSM"=>"#231f20", "C9"=>"#229bd6", "100"=>"#eb3131", "CLG"=>"#00b4e5", "IMT"=>"#00b1a9", "GG"=>"#d3a755", "FLY"=>"#14542b", "DIG"=>"#ffde01", "EG"=>"#3b415d", "TL"=>"#2d4a72"}
+  # def get_matches_data
+  #   data = []
+
+  #   page_number = 1
+  #   response = get_data(path: "/lol/matches/past", params: { "filter[serie_id]": serie_external_id, "page": page_number })
+  #   while !response.empty?
+  #     response.each do |game|
+  #       data << game
+  #     end
+  #     page_number += 1
+  #     response = get_data(path: "/lol/matches/past", params: { "filter[serie_id]": serie_external_id, "page": page_number})
+  #   end
+
+  #   data
   # end
 
-
-  def opponents(match_datum)
-    match_datum["opponents"].map { |o| o["opponent"] }
+  def tournaments_data
+    @tournaments_data ||= get_data(path: "/lol/tournaments", params: { "filter[serie_id]": serie_external_id })
   end
+
+  # def opponents(match_datum)
+  #   match_datum["opponents"].map { |o| o["opponent"] }
+  # end
 
   def serie_data
     @serie_data ||= get_data(path: "/lol/series", params: { "filter[id]": serie_external_id }).first
   end
 
-  def matches_data
-    @matches_data ||= get_matches_data
-  end
+  # def matches_data
+  #   @matches_data ||= get_matches_data
+  # end
 
-  def team_data
-    matches_data.flat_map do |match_datum| 
-      opponents(match_datum)
-    end.uniq
-  end
-
-  def get_matches_data
-    data = []
-
-    page_number = 1
-    response = get_data(path: "/lol/matches/past", params: { "filter[serie_id]": serie_external_id, "page": page_number })
-    while !response.empty?
-      response.each do |game|
-        data << game
-      end
-      page_number += 1
-      response = get_data(path: "/lol/matches/past", params: { "filter[serie_id]": serie_external_id, "page": page_number})
-    end
-
-    data
-  end
+  # def team_data
+  #   matches_data.flat_map do |match_datum| 
+  #     opponents(match_datum)
+  #   end.uniq
+  # end
 end
