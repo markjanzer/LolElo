@@ -91,3 +91,8 @@ class TournamentFactory
     match_data["opponents"].map { |o| o["opponent"] }
   end
 end
+
+
+# def team_colors
+#   {"TSM"=>"#231f20", "C9"=>"#229bd6", "100"=>"#eb3131", "CLG"=>"#00b4e5", "IMT"=>"#00b1a9", "GG"=>"#d3a755", "FLY"=>"#14542b", "DIG"=>"#ffde01", "EG"=>"#3b415d", "TL"=>"#2d4a72"}
+# end

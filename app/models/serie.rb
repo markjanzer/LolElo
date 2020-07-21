@@ -3,7 +3,6 @@ class Serie < ApplicationRecord
   has_many :tournaments
   has_many :teams, -> { distinct }, through: :tournaments
   has_many :matches, through: :tournaments
-
 end
 
 

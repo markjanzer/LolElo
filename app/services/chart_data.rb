@@ -2,6 +2,9 @@
 
 class ChartData
   attr_accessor :serie
+
+  FILTERED_MATCH_NAMES = ["Promotion", "Promotion relegation"]
+  # FILTERED_MATCH_NAMES = []
   
   def initialize(serie)
     @serie = serie
@@ -17,12 +20,16 @@ class ChartData
 
   private
 
+  def tournaments
+    @tournaments ||= serie.tournaments.where.not(name: FILTERED_MATCH_NAMES)
+  end
+
   def team_json
     teams.map(&:as_json)
   end
 
   def unique_dates
-    past_matches.order(:end_at).map { |m| m.end_at.to_date }.uniq
+    past_matches.sort_by(&:end_at).map { |m| m.end_at.to_date }.uniq
   end
 
   def format_date(date)
@@ -30,15 +37,16 @@ class ChartData
   end
 
   def teams
-    serie.teams
+    tournaments.flat_map { |tournament| tournament.teams }.uniq
   end
 
   def past_matches
-    serie.matches.where("end_at < ?", Time.now)
+    # Match.where(tournament: tournaments).where("end_at < ?", Time.now)
+    Match.where(tournament: tournaments).select { |match| match.games.present? }
   end
 
   def match_data
-    past_matches.order(:end_at).map do |match|
+    past_matches.sort_by(&:end_at).map do |match|
       match_datum(match)
     end
   end
