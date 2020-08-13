@@ -4,7 +4,6 @@ class ChartData
   attr_accessor :serie
 
   FILTERED_MATCH_NAMES = ["Promotion", "Promotion relegation"]
-  # FILTERED_MATCH_NAMES = []
   
   def initialize(serie)
     @serie = serie

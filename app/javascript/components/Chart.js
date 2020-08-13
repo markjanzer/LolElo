@@ -18,6 +18,10 @@ export default function Charts({ chartData }) {
   const teamData = chartData.teams;
   const matchData = chartData.matches;
 
+  const [selectedDate, setSeletedDate] = useState(
+    matchData[matchData.length - 1].date
+  );
+
   function customToolTip(props) {
     return (
       <div className={styles.toolTip}>
@@ -80,9 +84,14 @@ export default function Charts({ chartData }) {
     );
   }
 
-  return (
-    <>
-      <LineChart width={1200} height={800} data={lineChartData}>
+  function renderChart() {
+    return (
+      <LineChart
+        width={1200}
+        height={800}
+        data={lineChartData}
+        onClick={(chart) => setSeletedDate(chart.activeLabel)}
+      >
         <CartesianGrid />
         <XAxis dataKey="name" padding={{ left: 30, right: 30 }} />
         <YAxis type="number" domain={["dataMin - 50", "dataMax + 50"]} />
@@ -100,6 +109,44 @@ export default function Charts({ chartData }) {
           );
         })}
       </LineChart>
+    );
+  }
+
+  function renderList() {
+    const dateData = lineChartData.filter((d) => d.name === selectedDate)[0];
+    const formattedDateData = teamData.reduce((result, team) => {
+      const datum = {
+        acronym: team.acronym,
+        elo: dateData[team.acronym],
+        color: team.color,
+      };
+      result.push(datum);
+      return result;
+    }, []);
+    const sortedFormattedDateData = formattedDateData.sort(
+      (a, b) => b.elo - a.elo
+    );
+
+    return (
+      <>
+        <h2>{selectedDate}</h2>
+        <ul>
+          {sortedFormattedDateData.map((datum) => {
+            return (
+              <li key={datum.acronym}>
+                {datum.acronym}: {datum.elo}
+              </li>
+            );
+          })}
+        </ul>
+      </>
+    );
+  }
+
+  return (
+    <>
+      {renderChart()}
+      {renderList()}
     </>
   );
 }
