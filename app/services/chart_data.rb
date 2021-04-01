@@ -1,19 +1,21 @@
+# frozen_string_literal: true
+
 # require "./app/services/chart_data.rb"
 
 class ChartData
   attr_accessor :serie
 
-  FILTERED_MATCH_NAMES = ["Promotion", "Promotion relegation"]
-  
+  FILTERED_MATCH_NAMES = ['Promotion', 'Promotion relegation'].freeze
+
   def initialize(serie)
     @serie = serie
   end
-  
+
   def call
-    { 
+    {
       data: elos_at_dates,
       teams: team_json,
-      matches: match_data,
+      matches: match_data
     }
   end
 
@@ -32,11 +34,11 @@ class ChartData
   end
 
   def format_date(date)
-    date.strftime("%b %-d")
+    date.strftime('%b %-d')
   end
 
   def teams
-    tournaments.flat_map { |tournament| tournament.teams }.uniq
+    tournaments.flat_map(&:teams).uniq
   end
 
   def past_matches
@@ -91,7 +93,7 @@ class ChartData
     # Time zone should be tied to the League
     Time.zone = serie.league.time_zone
     result = []
-    
+
     start = { name: "Start of #{serie.full_name}" }
 
     teams.each do |team|
@@ -99,7 +101,7 @@ class ChartData
     end
 
     result << start
-    
+
     unique_dates.each do |date|
       date_data = { name: format_date(date) }
 

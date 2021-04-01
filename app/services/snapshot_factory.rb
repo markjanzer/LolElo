@@ -1,12 +1,15 @@
+# frozen_string_literal: true
+
 class SnapshotFactory
   attr_reader :league
+
   def initialize(league)
     @league = league
   end
 
   def call
     ordered_series.each_with_index do |serie, index|
-      if index == 0
+      if index.zero?
         serie.teams.each do |team|
           Snapshot.create!(team: team, elo: new_team_elo, date: serie.begin_at)
         end
@@ -68,18 +71,19 @@ class SnapshotFactory
   end
 
   private
-  
+
   def ordered_series
     league.series.order(:begin_at)
   end
 
   def previous_serie(index)
-    return nil if index == 0
+    return nil if index.zero?
+
     ordered_series[index - 1]
   end
 
   def first_of_year(year)
-    return Date.new(year, 1, 1)
+    Date.new(year, 1, 1)
   end
 
   def reset(elo)
@@ -87,7 +91,7 @@ class SnapshotFactory
   end
 
   def team_1_win_expectancy(team_1_elo, team_2_elo)
-    return 1 / (10**((team_2_elo - team_1_elo) / 400.to_f) + 1)
+    1 / (10**((team_2_elo - team_1_elo) / 400.to_f) + 1)
   end
 
   def rating_change(expectancy)
@@ -110,5 +114,4 @@ class SnapshotFactory
   def rate_of_reversion
     3
   end
-
 end

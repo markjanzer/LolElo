@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Tournament < ApplicationRecord
   belongs_to :serie
   has_many :teams_tournaments

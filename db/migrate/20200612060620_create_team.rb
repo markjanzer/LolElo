@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateTeam < ActiveRecord::Migration[6.0]
   def change
     create_table :teams do |t|
@@ -5,7 +7,7 @@ class CreateTeam < ActiveRecord::Migration[6.0]
       t.string :acronym
       t.integer :external_id
       t.string :color
-      
+
       t.index :external_id
     end
   end

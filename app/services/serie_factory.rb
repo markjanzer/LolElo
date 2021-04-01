@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SerieFactory
   attr_reader :serie_external_id, :serie
 
@@ -14,10 +16,10 @@ class SerieFactory
 
   def create_serie
     @serie = Serie.find_or_initialize_by(external_id: serie_external_id)
-    @serie.league = League.find_by(external_id: serie_data["league_id"])
-    @serie.year = serie_data["year"]
-    @serie.begin_at = serie_data["begin_at"]
-    @serie.full_name = serie_data["full_name"]
+    @serie.league = League.find_by(external_id: serie_data['league_id'])
+    @serie.year = serie_data['year']
+    @serie.begin_at = serie_data['begin_at']
+    @serie.full_name = serie_data['full_name']
     @serie.save!
   end
 
@@ -31,19 +33,19 @@ class SerieFactory
     TournamentFactory.new(tournament_data: tournament_data, serie: serie).create
   end
 
-  def get_data(path: "", params: {})
+  def get_data(path: '', params: {})
     response = HTTParty.get(
-      'http://api.pandascore.co' + path, 
-      query: params.merge({ "token" => ENV["panda_score_key"] })
+      "http://api.pandascore.co#{path}",
+      query: params.merge({ 'token' => ENV['panda_score_key'] })
     )
     JSON.parse(response.body)
   end
 
   def tournaments_data
-    @tournaments_data ||= get_data(path: "/lol/tournaments", params: { "filter[serie_id]": serie_external_id })
+    @tournaments_data ||= get_data(path: '/lol/tournaments', params: { "filter[serie_id]": serie_external_id })
   end
 
   def serie_data
-    @serie_data ||= get_data(path: "/lol/series", params: { "filter[id]": serie_external_id }).first
+    @serie_data ||= get_data(path: '/lol/series', params: { "filter[id]": serie_external_id }).first
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateSeriesTeams < ActiveRecord::Migration[6.0]
   def change
     create_table :series_teams do |t|

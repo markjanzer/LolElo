@@ -1,4 +1,6 @@
-class LeagueFactory  
+# frozen_string_literal: true
+
+class LeagueFactory
   def initialize(league_id:, time_zone:)
     @league_id = league_id
     @time_zone = time_zone
@@ -22,7 +24,7 @@ class LeagueFactory
   end
 
   def create_league
-    league.name = league_data["name"]
+    league.name = league_data['name']
     league.time_zone = time_zone
     league.save!
   end
@@ -34,12 +36,12 @@ class LeagueFactory
   end
 
   def filtered_series
-    league_data["series"].filter do |series|
-      series["full_name"].split.first.match?("Spring|Summer")
+    league_data['series'].filter do |series|
+      series['full_name'].split.first.match?('Spring|Summer')
     end
   end
 
   def filtered_series_ids
-    filtered_series.pluck("id")
+    filtered_series.pluck('id')
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PandaScore
   def self.get_data_for(object)
     path = object_path(object)
@@ -5,25 +7,23 @@ class PandaScore
   end
 
   def self.league_data(id)
-    get_data(path: "leagues", id: id)
+    get_data(path: 'leagues', id: id)
   end
-
-  private
 
   def self.get_data(path:, id:)
     params = { "filter[id]": id }
     response = request(path: path, params: params)
-    return response.first
+    response.first
   end
 
   def self.object_path(object)
     object.class.name.downcase.pluralize
   end
 
-  def self.request(path: "", params: {})
+  def self.request(path: '', params: {})
     response = HTTParty.get(
-      'http://api.pandascore.co/lol/' + path, 
-      query: params.merge({ "token" => ENV["panda_score_key"] })
+      "http://api.pandascore.co/lol/#{path}",
+      query: params.merge({ 'token' => ENV['panda_score_key'] })
     )
     JSON.parse(response.body)
   end
