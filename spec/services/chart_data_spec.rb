@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe ChartData do
+RSpec.xdescribe ChartData do
   around(:example) do |ex|
     Rails.env = 'development'
     ActiveRecord::Base.establish_connection

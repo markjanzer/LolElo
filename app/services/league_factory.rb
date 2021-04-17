@@ -24,6 +24,10 @@ class LeagueFactory
   end
 
   def create_league
+    if league_data.nil?
+      raise "League not found"
+    end
+
     league.name = league_data['name']
     league.time_zone = time_zone
     league.save!

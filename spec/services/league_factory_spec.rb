@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe LeagueFactory do
+RSpec.fdescribe LeagueFactory do
   # Lets fill this out
 
   describe "#call" do
@@ -8,9 +8,10 @@ RSpec.describe LeagueFactory do
     let(:time_zone) { 'America/Los_Angeles' }
 
     context "with an invalid league_id" do
-      allow(PandaScore).to receive(:league_data, league_id) { nil }
+      let(:league_id) { 0 }
       it "raises an error" do
-        expect(subject).to raise "Yo this ain't right"
+        allow(PandaScore).to receive(:league_data).with(league_id).and_return(nil)
+        expect { subject }.to raise_error "League not found"
       end
     end
   end
