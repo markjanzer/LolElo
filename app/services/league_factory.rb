@@ -8,7 +8,8 @@ class LeagueFactory
 
   def call
     create_league
-    create_series
+    # create_series
+    league
   end
 
   private
@@ -30,7 +31,6 @@ class LeagueFactory
 
     league.name = league_data['name']
     league.time_zone = time_zone
-    league.save!
   end
 
   def create_series
