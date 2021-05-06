@@ -17,7 +17,7 @@ class LeagueFactory
   attr_reader :league_id, :time_zone
 
   def league_data
-    @league_data ||= PandaScore.league_data(league_id)
+    @league_data ||= PandaScore.league(league_id)
   end
 
   def league

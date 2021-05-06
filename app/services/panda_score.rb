@@ -1,23 +1,42 @@
 # frozen_string_literal: true
 
 class PandaScore
+
+  def self.league(id:)
+    get_data(path: 'leagues', id: id)
+  end
+
+  def self.series(league_id:)
+    get_data(path: 'series', league_id: league_id)
+  end
+
+  def self.tournaments(serie_id:)
+    get_data(path: 'tournaments', serie_id: serie_id)
+  end
+
+  def self.matches(tournament_id:)
+    get_data(path: 'matches', tournament_id: tournament_id)
+  end
+
+  def self.games(match_id:)
+    get_data(path: 'games', match_id: match_id)
+  end
+
   def self.get_data_for(object)
     path = object_path(object)
     get_data(path: path, id: object.external_id)
   end
 
-  def self.league_data(id)
-    get_data(path: 'leagues', id: id)
+  private
+
+  def self.object_path(object)
+    object.class.name.downcase.pluralize
   end
 
   def self.get_data(path:, id:)
     params = { "filter[id]": id }
     response = request(path: path, params: params)
     response.first
-  end
-
-  def self.object_path(object)
-    object.class.name.downcase.pluralize
   end
 
   def self.request(path: '', params: {})
@@ -27,23 +46,4 @@ class PandaScore
     )
     JSON.parse(response.body)
   end
-
-  # def set_path(object)
-  #   case object
-  #   when "leagues"
-  #     @path = "leagues"
-  #   when "series"
-  #     @path = "series"
-  #   when "tournaments"
-  #     @path = "tournaments"
-  #   when "matches"
-  #     @path = "matches"
-  #   when "past matches"
-  #     @path = "matches/past"
-  #   else
-  #     raise "Not a valid path"
-  #   end
-  # end
 end
-
-# Maybe I should be documenting the different ways I'm going to want to get this data.
