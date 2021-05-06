@@ -1,16 +1,5 @@
 # frozen_string_literal: true
 
-lcs = LeagueFactory.new(league_id: 4198, time_zone: 'America/Los_Angeles').call
-lec = LeagueFactory.new(league_id: 4197, time_zone: 'Europe/Berlin').call
-# lck = LeagueFactory.new(league_id: 293, time_zone: "Asia/Seoul").call
-# lpl = LeagueFactory.new(league_id: 294, time_zone: "Asia/Shanghai" ).call
-
-Snapshot.transaction do
-  League.all.each do |league|
-    SnapshotFactory.new(league).call
-  end
-end
-
 # set League data
 leagues_seed_data = [
   { abbreviation: "lcs", league_id: 4198, time_zone: 'America/Los_Angeles' },
@@ -49,3 +38,45 @@ def create_series
   end
 end
 
+def create_tournaments
+  Tournament.transaction do
+    Serie.each do |serie|
+      tournaments_data = PandaScoreAPI.tournaments(serie_id: serie.pandascore_id)
+      tournaments_data.each do |tournament_data|
+        tournament = TournamentFactory.new(tournament_data)
+        serie.tournaments << tournament
+      end
+    end
+  end
+end
+
+def create_matches
+  Match.transaction do
+    Tournament.each do |tournament|
+      matches_data = PandaScoreAPI.matches(tournament_id: tournament.pandascore_id)
+      matches_data.each do |match_data|
+        match = MatchFactory.new(match_data)
+        tournament.matches << match
+      end
+    end
+  end
+end
+
+def create_games
+  Game.transaction do
+    Match.each do |match|
+      games_data = PandaScoreAPI.games(match_id: match.pandascore_id)
+      games_data.each do |game_data|
+        game = GameFactory.new(game_data)
+        match.games << game
+      end
+    end
+  end
+end
+
+def create_snapshots
+  League.all.each do |league|
+    # Probably not like this
+    SnapshotFactory.new(league).call
+  end
+end
