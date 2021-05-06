@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.fdescribe SerieFactory do
+RSpec.describe SerieFactory do
   describe "#call" do
     subject { SerieFactory.new(serie_data: serie_data).call }
     let(:serie_data) {

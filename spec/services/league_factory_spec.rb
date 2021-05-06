@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.fdescribe LeagueFactory do
+RSpec.describe LeagueFactory do
   describe "#call" do
     subject { LeagueFactory.new(league_data: league_data, time_zone: time_zone).call }
     let(:league_data) { { "id" => 1, "name" => "First League" } }

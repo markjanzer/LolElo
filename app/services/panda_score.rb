@@ -6,17 +6,16 @@ class PandaScore
     get_data(path: 'leagues', id: id)
   end
 
-  # def self.serie(id:)
-  #   get_data(path: 'series', id: id)
-  # end
+  def self.serie(id:)
+    get_data(path: 'series', id: id)
+  end
 
   def self.series(league_id:)
     league(id: league_id)["series"]
-    # get_data(path: 'series', league_id: league_id)
   end
 
   def self.tournaments(serie_id:)
-    get_data(path: 'tournaments', serie_id: serie_id)
+    serie(id: serie_id)["tournaments"]
   end
 
   def self.matches(tournament_id:)
