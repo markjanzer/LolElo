@@ -11,6 +11,7 @@ leagues_seed_data = [
 create_leagues(leagues_seed_data)
 create_series
 create_tournaments
+create_teams
 create_matches
 create_games
 create_snapshots

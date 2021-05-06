@@ -18,14 +18,14 @@ RSpec.fdescribe TournamentFactory do
       end
     end
 
-    it "returns a serie with set attributes" do
+    it "returns a tournament with set attributes" do
       expect(subject).to have_attributes({
         external_id: 1,
         name: "Regular season",
       })
     end
 
-    it "does not create the serie" do
+    it "does not create the tournament" do
       expect(subject).to_not be_persisted
     end
   end
