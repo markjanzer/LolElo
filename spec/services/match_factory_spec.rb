@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.fdescribe MatchFactory do
+RSpec.xdescribe MatchFactory do
   describe "#call" do
     subject { MatchFactory.new(match_data: match_data).call }
     let(:match_data) {

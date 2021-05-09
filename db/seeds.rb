@@ -56,6 +56,36 @@ def create_tournaments
   end
 end
 
+def create_teams
+  Team.transaction do
+    Tournament.each do |tournament|
+      teams_data = PandaScore.teams(tournament_id: tournament.pandascore_id)
+      teams_data.each do |team_data|
+        team = TeamFactory.new(team_data)
+        if team.color.nil?
+          team.color = unique_team_color(tournament.serie)
+        end
+        tournament.teams << team
+      end
+    end
+  end
+end
+
+def create_team(team_data)
+  team = Team.find_or_create_by(name: team_data['name'], external_id: team_data['id'], acronym: team_data['acronym'])
+  team.tournaments << tournament
+  team.update!(color: unique_team_color) if team.color.nil?
+end
+
+def unique_team_color(serie)
+  (unique_colors - serie.teams.pluck(:color)).sample
+end
+
+def unique_colors
+  ['#e6194B', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#42d4f4', '#f032e6', '#bfef45', '#fabed4',
+    '#469990', '#dcbeff', '#9A6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#a9a9a9', '#000000']
+end
+
 def create_matches
   Match.transaction do
     Tournament.each do |tournament|
