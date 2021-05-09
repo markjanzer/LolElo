@@ -10,6 +10,14 @@ class PandaScore
     get_data(path: 'series', id: id)
   end
 
+  def self.tournament(id:)
+    get_data(path: 'tournaments', id: id)
+  end
+
+  def self.match(id:)
+    get_data(path: 'matches', id: id)
+  end
+
   def self.series(league_id:)
     league(id: league_id)["series"]
   end
@@ -18,12 +26,16 @@ class PandaScore
     serie(id: serie_id)["tournaments"]
   end
 
+  def self.teams(tournament_id:)
+    tournament(id: tournament_id)["teams"]
+  end
+
   def self.matches(tournament_id:)
-    get_data(path: 'matches', tournament_id: tournament_id)
+    tournament(id: tournament_id)["matches"]
   end
 
   def self.games(match_id:)
-    get_data(path: 'games', match_id: match_id)
+    match(id: match_id)["games"]
   end
 
   def self.get_data_for(object)

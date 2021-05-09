@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.fdescribe TournamentFactory do
+RSpec.describe TournamentFactory do
   describe "#call" do
     subject { TournamentFactory.new(tournament_data: tournament_data).call }
     let(:tournament_data) {
