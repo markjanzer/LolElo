@@ -1,13 +1,32 @@
 # frozen_string_literal: true
 
-RSpec.xdescribe MatchFactory do
+RSpec.describe MatchFactory do
   describe "#call" do
     subject { MatchFactory.new(match_data: match_data).call }
     let(:match_data) {
       {
         "id" => 1, 
+        "opponents" => opponents_data
       }
     }
+    let(:opponents_data) {
+      [
+        { 
+          "opponent" => { 
+            "id" => team1.external_id
+          }
+        },
+        {
+          "opponent" => {
+            "id" => team2.external_id
+          }
+        }
+      ]
+    }
+
+    # Use Factories here
+    let(:team1) { Team.create(external_id: 1, acronym: "C9") }
+    let(:team2) { Team.create(external_id: 2, acronym: "GG") }
 
     context "without match_data" do
       let(:match_data) { nil }
@@ -17,10 +36,36 @@ RSpec.xdescribe MatchFactory do
       end
     end
 
+    context "when team doesn't exist" do
+      let(:opponents_data) {
+        [
+          { 
+            "opponent" => { 
+              "id" => 0
+            }
+          },
+          {
+            "opponent" => {
+              "id" => 0
+            }
+          }
+        ]
+      }
+
+      it "raises an error" do
+        expect { subject }.to raise_error "team does not exist"
+      end
+    end
+
     it "returns a match with set attributes" do
       expect(subject).to have_attributes({
         external_id: 1,
       })
+    end
+
+    it "has both teams assigned as opponents" do
+      expect(subject.opponent_1).to eq team1
+      expect(subject.opponent_2).to eq team2
     end
 
     it "does not create the match" do
