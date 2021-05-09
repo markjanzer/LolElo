@@ -2,7 +2,7 @@
 
 RSpec.describe TeamFactory do
   describe "#call" do
-    subject { TeamFactory.new(team_data: team_data).call }
+    subject { TeamFactory.new(team_data: team_data, color: color).call }
     let(:team_data) {
       {
         "id" => 1,
@@ -10,6 +10,7 @@ RSpec.describe TeamFactory do
         "acronym" => "C9"
       }
     }
+    let(:color) { "#000000" }
 
     context "without team_data" do
       let(:team_data) { nil }
@@ -19,11 +20,20 @@ RSpec.describe TeamFactory do
       end
     end
 
+    context "without color" do
+      let(:color) { nil }
+
+      it "raises and error" do
+        expect { subject }.to raise_error "color is required"
+      end
+    end
+
     it "returns a team with set attributes" do
       expect(subject).to have_attributes({
         external_id: team_data["id"],
         name: team_data["name"],
         acronym: team_data["acronym"],
+        color: color,
       })
     end
 

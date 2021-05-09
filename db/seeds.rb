@@ -49,7 +49,7 @@ def create_tournaments
     Serie.each do |serie|
       tournaments_data = PandaScore.tournaments(serie_id: serie.pandascore_id)
       tournaments_data.each do |tournament_data|
-        tournament = TournamentFactory.new(tournament_data)
+        tournament = TournamentFactory.new(tournament_data: tournament_data)
         serie.tournaments << tournament
       end
     end
@@ -61,11 +61,11 @@ def create_teams
     Tournament.each do |tournament|
       teams_data = PandaScore.teams(tournament_id: tournament.pandascore_id)
       teams_data.each do |team_data|
-        team = TeamFactory.new(team_data)
-        if team.color.nil?
-          team.color = unique_team_color(tournament.serie)
+        color = unique_team_color(tournament.serie)
+        team = TeamFactory.new(team_data: team_data, color: color)
+        unless tournament.teams.include?(team)
+          tournament.teams << team
         end
-        tournament.teams << team
       end
     end
   end
