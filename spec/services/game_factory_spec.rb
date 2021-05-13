@@ -17,7 +17,7 @@ RSpec.describe GameFactory do
     let(:end_at) { (Date.current).to_s }
     
     # Use Factories here
-    let!(:winner) { Team.create(external_id: 20, acronym: "C9") }
+    let!(:winner) { create(:team) }
 
     context "without game_data" do
       let(:game_data) { nil }
