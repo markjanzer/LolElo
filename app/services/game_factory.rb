@@ -1,20 +1,27 @@
 # frozen_string_literal: true
 
 class GameFactory
-  attr_reader :match, :game_data
+  attr_reader :game_data
 
-  def initialize(match:, game_data:)
-    @match = match
+  def initialize(game_data:)
     @game_data = game_data
   end
 
-  def create
+  def call
+    if game_data.nil?
+      raise "game_data is required"
+    end
+
+    if winner.nil?
+      raise "winning team does not exist"
+    end
+
     game.assign_attributes({
-                             match: match,
-                             end_at: end_at,
-                             winner: winner
-                           })
-    game.save!
+      end_at: end_at,
+      winner: winner
+    })
+
+    game
   end
 
   private

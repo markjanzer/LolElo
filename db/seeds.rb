@@ -102,7 +102,8 @@ def create_games
   Game.transaction do
     Match.each do |match|
       games_data = PandaScore.games(match_id: match.pandascore_id)
-      games_data.each do |game_data|
+      completed_games_data = games_data.reject { |game| game['forfeit'] }
+      completed_games_data.each do |game_data|
         game = GameFactory.new(game_data)
         match.games << game
       end
