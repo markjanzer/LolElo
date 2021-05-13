@@ -24,9 +24,8 @@ RSpec.describe MatchFactory do
       ]
     }
 
-    # Use Factories here
-    let(:team1) { Team.create(external_id: 1, acronym: "C9") }
-    let(:team2) { Team.create(external_id: 2, acronym: "GG") }
+    let(:team1) { create(:team, external_id: 1) }
+    let(:team2) { create(:team, external_id: 2) }
 
     context "without match_data" do
       let(:match_data) { nil }
