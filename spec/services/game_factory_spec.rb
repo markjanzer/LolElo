@@ -9,14 +9,13 @@ RSpec.describe GameFactory do
         "id" => 1,
         "end_at" => end_at,
         "winner" => {
-          "id" => game_winner_id
+          "id" => winner&.external_id
         }
       }
     }
 
-    let(:game_winner_id) { 20 }
     let(:end_at) { (Date.current).to_s }
-
+    
     # Use Factories here
     let!(:winner) { Team.create(external_id: 20, acronym: "C9") }
 
@@ -29,7 +28,7 @@ RSpec.describe GameFactory do
     end
 
     context "when winning team doesn't exist" do
-      let(:game_winner_id) { 0 }
+      let(:winner) { nil }
 
       it "raises an error" do
         expect { subject }.to raise_error "winning team does not exist"
@@ -52,7 +51,7 @@ RSpec.describe GameFactory do
           "begin_at" => (Date.current - 1.day).to_s,
           "length" => 3600,
           "winner" => {
-            "id" => game_winner_id
+            "id" => winner&.external_id
           }
         }
       }
