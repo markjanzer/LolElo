@@ -114,6 +114,6 @@ end
 def create_snapshots
   League.all.each do |league|
     # Probably not like this
-    SnapshotFactory.new(league).call
+    SnapshotSeeder.new(league).call
   end
 end

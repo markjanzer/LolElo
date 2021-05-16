@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class SnapshotFactory
+class SnapshotSeeder
   attr_reader :league
 
   def initialize(league)
