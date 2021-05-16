@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
 class SnapshotSeeder
+
+  K = 32
+  NEW_TEAM_ELO = 1500
+  RESET_ELO = 1500
+  # This should be 1 / 3, or something like that correct?
+  RATE_OF_REVERSION = 3
+
   attr_reader :league
 
   def initialize(league)
@@ -11,7 +18,7 @@ class SnapshotSeeder
     ordered_series.each_with_index do |serie, index|
       if index.zero?
         serie.teams.each do |team|
-          Snapshot.create!(team: team, elo: new_team_elo, date: serie.begin_at)
+          Snapshot.create!(team: team, elo: NEW_TEAM_ELO, date: serie.begin_at)
         end
       else
         serie.teams.each do |team|
@@ -20,7 +27,7 @@ class SnapshotSeeder
               Snapshot.create!(team: team, elo: reset(team.elo), date: first_of_year(serie.year))
             end
           else
-            Snapshot.create!(team: team, elo: new_team_elo, date: serie.begin_at)
+            Snapshot.create!(team: team, elo: NEW_TEAM_ELO, date: serie.begin_at)
           end
         end
       end
@@ -87,7 +94,7 @@ class SnapshotSeeder
   end
 
   def reset(elo)
-    elo - ((elo - reset_elo) / rate_of_reversion)
+    elo - ((elo - RESET_ELO) / RATE_OF_REVERSION)
   end
 
   def team_1_win_expectancy(team_1_elo, team_2_elo)
@@ -95,23 +102,6 @@ class SnapshotSeeder
   end
 
   def rating_change(expectancy)
-    k * (1 - expectancy)
-  end
-
-  # This is some elo calculation shit
-  def k
-    32
-  end
-
-  def new_team_elo
-    1500
-  end
-
-  def reset_elo
-    1500
-  end
-
-  def rate_of_reversion
-    3
+    K * (1 - expectancy)
   end
 end
