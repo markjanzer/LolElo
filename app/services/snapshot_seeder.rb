@@ -15,6 +15,8 @@ class SnapshotSeeder
   end
 
   def call
+    raise "league not defined" unless league
+
     ordered_series.each_with_index do |serie, index|
       if index.zero?
         serie.teams.each do |team|

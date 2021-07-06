@@ -5,9 +5,11 @@ RSpec.describe SnapshotSeeder do
     subject { SnapshotSeeder.new(league).call }
     let(:league) { create(:league) }
 
-    xcontext "if the serie is not defined" do
+    context "if the league is not defined" do
+      let(:league) { nil }
+
       it "raises an error" do
-        expect { subject }.to raise_error "serie not defined"
+        expect { subject }.to raise_error "league not defined"
       end
     end
 
