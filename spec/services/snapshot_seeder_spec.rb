@@ -33,7 +33,11 @@ RSpec.describe SnapshotSeeder do
           expect(team2.snapshots.count).to eq(1)
         end
 
-        it "create snapshots with elo of the NEW_TEAM_ELO"
+        it "create snapshots with elo of the NEW_TEAM_ELO" do
+          subject
+          expect(team1.snapshots.last.elo).to eq(SnapshotSeeder::NEW_TEAM_ELO)
+          expect(team2.snapshots.last.elo).to eq(SnapshotSeeder::NEW_TEAM_ELO)
+        end
       end
 
       context "when the series has a game" do
