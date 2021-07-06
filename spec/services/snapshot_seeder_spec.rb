@@ -20,15 +20,24 @@ RSpec.describe SnapshotSeeder do
     end
 
     context "when the league has one series" do
-      let(:league) { create(:league, series: series) }
-      let(:series) { create_list(:serie, 1) }
-
-      # Need to create teams for the serie
-      # Teams belong to tournaments though..
+      let(:league) { create(:league, series: [serie]) }
+      let(:serie) { create(:serie, tournaments: [tournament]) }
+      let(:tournament) { create(:tournament, teams: [team1, team2]) }
+      let(:team1) { create(:team) }
+      let(:team2) { create(:team) }
 
       context "when the serie has no games" do
-        it "creates a snapshot for each team in the serie"
+        it "creates a snapshot for each team in the serie" do
+          subject
+          expect(team1.snapshots.count).to eq(1)
+          expect(team2.snapshots.count).to eq(1)
+        end
+
         it "create snapshots with elo of the NEW_TEAM_ELO"
+      end
+
+      context "when the series has a game" do
+        it "creates a snapshot with "
       end
     end
   end
