@@ -38,10 +38,17 @@ RSpec.describe SnapshotSeeder do
           expect(team1.snapshots.last.elo).to eq(SnapshotSeeder::NEW_TEAM_ELO)
           expect(team2.snapshots.last.elo).to eq(SnapshotSeeder::NEW_TEAM_ELO)
         end
+
+        xit "creates snapshots with the start time of the tournament" do
+          subject
+          expect(Snapshot.first.)
+        end
       end
 
       context "when the series has a game" do
-        it "creates a snapshot with "
+        it "creates two snapshots for each game"
+        it "creates a higher elo snapshot for the team that won"
+        it "creates a lower elo snapshot for the team that lost"
       end
     end
   end
