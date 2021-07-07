@@ -20,9 +20,11 @@ RSpec.describe SnapshotSeeder do
     end
 
     context "when the league has one series" do
+
       let(:league) { create(:league, series: [serie]) }
       let(:serie) { create(:serie, tournaments: [tournament], begin_at: Date.current) }
-      let(:tournament) { create(:tournament, teams: [team1, team2]) }
+      let(:tournament) { create(:tournament, teams: [team1, team2], matches: matches) }
+      let(:matches) { [] }
       let(:team1) { create(:team) }
       let(:team2) { create(:team) }
 
@@ -45,10 +47,21 @@ RSpec.describe SnapshotSeeder do
         end
       end
 
-      context "when the series has a game" do
-        it "creates two snapshots for each game"
+      context "when the series has a match" do
+        let(:matches) { create_list(:match, 1, opponent_1: team1, opponent_2: team2, games: [game1]) }
+        let(:game1) { create(:game, winner: team1) }
+
+        it "creates two snapshots for each game" do
+          subject
+          expect(Snapshot.count).to eq(4)
+        end
+
         it "creates a higher elo snapshot for the team that won"
         it "creates a lower elo snapshot for the team that lost"
+
+        context "when a match has many games" do
+          it "shows the elo result of all of the games played"
+        end
       end
     end
 
