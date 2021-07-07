@@ -47,20 +47,43 @@ RSpec.describe SnapshotSeeder do
         end
       end
 
+      # TODO, test that it looks at the matches/games in order
+
       context "when the series has a match" do
-        let(:matches) { create_list(:match, 1, opponent_1: team1, opponent_2: team2, games: [game1]) }
+        let(:matches) { create_list(:match, 1, opponent_1: team1, opponent_2: team2, games: games) }
+        let(:games) { [game1] }
         let(:game1) { create(:game, winner: team1) }
+
 
         it "creates two snapshots for each game" do
           subject
-          expect(Snapshot.count).to eq(4)
+          expect(Snapshot.count).to eq(2 + 2)
         end
 
-        it "creates a higher elo snapshot for the team that won"
-        it "creates a lower elo snapshot for the team that lost"
+        it "creates a higher elo snapshot for the team that won" do
+          subject
+          chance_of_losing = 0.5
+          expect(team1.snapshots.last.elo).to eq(SnapshotSeeder::NEW_TEAM_ELO + (chance_of_losing * SnapshotSeeder::K))
+        end
+
+        it "creates a lower elo snapshot for the team that lost" do
+          subject
+          chance_of_winning = 0.5
+          expect(team2.snapshots.last.elo).to eq(SnapshotSeeder::NEW_TEAM_ELO - (chance_of_winning * SnapshotSeeder::K))
+        end
 
         context "when a match has many games" do
-          it "shows the elo result of all of the games played"
+
+          let(:games) { [game1, game2] }
+          let(:game2) { create(:game, winner: team1) }
+
+          it "creates a two snapshots for each game" do
+            subject
+            expect(Snapshot.count).to eq(2 + 2*2)
+          end
+
+          # This is going to be really difficult until I have a win_expentancy public method to use
+          xit "shows the elo result of all of the games played"
         end
       end
     end
