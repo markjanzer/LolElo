@@ -3,7 +3,14 @@
 RSpec.describe SnapshotSeeder do
   describe "#call" do
     subject { SnapshotSeeder.new(league).call }
-    let(:league) { create(:league) }
+
+    let(:league) { create(:league, series: series) }
+    let(:series) { [serie] }
+    let(:serie) { create(:serie, tournaments: [tournament], begin_at: Date.current) }
+    let(:tournament) { create(:tournament, teams: [team1, team2], matches: matches) }
+    let(:matches) { [] }
+    let(:team1) { create(:team) }
+    let(:team2) { create(:team) }
 
     context "if the league is not defined" do
       let(:league) { nil }
@@ -14,35 +21,30 @@ RSpec.describe SnapshotSeeder do
     end
 
     context "when the league does not have any series" do
+      before { subject }
+      
+      let(:series) { [] }
+
       it "doesn't create any snapshots" do
-        expect { subject }.not_to change { Snapshot.count }
+        expect(Snapshot.count).to eq(0)
       end
     end
 
     context "when the league has one series" do
-
-      let(:league) { create(:league, series: [serie]) }
-      let(:serie) { create(:serie, tournaments: [tournament], begin_at: Date.current) }
-      let(:tournament) { create(:tournament, teams: [team1, team2], matches: matches) }
-      let(:matches) { [] }
-      let(:team1) { create(:team) }
-      let(:team2) { create(:team) }
+      before { subject }
 
       context "when the serie has no games" do
         it "creates a snapshot for each team in the serie" do
-          subject
           expect(team1.snapshots.count).to eq(1)
           expect(team2.snapshots.count).to eq(1)
         end
 
         it "create snapshots with elo of the NEW_TEAM_ELO" do
-          subject
           expect(team1.snapshots.last.elo).to eq(SnapshotSeeder::NEW_TEAM_ELO)
           expect(team2.snapshots.last.elo).to eq(SnapshotSeeder::NEW_TEAM_ELO)
         end
 
         it "creates snapshots with the start time of the serie" do
-          subject
           expect(Snapshot.first.date).to eq(serie.begin_at)
         end
       end
@@ -56,29 +58,25 @@ RSpec.describe SnapshotSeeder do
 
 
         it "creates two snapshots for each game" do
-          subject
           expect(Snapshot.count).to eq(2 + 2)
         end
 
         it "creates a higher elo snapshot for the team that won" do
-          subject
           chance_of_losing = 0.5
           expect(team1.snapshots.last.elo).to eq(SnapshotSeeder::NEW_TEAM_ELO + (chance_of_losing * SnapshotSeeder::K))
         end
 
         it "creates a lower elo snapshot for the team that lost" do
-          subject
           chance_of_winning = 0.5
           expect(team2.snapshots.last.elo).to eq(SnapshotSeeder::NEW_TEAM_ELO - (chance_of_winning * SnapshotSeeder::K))
         end
 
         context "when a match has many games" do
-
           let(:games) { [game1, game2] }
           let(:game2) { create(:game, winner: team1) }
 
           it "creates a two snapshots for each game" do
-            subject
+
             expect(Snapshot.count).to eq(2 + 2*2)
           end
 
@@ -89,6 +87,7 @@ RSpec.describe SnapshotSeeder do
     end
 
     context "when the league has multiple series" do
+      before { subject }
       context "between the series" do
         it "reverts existing team elos closer to the RESET_ELO"
         it "sets the reversion snapshot date to the beginning of the year"
