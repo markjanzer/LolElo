@@ -21,7 +21,7 @@ RSpec.describe SnapshotSeeder do
 
     context "when the league has one series" do
       let(:league) { create(:league, series: [serie]) }
-      let(:serie) { create(:serie, tournaments: [tournament]) }
+      let(:serie) { create(:serie, tournaments: [tournament], begin_at: Date.current) }
       let(:tournament) { create(:tournament, teams: [team1, team2]) }
       let(:team1) { create(:team) }
       let(:team2) { create(:team) }
@@ -39,9 +39,9 @@ RSpec.describe SnapshotSeeder do
           expect(team2.snapshots.last.elo).to eq(SnapshotSeeder::NEW_TEAM_ELO)
         end
 
-        xit "creates snapshots with the start time of the tournament" do
+        it "creates snapshots with the start time of the serie" do
           subject
-          expect(Snapshot.first.)
+          expect(Snapshot.first.date).to eq(serie.begin_at)
         end
       end
 
@@ -49,6 +49,15 @@ RSpec.describe SnapshotSeeder do
         it "creates two snapshots for each game"
         it "creates a higher elo snapshot for the team that won"
         it "creates a lower elo snapshot for the team that lost"
+      end
+    end
+
+    context "when the league has multiple series" do
+      context "between the series" do
+        it "reverts existing team elos closer to the RESET_ELO"
+        it "sets the reversion snapshot date to the beginning of the year"
+        it "sets new team elos to the standard starting elo"
+        it "sets new team elos with a date of the beginning of the series"
       end
     end
   end
