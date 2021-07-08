@@ -5,8 +5,7 @@ class SnapshotSeeder
   K = 32
   NEW_TEAM_ELO = 1500
   RESET_ELO = 1500
-  # This should be 1 / 3, or something like that correct?
-  RATE_OF_REVERSION = 3
+  RATE_OF_REVERSION = 1 / 3.0
 
   attr_reader :league
 
@@ -96,7 +95,7 @@ class SnapshotSeeder
   end
 
   def reset(elo)
-    elo - ((elo - RESET_ELO) / RATE_OF_REVERSION)
+    elo - ((elo - RESET_ELO) * RATE_OF_REVERSION)
   end
 
   def team_1_win_expectancy(team_1_elo, team_2_elo)

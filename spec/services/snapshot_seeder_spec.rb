@@ -104,7 +104,7 @@ RSpec.describe SnapshotSeeder do
       context "between the series" do
         it "reverts existing team elos closer to the RESET_ELO" do
           team2_elo_at_end_of_series1 = team2.snapshots.where("date < '2020-12-31'").order(date: :desc).first.elo
-          new_team2_elo = team2_elo_at_end_of_series1 - ((team2_elo_at_end_of_series1 - SnapshotSeeder::RESET_ELO) / SnapshotSeeder::RATE_OF_REVERSION)
+          new_team2_elo = team2_elo_at_end_of_series1 - ((team2_elo_at_end_of_series1 - SnapshotSeeder::RESET_ELO) * SnapshotSeeder::RATE_OF_REVERSION).to_i
           expect(team2.snapshots.last.elo).to eq(new_team2_elo)
         end
 
