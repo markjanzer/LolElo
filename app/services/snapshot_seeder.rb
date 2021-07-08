@@ -16,26 +16,10 @@ class SnapshotSeeder
   def call
     raise "league not defined" unless league
 
-    ordered_series.each_with_index do |serie, index|
-      if index.zero?
-        serie.teams.each do |team|
-          Snapshot.create!(team: team, elo: NEW_TEAM_ELO, date: serie.begin_at)
-        end
-      else
-        serie.teams.each do |team|
-          if previous_serie(index).teams.include?(team)
-            if previous_serie(index).year != serie.year
-              Snapshot.create!(team: team, elo: revert(team.elo), date: first_of_year(serie.year))
-            end
-          else
-            Snapshot.create!(team: team, elo: NEW_TEAM_ELO, date: serie.begin_at)
-          end
-        end
-      end
-
-      serie.matches.includes(:opponent_1, :opponent_2).order(:end_at).each do |match|
-        create_snapshots_for_match(match)
-      end
+    ordered_series.reduce(nil) do |previous_serie, serie|
+      set_or_revert_elos(serie: serie, previous_serie: previous_serie)
+      create_snapshots_from_matches(serie)
+      serie
     end
   end
 
@@ -44,6 +28,24 @@ class SnapshotSeeder
   end
 
   private
+
+  def set_or_revert_elos(serie:, previous_serie:)
+    serie.teams.each do |team|
+      if previous_serie && previous_serie.teams.include?(team)
+        if previous_serie.year != serie.year
+          Snapshot.create!(team: team, elo: revert(team.elo), date: first_of_year(serie.year))
+        end
+      else
+        Snapshot.create!(team: team, elo: NEW_TEAM_ELO, date: serie.begin_at)
+      end
+    end
+  end
+
+  def create_snapshots_from_matches(serie)
+    serie.matches.includes(:opponent_1, :opponent_2).order(:end_at).each do |match|
+      create_snapshots_for_match(match)
+    end
+  end
 
   def create_snapshots_for_match(match)
     match.games.each do |game|
