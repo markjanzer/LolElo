@@ -12,7 +12,7 @@ RSpec.describe SnapshotSeeder do
     let(:team1) { create(:team, name: "team1") }
     let(:team2) { create(:team, name: "team2") }
 
-    xcontext "if the league is not defined" do
+    context "if the league is not defined" do
       let(:league) { nil }
 
       it "raises an error" do
@@ -20,7 +20,7 @@ RSpec.describe SnapshotSeeder do
       end
     end
 
-    xcontext "when the league does not have any series" do
+    context "when the league does not have any series" do
       before { subject }
       
       let(:series) { [] }
@@ -30,7 +30,7 @@ RSpec.describe SnapshotSeeder do
       end
     end
 
-    xcontext "when the league has one series" do
+    context "when the league has one series" do
       before { subject }
 
       context "when the serie has no games" do
@@ -86,7 +86,7 @@ RSpec.describe SnapshotSeeder do
       end
     end
 
-    fcontext "when the league has multiple series in different years" do
+    context "when the league has multiple series in different years" do
       before { subject }
 
       let(:series) { [serie1, serie2]}
@@ -108,9 +108,20 @@ RSpec.describe SnapshotSeeder do
           expect(team2.snapshots.last.elo).to eq(new_team2_elo)
         end
 
-        it "sets the reversion snapshot date to the beginning of the year"
-        it "sets new team elos to the standard starting elo"
-        it "sets new team elos with a date of the beginning of the series"
+        it "sets the reversion snapshot date to the beginning of the year" do
+          team2_last_snapshot = team2.snapshots.order(date: :desc).first
+          expect(team2_last_snapshot.date).to eq("2021-01-01")
+        end
+
+        it "sets new team elos to the standard starting elo" do
+          team3_first_snapshot = team3.snapshots.order(date: :asc).first
+          expect(team3_first_snapshot.elo).to eq(SnapshotSeeder::NEW_TEAM_ELO)
+        end
+
+        it "sets new team elos with a date of the beginning of the series" do
+          team3_first_snapshot = team3.snapshots.order(date: :asc).first
+          expect(team3_first_snapshot.date).to eq(serie2.begin_at)
+        end
       end
     end
   end
