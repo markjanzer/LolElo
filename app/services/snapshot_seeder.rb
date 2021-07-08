@@ -25,7 +25,7 @@ class SnapshotSeeder
         serie.teams.each do |team|
           if previous_serie(index).teams.include?(team)
             if previous_serie(index).year != serie.year
-              Snapshot.create!(team: team, elo: reset(team.elo), date: first_of_year(serie.year))
+              Snapshot.create!(team: team, elo: revert(team.elo), date: first_of_year(serie.year))
             end
           else
             Snapshot.create!(team: team, elo: NEW_TEAM_ELO, date: serie.begin_at)
@@ -34,42 +34,7 @@ class SnapshotSeeder
       end
 
       serie.matches.includes(:opponent_1, :opponent_2).order(:end_at).each do |match|
-        opponent_1 = match.opponent_1
-        opponent_2 = match.opponent_2
-
-        match.games.each do |game|
-          if game.winner == opponent_1
-            opponent_1_win_expectancy = team_1_win_expectancy(opponent_1.elo, opponent_2.elo)
-            change_in_rating = rating_change(opponent_1_win_expectancy).round
-            Snapshot.create!(
-              team: opponent_1,
-              game: game,
-              date: game.end_at,
-              elo: opponent_1.elo + change_in_rating
-            )
-            Snapshot.create!(
-              team: opponent_2,
-              game: game,
-              date: game.end_at,
-              elo: opponent_2.elo - change_in_rating
-            )
-          elsif game.winner == opponent_2
-            opponent_2_win_expectancy = team_1_win_expectancy(opponent_2.elo, opponent_1.elo)
-            change_in_rating = rating_change(opponent_2_win_expectancy).round
-            Snapshot.create!(
-              team: opponent_1,
-              game: game,
-              date: game.end_at,
-              elo: opponent_1.elo - change_in_rating
-            )
-            Snapshot.create!(
-              team: opponent_2,
-              game: game,
-              date: game.end_at,
-              elo: opponent_2.elo + change_in_rating
-            )
-          end
-        end
+        create_snapshots_for_match(match)
       end
     end
   end
@@ -79,6 +44,38 @@ class SnapshotSeeder
   end
 
   private
+
+  def create_snapshots_for_match(match)
+    match.games.each do |game|
+      create_snapshots_for_game(game)
+    end
+  end
+
+  def create_snapshots_for_game(game)
+    if game.winner == game.match.opponent_1
+      winner = game.match.opponent_1
+      loser = game.match.opponent_2
+    elsif game.winner == game.match.opponent_2
+      winner = game.match.opponent_2
+      loser = game.match.opponent_1
+    end
+
+    result_expectancy = win_expectancy(winner.elo, loser.elo)
+    change_in_rating = rating_change(result_expectancy).round
+
+    Snapshot.create!(
+      team: winner,
+      game: game,
+      date: game.end_at,
+      elo: winner.elo + change_in_rating
+    )
+    Snapshot.create!(
+      team: loser,
+      game: game,
+      date: game.end_at,
+      elo: loser.elo - change_in_rating
+    )
+  end
 
   def ordered_series
     league.series.order(:begin_at)
@@ -94,12 +91,12 @@ class SnapshotSeeder
     Date.new(year, 1, 1)
   end
 
-  def reset(elo)
+  def revert(elo)
     elo - ((elo - RESET_ELO) * RATE_OF_REVERSION)
   end
 
-  def team_1_win_expectancy(team_1_elo, team_2_elo)
-    1 / (10**((team_2_elo - team_1_elo) / 400.to_f) + 1)
+  def win_expectancy(primary_elo, other_elo)
+    1 / (10**((other_elo - primary_elo) / 400.to_f) + 1)
   end
 
   def rating_change(expectancy)

@@ -77,7 +77,7 @@ RSpec.describe SnapshotSeeder do
 
           it "creates a two snapshots for each game" do
 
-            expect(Snapshot.count).to eq(2 + 2*2)
+            expect(Snapshot.count).to eq(2 + (2 * 2))
           end
 
           # This is going to be really difficult until I have a win_expentancy public method to use
