@@ -7,8 +7,6 @@ class SnapshotSeeder
   RESET_ELO = 1500
   RATE_OF_REVERSION = 1 / 3.0
 
-  attr_reader :league
-
   def initialize(league)
     @league = league
   end
@@ -28,6 +26,8 @@ class SnapshotSeeder
   end
 
   private
+
+  attr_reader :league
 
   def set_or_revert_elos(serie:, previous_serie:)
     serie.teams.each do |team|
