@@ -1,8 +1,7 @@
 class Serie
   class SetInitialElos
-    def initialize(serie:, previous_serie:)
+    def initialize(serie)
       @serie = serie
-      @previous_serie = previous_serie
     end
 
     def call
@@ -20,6 +19,17 @@ class Serie
     private
 
     attr_reader :serie, :previous_serie
+
+    def league
+      serie.league
+    end
+
+    def previous_serie
+      @previous_serie ||= league.series
+        .where("begin_at < ?", serie.begin_at)
+        .order(begin_at: :desc)
+        .first
+    end
 
     def revert(elo)
       elo - ((elo - EloVariables::RESET_ELO) * EloVariables::RATE_OF_REVERSION)
