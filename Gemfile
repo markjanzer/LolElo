@@ -38,6 +38,7 @@ group :development, :test do
   gem 'rubocop-rails', require: false
   gem 'pry'
   gem "factory_bot_rails"
+  gem "did_you_mean"
 end
 
 group :development do

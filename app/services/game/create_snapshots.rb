@@ -5,23 +5,26 @@ class Game
     end
 
     def call
-      if game.winner == game.match.opponent_1
-        winner = game.match.opponent_1
-        loser = game.match.opponent_2
-      elsif game.winner == game.match.opponent_2
-        winner = game.match.opponent_2
-        loser = game.match.opponent_1
-      end
-  
-      result_expectancy = win_expectancy(winner.elo, loser.elo)
-      change_in_rating = rating_change(result_expectancy).round
-  
+      create_winner_snapshot
+      create_loser_snapshot
+    end
+
+    private
+
+    attr_reader :game
+
+    delegate :winner, :loser, to: :game
+
+    def create_winner_snapshot
       Snapshot.create!(
         team: winner,
         game: game,
         date: game.end_at,
         elo: winner.elo + change_in_rating
       )
+    end
+
+    def create_loser_snapshot
       Snapshot.create!(
         team: loser,
         game: game,
@@ -30,9 +33,13 @@ class Game
       )
     end
 
-    private
+    def change_in_rating
+      @change_in_rating ||= rating_change(result_expectancy).round
+    end
 
-    attr_reader :game
+    def result_expectancy
+      win_expectancy(winner.elo, loser.elo)
+    end
 
     def win_expectancy(primary_elo, other_elo)
       1 / (10**((other_elo - primary_elo) / 400.to_f) + 1)

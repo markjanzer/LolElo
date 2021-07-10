@@ -29,7 +29,7 @@ class SnapshotSeeder
   end
 
   def create_snapshots_for_match(match)
-    match.games.each do |game|
+    match.games.order(:end_at).each do |game|
       create_snapshots_for_game(game)
     end
   end
