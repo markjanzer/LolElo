@@ -30,15 +30,16 @@ class SnapshotSeeder
   attr_reader :league
 
   def set_or_revert_elos(serie:, previous_serie:)
-    serie.teams.each do |team|
-      if previous_serie && previous_serie.teams.include?(team)
-        if previous_serie.year != serie.year
-          Snapshot.create!(team: team, elo: revert(team.elo), date: first_of_year(serie.year))
-        end
-      else
-        Snapshot.create!(team: team, elo: NEW_TEAM_ELO, date: serie.begin_at)
-      end
-    end
+    Serie::SetInitialElos.new(serie: serie, previous_serie: previous_serie).call
+    # serie.teams.each do |team|
+    #   if previous_serie && previous_serie.teams.include?(team)
+    #     if previous_serie.year != serie.year
+    #       Snapshot.create!(team: team, elo: revert(team.elo), date: first_of_year(serie.year))
+    #     end
+    #   else
+    #     Snapshot.create!(team: team, elo: NEW_TEAM_ELO, date: serie.begin_at)
+    #   end
+    # end
   end
 
   def create_snapshots_from_matches(serie)
@@ -87,14 +88,6 @@ class SnapshotSeeder
     return nil if index.zero?
 
     ordered_series[index - 1]
-  end
-
-  def first_of_year(year)
-    Date.new(year, 1, 1)
-  end
-
-  def revert(elo)
-    elo - ((elo - RESET_ELO) * RATE_OF_REVERSION)
   end
 
   def win_expectancy(primary_elo, other_elo)
