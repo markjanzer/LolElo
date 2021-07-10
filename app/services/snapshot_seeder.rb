@@ -9,7 +9,7 @@ class SnapshotSeeder
     raise "league not defined" unless league
 
     ordered_series.each do |serie|
-      Serie::SetInitialElos.new(serie).call
+      set_initial_elo_for_teams(serie)
       create_snapshots_from_matches(serie)
     end
   end
@@ -21,6 +21,12 @@ class SnapshotSeeder
   private
 
   attr_reader :league
+
+  def set_initial_elo_for_teams(serie)
+    serie.teams.each do |team|
+      Team::SetInitialEloForSerie.new(team: team, serie: serie).call
+    end
+  end
 
   def create_snapshots_from_matches(serie)
     serie.matches.includes(:opponent_1, :opponent_2).order(:end_at).each do |match|
