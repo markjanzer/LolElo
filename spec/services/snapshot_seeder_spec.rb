@@ -40,8 +40,8 @@ RSpec.describe SnapshotSeeder do
         end
 
         it "create snapshots with elo of the NEW_TEAM_ELO" do
-          expect(team1.snapshots.last.elo).to eq(SnapshotSeeder::NEW_TEAM_ELO)
-          expect(team2.snapshots.last.elo).to eq(SnapshotSeeder::NEW_TEAM_ELO)
+          expect(team1.snapshots.last.elo).to eq(EloVariables::NEW_TEAM_ELO)
+          expect(team2.snapshots.last.elo).to eq(EloVariables::NEW_TEAM_ELO)
         end
 
         it "creates snapshots with the start time of the serie" do
@@ -63,12 +63,12 @@ RSpec.describe SnapshotSeeder do
 
         it "creates a higher elo snapshot for the team that won" do
           chance_of_losing = 0.5
-          expect(team1.snapshots.last.elo).to eq(SnapshotSeeder::NEW_TEAM_ELO + (chance_of_losing * SnapshotSeeder::K))
+          expect(team1.snapshots.last.elo).to eq(EloVariables::NEW_TEAM_ELO + (chance_of_losing * EloVariables::K))
         end
 
         it "creates a lower elo snapshot for the team that lost" do
           chance_of_winning = 0.5
-          expect(team2.snapshots.last.elo).to eq(SnapshotSeeder::NEW_TEAM_ELO - (chance_of_winning * SnapshotSeeder::K))
+          expect(team2.snapshots.last.elo).to eq(EloVariables::NEW_TEAM_ELO - (chance_of_winning * EloVariables::K))
         end
 
         context "when a match has many games" do
@@ -104,7 +104,7 @@ RSpec.describe SnapshotSeeder do
       context "between the series" do
         it "reverts existing team elos closer to the RESET_ELO" do
           team2_elo_at_end_of_series1 = team2.snapshots.where("date < '2020-12-31'").order(date: :desc).first.elo
-          new_team2_elo = team2_elo_at_end_of_series1 - ((team2_elo_at_end_of_series1 - SnapshotSeeder::RESET_ELO) * SnapshotSeeder::RATE_OF_REVERSION).to_i
+          new_team2_elo = team2_elo_at_end_of_series1 - ((team2_elo_at_end_of_series1 - EloVariables::RESET_ELO) * EloVariables::RATE_OF_REVERSION).to_i
           expect(team2.snapshots.last.elo).to eq(new_team2_elo)
         end
 
@@ -115,7 +115,7 @@ RSpec.describe SnapshotSeeder do
 
         it "sets new team elos to the standard starting elo" do
           team3_first_snapshot = team3.snapshots.order(date: :asc).first
-          expect(team3_first_snapshot.elo).to eq(SnapshotSeeder::NEW_TEAM_ELO)
+          expect(team3_first_snapshot.elo).to eq(EloVariables::NEW_TEAM_ELO)
         end
 
         it "sets new team elos with a date of the beginning of the series" do
