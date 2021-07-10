@@ -6,12 +6,10 @@ class Serie
 
     def call
       serie.teams.each do |team|
-        if previous_serie && previous_serie.teams.include?(team)
-          if previous_serie.year != serie.year
-            Snapshot.create!(team: team, elo: revert(team.elo), date: first_of_year(serie.year))
-          end
-        else
-          Snapshot.create!(team: team, elo: EloVariables::NEW_TEAM_ELO, date: serie.begin_at)
+        if !team_in_previous_serie(team)
+          create_new_team_elo(team)
+        elsif previous_serie_in_other_season
+          create_reverted_elo(team)
         end
       end
     end
@@ -29,6 +27,22 @@ class Serie
         .where("begin_at < ?", serie.begin_at)
         .order(begin_at: :desc)
         .first
+    end
+
+    def team_in_previous_serie(team)
+      previous_serie && previous_serie.teams.include?(team)
+    end
+
+    def previous_serie_in_other_season
+      previous_serie && previous_serie.year != serie.year
+    end
+
+    def create_new_team_elo(team)
+      Snapshot.create!(team: team, elo: EloVariables::NEW_TEAM_ELO, date: serie.begin_at)
+    end
+
+    def create_reverted_elo(team)
+      Snapshot.create!(team: team, elo: revert(team.elo), date: first_of_year(serie.year))
     end
 
     def revert(elo)
