@@ -3,9 +3,9 @@
 # Needed for when I want to run individual specs...
 # require 'rails_helper'
 
-RSpec.describe SnapshotSeeder do
+RSpec.describe League::CreateSnapshots do
   describe "#call" do
-    subject { SnapshotSeeder.new(league).call }
+    subject { League::CreateSnapshots.new(league).call }
 
     let(:league) { create(:league, series: series) }
     let(:series) { [serie1] }

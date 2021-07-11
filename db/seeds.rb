@@ -113,7 +113,6 @@ end
 
 def create_snapshots
   League.all.each do |league|
-    # Probably not like this
-    SnapshotSeeder.new(league).call
+    League::CreateSnapshots.new(league).call
   end
 end
