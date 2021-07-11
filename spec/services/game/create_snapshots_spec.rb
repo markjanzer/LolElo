@@ -11,10 +11,8 @@ RSpec.describe Game::CreateSnapshots do
     let(:game) { create(:game, winner: winning_team, end_at: "2020-02-01") }
     let(:winning_team) { create(:team, name: "winning_team", snapshots: [winning_team_snapshot]) }
     let(:losing_team) { create(:team, name: "losing_team", snapshots: [losing_team_snapshot]) }
-    let(:winning_team_snapshot) { create(:snapshot, elo: winning_team_previous_elo, date: "2020-01-01") }
-    let(:losing_team_snapshot) { create(:snapshot, elo: losing_team_previous_elo, date: "2020-01-01") }
-    let(:winning_team_previous_elo) { 1500 }
-    let(:losing_team_previous_elo) { 1500 }
+    let(:winning_team_snapshot) { create(:snapshot, elo: 1500, date: "2020-01-01") }
+    let(:losing_team_snapshot) { create(:snapshot, elo: 1500, date: "2020-01-01") }
 
     it "creates a snapshot for the winning team" do
       expect { subject }.to change { winning_team.snapshots.count }.by(1)
@@ -37,19 +35,13 @@ RSpec.describe Game::CreateSnapshots do
     end
 
     it "creates a higher elo snapshot for the team that won" do
-      new_winner_elo = EloCalculator::GameResults
-        .new(winner_elo: winning_team.elo, loser_elo: losing_team.elo)
-        .new_winner_elo 
       subject
-      expect(winning_team.snapshots.reload.last.elo).to eq(new_winner_elo)
+      expect(winning_team.snapshots.reload.last.elo).to be > 1500
     end
 
     it "creates a lower elo snapshot for the team that lost" do
-      new_loser_elo = EloCalculator::GameResults
-        .new(winner_elo: winning_team.elo, loser_elo: losing_team.elo)
-        .new_loser_elo 
       subject
-      expect(losing_team.snapshots.reload.last.elo).to eq(new_loser_elo)
+      expect(losing_team.snapshots.reload.last.elo).to be < 1500
     end
   end
 end
