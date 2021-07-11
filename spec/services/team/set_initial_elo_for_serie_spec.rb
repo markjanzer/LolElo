@@ -21,7 +21,7 @@ RSpec.describe Team::SetInitialEloForSerie do
 
       it "create snapshots with elo of the NEW_TEAM_ELO" do
         subject
-        expect(team.snapshots.last.elo).to eq(EloVariables::NEW_TEAM_ELO)
+        expect(team.snapshots.last.elo).to eq(EloCalculator::NEW_TEAM_ELO)
       end
 
       it "creates snapshots with the start time of the serie" do
@@ -48,7 +48,7 @@ RSpec.describe Team::SetInitialEloForSerie do
 
         it "creates a snapshot with a reset elo" do
           subject
-          expect(team.snapshots.last.elo).to eq(EloVariables::NEW_TEAM_ELO)
+          expect(team.snapshots.last.elo).to eq(EloCalculator::NEW_TEAM_ELO)
         end
 
         it "creates a snapshot dated to the beginning of the season" do
@@ -67,8 +67,8 @@ RSpec.describe Team::SetInitialEloForSerie do
         let!(:snapshot) { create(:snapshot, team: team, elo: 1200, date: "2019-01-01") }
 
         it "creates a snapshot with a elo reverted to RESET_ELO" do
-          distance_from_reset_elo = EloVariables::RESET_ELO - team.elo
-          reverted_elo = team.elo + (EloVariables::RATE_OF_REVERSION * distance_from_reset_elo)
+          distance_from_reset_elo = EloCalculator::RESET_ELO - team.elo
+          reverted_elo = team.elo + (EloCalculator::RATE_OF_REVERSION * distance_from_reset_elo)
           subject
           expect(team.elo).to eq(reverted_elo)
         end
@@ -84,7 +84,7 @@ RSpec.describe Team::SetInitialEloForSerie do
 
         it "creates a snapshot with a reset elo" do
           subject
-          expect(team.snapshots.last.elo).to eq(EloVariables::NEW_TEAM_ELO)
+          expect(team.snapshots.last.elo).to eq(EloCalculator::NEW_TEAM_ELO)
         end
 
         it "creates a snapshot dated to the beginning of the season" do

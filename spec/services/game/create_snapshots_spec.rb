@@ -39,22 +39,22 @@ RSpec.describe Game::CreateSnapshots do
     it "creates a higher elo snapshot for the team that won" do
       subject
       chance_of_losing = 0.5
-      expect(winning_team.snapshots.reload.last.elo).to eq(EloVariables::NEW_TEAM_ELO + (chance_of_losing * EloVariables::K))
+      expect(winning_team.snapshots.reload.last.elo).to eq(EloCalculator::NEW_TEAM_ELO + (chance_of_losing * EloCalculator::K))
     end
 
     it "creates a lower elo snapshot for the team that lost" do
       subject
       chance_of_winning = 0.5
-      expect(losing_team.snapshots.reload.last.elo).to eq(EloVariables::NEW_TEAM_ELO - (chance_of_winning * EloVariables::K))
+      expect(losing_team.snapshots.reload.last.elo).to eq(EloCalculator::NEW_TEAM_ELO - (chance_of_winning * EloCalculator::K))
     end
 
     context "when the teams are even in elo" do
       it "increases the winning team's elo by half of K" do
-        expect { subject }.to change { winning_team.elo }.by(EloVariables::K / 2)
+        expect { subject }.to change { winning_team.elo }.by(EloCalculator::K / 2)
       end
 
       it "decreases the losing team's elo by half of K" do
-        expect { subject }.to change { losing_team.elo }.by(EloVariables::K / -2)
+        expect { subject }.to change { losing_team.elo }.by(EloCalculator::K / -2)
       end
     end
 

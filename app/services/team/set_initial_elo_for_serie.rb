@@ -37,7 +37,7 @@ class Team
     end
 
     def create_new_team_elo
-      Snapshot.create!(team: team, elo: EloVariables::NEW_TEAM_ELO, date: serie.begin_at)
+      Snapshot.create!(team: team, elo: EloCalculator::NEW_TEAM_ELO, date: serie.begin_at)
     end
 
     def create_reverted_elo

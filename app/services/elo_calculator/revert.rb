@@ -5,7 +5,7 @@ class EloCalculator
     end
   
     def call
-      elo - (difference_from_reset * EloVariables::RATE_OF_REVERSION)
+      elo - (difference_from_reset * EloCalculator::RATE_OF_REVERSION)
     end
   
     private
@@ -13,7 +13,7 @@ class EloCalculator
     attr_reader :elo
 
     def difference_from_reset
-      elo - EloVariables::RESET_ELO
+      elo - EloCalculator::RESET_ELO
     end
   end
 end
