@@ -41,11 +41,11 @@ class Team
     end
 
     def create_reverted_elo
-      Snapshot.create!(team: team, elo: revert(team.elo), date: first_of_year(serie.year))
+      Snapshot.create!(team: team, elo: reverted_elo, date: first_of_year(serie.year))
     end
 
-    def revert(elo)
-      elo - ((elo - EloVariables::RESET_ELO) * EloVariables::RATE_OF_REVERSION)
+    def reverted_elo
+      EloCalculator::Revert.new(team.elo).call
     end
 
     def first_of_year(year)
