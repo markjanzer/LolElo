@@ -67,8 +67,7 @@ RSpec.describe Team::SetInitialEloForSerie do
         let!(:snapshot) { create(:snapshot, team: team, elo: 1200, date: "2019-01-01") }
 
         it "creates a snapshot with a elo reverted to RESET_ELO" do
-          distance_from_reset_elo = EloCalculator::RESET_ELO - team.elo
-          reverted_elo = team.elo + (EloCalculator::RATE_OF_REVERSION * distance_from_reset_elo)
+          reverted_elo = EloCalculator::Revert.new(team.elo).call
           subject
           expect(team.elo).to eq(reverted_elo)
         end
