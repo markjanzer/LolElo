@@ -5,8 +5,9 @@ class Game
     end
 
     def call
-      create_winner_snapshot
-      create_loser_snapshot
+      new_winner_elo, new_loser_elo = EloCalculator::GameResults.new(winner_elo: winner.elo, loser_elo: loser.elo).new_elos
+      create_snapshot(team: winner, elo: new_winner_elo)
+      create_snapshot(team: loser, elo: new_loser_elo)
     end
 
     private
@@ -15,38 +16,13 @@ class Game
 
     delegate :winner, :loser, to: :game
 
-    def create_winner_snapshot
+    def create_snapshot(team:, elo:)
       Snapshot.create!(
-        team: winner,
+        team: team,
         game: game,
         date: game.end_at,
-        elo: winner.elo + change_in_rating
+        elo: elo
       )
-    end
-
-    def create_loser_snapshot
-      Snapshot.create!(
-        team: loser,
-        game: game,
-        date: game.end_at,
-        elo: loser.elo - change_in_rating
-      )
-    end
-
-    def change_in_rating
-      @change_in_rating ||= rating_change(result_expectancy).round
-    end
-
-    def result_expectancy
-      win_expectancy(winner.elo, loser.elo)
-    end
-
-    def win_expectancy(primary_elo, other_elo)
-      1 / (10**((other_elo - primary_elo) / 400.to_f) + 1)
-    end
-  
-    def rating_change(expectancy)
-      EloVariables::K * (1 - expectancy)
     end
   end
 end

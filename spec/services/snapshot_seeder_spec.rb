@@ -51,7 +51,6 @@ RSpec.describe SnapshotSeeder do
         end
         
         it "results in a higher elo for the team that won last" do
-          puts team2.elo, team1.elo
           expect(team2.elo).to eq 1501
           expect(team1.elo).to eq 1499
           # expect(team2.elo).to be > team1.elo
