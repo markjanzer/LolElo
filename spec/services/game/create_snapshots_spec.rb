@@ -37,52 +37,19 @@ RSpec.describe Game::CreateSnapshots do
     end
 
     it "creates a higher elo snapshot for the team that won" do
+      new_winner_elo = EloCalculator::GameResults
+        .new(winner_elo: winning_team.elo, loser_elo: losing_team.elo)
+        .new_winner_elo 
       subject
-      chance_of_losing = 0.5
-      expect(winning_team.snapshots.reload.last.elo).to eq(EloCalculator::NEW_TEAM_ELO + (chance_of_losing * EloCalculator::K))
+      expect(winning_team.snapshots.reload.last.elo).to eq(new_winner_elo)
     end
 
     it "creates a lower elo snapshot for the team that lost" do
+      new_loser_elo = EloCalculator::GameResults
+        .new(winner_elo: winning_team.elo, loser_elo: losing_team.elo)
+        .new_loser_elo 
       subject
-      chance_of_winning = 0.5
-      expect(losing_team.snapshots.reload.last.elo).to eq(EloCalculator::NEW_TEAM_ELO - (chance_of_winning * EloCalculator::K))
-    end
-
-    context "when the teams are even in elo" do
-      it "increases the winning team's elo by half of K" do
-        expect { subject }.to change { winning_team.elo }.by(EloCalculator::K / 2)
-      end
-
-      it "decreases the losing team's elo by half of K" do
-        expect { subject }.to change { losing_team.elo }.by(EloCalculator::K / -2)
-      end
-    end
-
-    # Not sure if these tests will be resilient. Might need to calculate chance of winning
-    context "when winning team has a lower elo" do
-      let(:winning_team_previous_elo) { 1400 }
-      let(:losing_team_previous_elo) { 1600 }
-
-      it "greatly increases the winning team's elo" do
-        expect { subject }.to change { winning_team.elo }.by(24)
-      end
-
-      it "greatly decreases the losing team's elo" do
-        expect { subject }.to change { losing_team.elo }.by(-24)
-      end
-    end
-
-    context "when the winning team has a higher elo" do
-      let(:winning_team_previous_elo) { 1600 }
-      let(:losing_team_previous_elo) { 1400 }
-
-      it "slightly increases the winning team's elo" do
-        expect { subject }.to change { winning_team.elo }.by(8)
-      end
-
-      it "slightly decreases the losing team's elo" do
-        expect { subject }.to change { losing_team.elo }.by(-8)
-      end
+      expect(losing_team.snapshots.reload.last.elo).to eq(new_loser_elo)
     end
   end
 end
