@@ -70,12 +70,6 @@ class SeedFromPandaScore
     end
   end
   
-  def create_team(team_data)
-    team = Team.find_or_create_by(name: team_data['name'], external_id: team_data['id'], acronym: team_data['acronym'])
-    team.tournaments << tournament
-    team.update!(color: unique_team_color) if team.color.nil?
-  end
-  
   def unique_team_color(serie)
     (unique_colors - serie.teams.pluck(:color)).sample
   end
