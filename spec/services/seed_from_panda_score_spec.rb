@@ -136,5 +136,77 @@ RSpec.describe SeedFromPandaScore do
       end
     end
 
+    context "when there series whose names doen't start with Spring or Summer" do
+
+      let(:series_data) { 
+        [
+          { 
+            "id" => 1, 
+            "year" => 2019, 
+            "begin_at" => "2019-01-26T22:00:00Z",
+            "full_name" => "Spring 2019",
+          },
+          {
+            "id" => 2,
+            "year" => 2019,
+            "begin_at" => "2019-01-26T22:00:00Z",
+            "full_name" => "Academy Spring 2019",
+          }
+        ] 
+      }
+      
+      it "doesn't create series whose names don't start with Spring or Summer" do
+        expect(Serie.count).to eq 1
+        expect(Serie.first.full_name).to eq "Spring 2019"
+      end
+    end
+
+    context "when there are as many teams in a tournament as there are unique colors" do
+      let(:teams_data) do
+        teams = []
+        SeedFromPandaScore::UNIQUE_COLORS.count.times do |i|
+          teams << {
+            "id" =>i,
+            "name" =>"team_name#{i}",
+            "acronym" =>"team_acronym#{i}"
+          }
+        end
+        teams
+      end
+
+      it "gives each team a unique color" do
+        team_colors = Team.all.pluck(:color)
+        expect(Team.count).to eq SeedFromPandaScore::UNIQUE_COLORS.count
+        expect(Team.all.pluck(:color).uniq).to eq Team.all.pluck(:color)
+      end
+    end
+
+    context "when there are games that were forfeit" do
+      let(:games_data) {
+        [
+          {
+            "id" => 1,
+            "end_at" => "2019-02-26T22:00:00Z",
+            "forfeit" => false,
+            "winner" => {
+              "id" => 1
+            }
+          },
+          {
+            "id" => 2,
+            "end_at" => "2019-03-26T22:00:00Z",
+            "forfeit" => true,
+            "winner" => {
+              "id" => 1
+            }
+          },
+        ]
+      }
+      
+      it "does not create forfeit games" do
+        expect(Game.count).to eq 1
+        expect(Game.first.external_id).to eq 1
+      end
+    end
   end
 end
