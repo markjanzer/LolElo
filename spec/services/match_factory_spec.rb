@@ -2,7 +2,7 @@
 
 RSpec.describe MatchFactory do
   describe "#call" do
-    subject { MatchFactory.new(match_data: match_data).call }
+    subject { MatchFactory.new(match_data).call }
     let(:match_data) {
       {
         "id" => 1, 

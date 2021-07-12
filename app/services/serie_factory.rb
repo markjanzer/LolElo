@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SerieFactory
-  def initialize(serie_data:)
+  def initialize(serie_data)
     @serie_data = serie_data
   end
   

@@ -2,7 +2,7 @@
 
 RSpec.describe TournamentFactory do
   describe "#call" do
-    subject { TournamentFactory.new(tournament_data: tournament_data).call }
+    subject { TournamentFactory.new(tournament_data).call }
     let(:tournament_data) {
       {
         "id" => 1, 

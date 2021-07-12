@@ -2,7 +2,7 @@
 
 RSpec.describe SerieFactory do
   describe "#call" do
-    subject { SerieFactory.new(serie_data: serie_data).call }
+    subject { SerieFactory.new(serie_data).call }
     let(:serie_data) {
       {
         "id" => 1, 

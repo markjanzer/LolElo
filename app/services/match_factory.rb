@@ -2,7 +2,7 @@
 
 class MatchFactory
   
-  def initialize(match_data:)
+  def initialize(match_data)
     @match_data = match_data
   end
   

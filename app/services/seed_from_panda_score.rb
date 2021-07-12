@@ -4,7 +4,7 @@ class SeedFromPandaScore
   end
 
   def call
-    create_leagues(leagues_seed_data)
+    create_leagues
     create_series
     create_tournaments
     create_teams
@@ -28,11 +28,11 @@ class SeedFromPandaScore
   
   def create_series
     Serie.transaction do
-      League.each do |league|
-        series_data = PandaScore.series(league_id: league.pandascore_id)
+      League.all.each do |league|
+        series_data = PandaScore.series(league_id: league.external_id)
         valid_series_data = series_data.select { |serie_data| valid_serie(serie_data) }
         valid_series_data.each do |serie_data|
-          serie = SerieFactory.new(serie_data)
+          serie = SerieFactory.new(serie_data).call
           league.series << serie
         end
       end
@@ -45,10 +45,10 @@ class SeedFromPandaScore
   
   def create_tournaments
     Tournament.transaction do
-      Serie.each do |serie|
-        tournaments_data = PandaScore.tournaments(serie_id: serie.pandascore_id)
+      Serie.all.each do |serie|
+        tournaments_data = PandaScore.tournaments(serie_id: serie.external_id)
         tournaments_data.each do |tournament_data|
-          tournament = TournamentFactory.new(tournament_data: tournament_data)
+          tournament = TournamentFactory.new(tournament_data).call
           serie.tournaments << tournament
         end
       end
@@ -57,11 +57,11 @@ class SeedFromPandaScore
   
   def create_teams
     Team.transaction do
-      Tournament.each do |tournament|
-        teams_data = PandaScore.teams(tournament_id: tournament.pandascore_id)
+      Tournament.all.each do |tournament|
+        teams_data = PandaScore.teams(tournament_id: tournament.external_id)
         teams_data.each do |team_data|
           color = unique_team_color(tournament.serie)
-          team = TeamFactory.new(team_data: team_data, color: color)
+          team = TeamFactory.new(team_data: team_data, color: color).call
           unless tournament.teams.include?(team)
             tournament.teams << team
           end
@@ -81,10 +81,10 @@ class SeedFromPandaScore
   
   def create_matches
     Match.transaction do
-      Tournament.each do |tournament|
-        matches_data = PandaScore.matches(tournament_id: tournament.pandascore_id)
+      Tournament.all.each do |tournament|
+        matches_data = PandaScore.matches(tournament_id: tournament.external_id)
         matches_data.each do |match_data|
-          match = MatchFactory.new(match_data)
+          match = MatchFactory.new(match_data).call
           tournament.matches << match
         end
       end
@@ -93,11 +93,11 @@ class SeedFromPandaScore
   
   def create_games
     Game.transaction do
-      Match.each do |match|
-        games_data = PandaScore.games(match_id: match.pandascore_id)
+      Match.all.each do |match|
+        games_data = PandaScore.games(match_id: match.external_id)
         completed_games_data = games_data.reject { |game| game['forfeit'] }
         completed_games_data.each do |game_data|
-          game = GameFactory.new(game_data)
+          game = GameFactory.new(game_data).call
           match.games << game
         end
       end

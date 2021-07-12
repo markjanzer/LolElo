@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class TournamentFactory
-  def initialize(tournament_data:)
+  def initialize(tournament_data)
     @tournament_data = tournament_data
   end
   

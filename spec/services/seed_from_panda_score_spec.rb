@@ -7,6 +7,7 @@ RSpec.describe SeedFromPandaScore do
   describe "#call" do
     subject { SeedFromPandaScore.new(leagues_seed_data).call }
 
+    let(:leagues_seed_data) { [{ abbreviation: "nalcs", league_id: 1, time_zone: 'America/Los_Angeles' }] }
     let(:league_data) { { "id" => 1, "name" => "First League" } }
     let(:series_data) { 
       [{ 
@@ -68,15 +69,20 @@ RSpec.describe SeedFromPandaScore do
       }]
     }
 
-    allow(PandaScore).to receive(:league) { league_data }
-    allow(PandaScore).to receive(:series) { series_data }
-    allow(PandaScore).to receive(:tournaments) { tournaments_data }
-    allow(PandaScore).to receive(:teams) { teams_data }
-    allow(PandaScore).to receive(:matches) { matches_data }
-    allow(PandaScore).to receive(:games) { games_data }
+    before do
+      allow(PandaScore).to receive(:league) { league_data }
+      allow(PandaScore).to receive(:series) { series_data }
+      allow(PandaScore).to receive(:tournaments) { tournaments_data }
+      allow(PandaScore).to receive(:teams) { teams_data }
+      allow(PandaScore).to receive(:matches) { matches_data }
+      allow(PandaScore).to receive(:games) { games_data }
+    end
 
     context "when there is only one of each object" do
-      it "creates one league"
+      it "creates one league" do
+        subject
+        expect(League.count).to eq 1
+      end
       it "creates one serie"
       it "creates a series that belongs to the league"
       it "creates one tournament"

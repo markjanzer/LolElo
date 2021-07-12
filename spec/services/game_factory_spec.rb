@@ -2,7 +2,7 @@
 
 RSpec.describe GameFactory do
   describe "#call" do
-    subject { GameFactory.new(game_data: game_data).call }
+    subject { GameFactory.new(game_data).call }
 
     let(:game_data) {
       {
