@@ -13,14 +13,19 @@ import {
   ReferenceLine,
 } from "recharts";
 
-export default function Charts({ chartData }) {
+export default function Chart({ chartData }) {  
   const lineChartData = chartData.data;
   const teamData = chartData.teams;
   const matchData = chartData.matches;
 
-  const [selectedDate, setSeletedDate] = useState(
-    matchData[matchData.length - 1].date
-  );
+  const selectedDate = matchData[matchData.length - 1].date
+
+  // const [selectedDate, setSeletedDate] = useState(
+  //   matchData[matchData.length - 1].date
+  // );
+  function setSelectedDate(d) {
+    console.log(d);
+  }
 
   function customToolTip(props) {
     return (

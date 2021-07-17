@@ -22,10 +22,9 @@ document.addEventListener("turbolinks:load", () => {
   console.log("turbolinks:load");
 
   if (document.body.dataset["route"] == "series-show") {
-    console.log("create Chart");
     const node = document.getElementById("chart");
     const data = JSON.parse(node.getAttribute("data"));
 
-    ReactDOM.render(<Chart {...data} />, node);
+    ReactDOM.render(Chart(data), node);
   }
 });
