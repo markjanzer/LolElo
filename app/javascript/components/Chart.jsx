@@ -18,14 +18,9 @@ export const Chart = ({ chartData }) => {
   const teamData = chartData.teams;
   const matchData = chartData.matches;
 
-  // const selectedDate = matchData[matchData.length - 1].date
-
   const [selectedDate, setSeletedDate] = useState(
     matchData[matchData.length - 1].date
   );
-  // function setSelectedDate(d) {
-  //   console.log(d);
-  // }
 
   function customToolTip(props) {
     return (
@@ -156,4 +151,6 @@ export const Chart = ({ chartData }) => {
   );
 }
 
-export default Chart;
+// This is so dumb
+// https://github.com/shakacode/react_on_rails/issues/1198#issuecomment-593486485
+export default props => <Chart {...props} />;
