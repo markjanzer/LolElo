@@ -28,6 +28,12 @@ class SeedFromPandaScore
       end
     end
   end
+
+  # def create_leagues(league_seed_data)
+  #   league_data = PandaScore.league(id: league_seed_data[:league_id])
+  #   league = LeagueFactory.new(league_data: league_data, time_zone: league_seed_data[:time_zone]).call
+  #   league.save!
+  # end
   
   def create_series
     Serie.transaction do
