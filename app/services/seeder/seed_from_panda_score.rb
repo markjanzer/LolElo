@@ -31,22 +31,9 @@ class Seeder
     def create_all_series
       Serie.transaction do
         League.all.each do |league|
-          create_series(league)
+          Seeder::CreateSeries.new(league).call
         end
       end
-    end
-
-    def create_series(league)
-      series_data = PandaScore.series(league_id: league.external_id)
-      valid_series_data = series_data.select { |serie_data| valid_serie(serie_data) }
-      valid_series_data.each do |serie_data|
-        serie = SerieFactory.new(serie_data).call
-        league.series << serie
-      end
-    end
-    
-    def valid_serie(serie_data)
-      serie_data['full_name'].split.first.match?('Spring|Summer')
     end
     
     def create_all_tournaments
