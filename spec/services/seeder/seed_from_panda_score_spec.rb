@@ -3,9 +3,9 @@
 # Needed for when I want to run individual specs...
 require 'rails_helper'
 
-RSpec.describe SeedFromPandaScore do
+RSpec.describe Seeder::SeedFromPandaScore do
   describe "#call" do
-    subject { SeedFromPandaScore.new(leagues_seed_data).call }
+    subject { Seeder::SeedFromPandaScore.new(leagues_seed_data).call }
 
     let(:leagues_seed_data) { [{ abbreviation: "nalcs", league_id: 1, time_zone: 'America/Los_Angeles' }] }
     let(:league_data) { { "id" => 1, "name" => "First League" } }
@@ -164,7 +164,7 @@ RSpec.describe SeedFromPandaScore do
     context "when there are as many teams in a tournament as there are unique colors" do
       let(:teams_data) do
         teams = []
-        SeedFromPandaScore::UNIQUE_COLORS.count.times do |i|
+        Seeder::SeedFromPandaScore::UNIQUE_COLORS.count.times do |i|
           teams << {
             "id" =>i,
             "name" =>"team_name#{i}",
@@ -176,7 +176,7 @@ RSpec.describe SeedFromPandaScore do
 
       it "gives each team a unique color" do
         team_colors = Team.all.pluck(:color)
-        expect(Team.count).to eq SeedFromPandaScore::UNIQUE_COLORS.count
+        expect(Team.count).to eq Seeder::SeedFromPandaScore::UNIQUE_COLORS.count
         expect(Team.all.pluck(:color).uniq).to eq Team.all.pluck(:color)
       end
     end
