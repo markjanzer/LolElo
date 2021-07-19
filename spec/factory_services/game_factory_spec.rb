@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# Removing this breaks all of my tests
+require 'rails_helper'
+
 RSpec.describe GameFactory do
   describe "#call" do
     subject { GameFactory.new(game_data).call }

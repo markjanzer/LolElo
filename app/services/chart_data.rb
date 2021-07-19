@@ -5,6 +5,7 @@
 class ChartData
   attr_accessor :serie
 
+  # Shouldn't we not be creating these matches?
   FILTERED_MATCH_NAMES = ['Promotion', 'Promotion relegation'].freeze
 
   def initialize(serie)
