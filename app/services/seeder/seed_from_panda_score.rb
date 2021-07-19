@@ -1,7 +1,7 @@
 class Seeder
   class SeedFromPandaScore
 
-    UNIQUE_COLORS = ['#e6194B', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#42d4f4', '#f032e6', '#bfef45', '#fabed4', '#469990', '#dcbeff', '#9A6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#a9a9a9', '#000000'].freeze
+    # UNIQUE_COLORS = ['#e6194B', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#42d4f4', '#f032e6', '#bfef45', '#fabed4', '#469990', '#dcbeff', '#9A6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#a9a9a9', '#000000'].freeze
     
     def initialize(leagues_seed_data)
       @leagues_seed_data = leagues_seed_data
@@ -47,20 +47,9 @@ class Seeder
     def create_all_teams
       Team.transaction do
         Tournament.all.each do |tournament|
-          teams_data = PandaScore.teams(tournament_id: tournament.external_id)
-          teams_data.each do |team_data|
-            color = unique_team_color(tournament.serie)
-            team = TeamFactory.new(team_data: team_data, color: color).call
-            unless tournament.teams.include?(team)
-              tournament.teams << team
-            end
-          end
+          Seeder::CreateTeams.new(tournament).call
         end
       end
-    end
-    
-    def unique_team_color(serie)
-      (UNIQUE_COLORS - serie.teams.pluck(:color)).sample
     end
     
     def create_all_matches

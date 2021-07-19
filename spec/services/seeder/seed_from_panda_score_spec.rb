@@ -164,7 +164,7 @@ RSpec.describe Seeder::SeedFromPandaScore do
     context "when there are as many teams in a tournament as there are unique colors" do
       let(:teams_data) do
         teams = []
-        Seeder::SeedFromPandaScore::UNIQUE_COLORS.count.times do |i|
+        Team::UNIQUE_COLORS.count.times do |i|
           teams << {
             "id" =>i,
             "name" =>"team_name#{i}",
@@ -176,7 +176,7 @@ RSpec.describe Seeder::SeedFromPandaScore do
 
       it "gives each team a unique color" do
         team_colors = Team.all.pluck(:color)
-        expect(Team.count).to eq Seeder::SeedFromPandaScore::UNIQUE_COLORS.count
+        expect(Team.count).to eq Team::UNIQUE_COLORS.count
         expect(Team.all.pluck(:color).uniq).to eq Team.all.pluck(:color)
       end
     end
