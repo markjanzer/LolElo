@@ -63,8 +63,8 @@ RSpec.describe MatchFactory do
     end
 
     it "has both teams assigned as opponents" do
-      expect(subject.opponent_1).to eq team1
-      expect(subject.opponent_2).to eq team2
+      expect(subject.opponent1).to eq team1
+      expect(subject.opponent2).to eq team2
     end
 
     it "does not create the match" do

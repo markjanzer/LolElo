@@ -54,38 +54,38 @@ class ChartData
   end
 
   def match_datum(match)
-    opponent_1 = teams.find { |t| t[:id] == match.opponent_1_id }
-    opponent_2 = teams.find { |t| t[:id] == match.opponent_2_id }
+    opponent1 = teams.find { |t| t[:id] == match.opponent1_id }
+    opponent2 = teams.find { |t| t[:id] == match.opponent2_id }
 
-    opponent_1_initial_elo = match.opponent_1.elo_before(match.games.first.end_at)
-    opponent_2_initial_elo = match.opponent_2.elo_before(match.games.first.end_at)
+    opponent1_initial_elo = match.opponent1.elo_before(match.games.first.end_at)
+    opponent2_initial_elo = match.opponent2.elo_before(match.games.first.end_at)
 
-    opponent_1_final_elo = match.opponent_1.elo_after(match.games.last.end_at)
-    opponent_2_final_elo = match.opponent_2.elo_after(match.games.last.end_at)
+    opponent1_final_elo = match.opponent1.elo_after(match.games.last.end_at)
+    opponent2_final_elo = match.opponent2.elo_after(match.games.last.end_at)
 
-    opponent_1_elo_change = opponent_1_final_elo - opponent_1_initial_elo
-    opponent_2_elo_change = opponent_2_final_elo - opponent_2_initial_elo
+    opponent1_elo_change = opponent1_final_elo - opponent1_initial_elo
+    opponent2_elo_change = opponent2_final_elo - opponent2_initial_elo
 
-    opponent_1_score = match.games.where(winner: opponent_1).count
-    opponent_2_score = match.games.where(winner: opponent_2).count
+    opponent1_score = match.games.where(winner: opponent1).count
+    opponent2_score = match.games.where(winner: opponent2).count
 
     victor = nil
-    if opponent_1_score > opponent_2_score
-      victor = opponent_1
-    elsif opponent_2_score > opponent_1_score
-      victor = opponent_2
+    if opponent1_score > opponent2_score
+      victor = opponent1
+    elsif opponent2_score > opponent1_score
+      victor = opponent2
     end
 
     match_hash = {
       date: format_date(match.end_at),
-      opponent_1: opponent_1,
-      opponent_2: opponent_2,
-      opponent_1_elo: opponent_1_initial_elo,
-      opponent_2_elo: opponent_2_initial_elo,
-      opponent_1_elo_change: opponent_1_elo_change,
-      opponent_2_elo_change: opponent_2_elo_change,
-      opponent_1_score: opponent_1_score,
-      opponent_2_score: opponent_2_score,
+      opponent1: opponent1,
+      opponent2: opponent2,
+      opponent1_elo: opponent1_initial_elo,
+      opponent2_elo: opponent2_initial_elo,
+      opponent1_elo_change: opponent1_elo_change,
+      opponent2_elo_change: opponent2_elo_change,
+      opponent1_score: opponent1_score,
+      opponent2_score: opponent2_score,
       victor: victor
     }
   end

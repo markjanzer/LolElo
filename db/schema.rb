@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_19_053917) do
+ActiveRecord::Schema.define(version: 2021_07_19_060013) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -34,12 +34,12 @@ ActiveRecord::Schema.define(version: 2021_07_19_053917) do
 
   create_table "matches", force: :cascade do |t|
     t.datetime "end_at"
-    t.bigint "opponent_1_id"
-    t.bigint "opponent_2_id"
+    t.bigint "opponent1_id"
+    t.bigint "opponent2_id"
     t.integer "panda_score_id"
     t.bigint "tournament_id"
-    t.index ["opponent_1_id"], name: "index_matches_on_opponent_1_id"
-    t.index ["opponent_2_id"], name: "index_matches_on_opponent_2_id"
+    t.index ["opponent1_id"], name: "index_matches_on_opponent1_id"
+    t.index ["opponent2_id"], name: "index_matches_on_opponent2_id"
     t.index ["tournament_id"], name: "index_matches_on_tournament_id"
   end
 

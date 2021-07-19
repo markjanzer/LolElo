@@ -119,7 +119,7 @@ RSpec.describe Seeder::SeedFromPandaScore do
       end
 
       it "creates a match that has the two teams as opponents" do
-        opponent_ids = [Match.first.opponent_1.id, Match.first.opponent_2.id]
+        opponent_ids = [Match.first.opponent1.id, Match.first.opponent2.id]
         expect(opponent_ids).to eq [Team.first.id, Team.second.id]
       end
 

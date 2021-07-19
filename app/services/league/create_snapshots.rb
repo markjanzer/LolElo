@@ -30,7 +30,7 @@ class League
     end
 
     def create_snapshots_from_matches(serie)
-      serie.matches.includes(:opponent_1, :opponent_2).order(:end_at).each do |match|
+      serie.matches.includes(:opponent1, :opponent2).order(:end_at).each do |match|
         create_snapshots_for_match(match)
       end
     end

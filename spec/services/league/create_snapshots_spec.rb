@@ -37,7 +37,7 @@ RSpec.describe League::CreateSnapshots do
       before { subject }
 
       context "when the series has a match with two games" do
-        let(:s1_t1_matches) { create_list(:match, 1, opponent_1: team1, opponent_2: team2, games: s1_t1_m1_games) }
+        let(:s1_t1_matches) { create_list(:match, 1, opponent1: team1, opponent2: team2, games: s1_t1_m1_games) }
         let(:s1_t1_m1_games) { [s1_t1_m1_game2, s1_t1_m1_game1] }
         let(:s1_t1_m1_game1) { create(:game, winner: team1, end_at: "2020-01-02") }
         let(:s1_t1_m1_game2) { create(:game, winner: team2, end_at: Date.parse("2020-01-02") + 1.hour) }
@@ -54,9 +54,9 @@ RSpec.describe League::CreateSnapshots do
 
       context "when the series has two matches with a game each" do
         let(:s1_t1_matches) { [s1_t1_match2, s1_t1_match1] }
-        let(:s1_t1_match1) { create(:match, opponent_1: team1, opponent_2: team2, games: [s1_t1_m1_game1], end_at: "2020-01-02") }
+        let(:s1_t1_match1) { create(:match, opponent1: team1, opponent2: team2, games: [s1_t1_m1_game1], end_at: "2020-01-02") }
         let(:s1_t1_m1_game1) { create(:game, winner: team1, end_at: "2020-01-02") }
-        let(:s1_t1_match2) { create(:match, opponent_1: team1, opponent_2: team2, games: [s1_t1_m2_game1], end_at: "2020-01-03") }
+        let(:s1_t1_match2) { create(:match, opponent1: team1, opponent2: team2, games: [s1_t1_m2_game1], end_at: "2020-01-03") }
         let(:s1_t1_m2_game1) { create(:game, winner: team2, end_at: "2020-01-03") }
 
         it "calculates elos from the matches in the correct order" do
@@ -74,12 +74,12 @@ RSpec.describe League::CreateSnapshots do
       before { subject }
 
       let(:series) { [serie2, serie1]}
-      let(:s1_t1_matches) { create_list(:match, 1, opponent_1: team1, opponent_2: team2, games: s1_t1_m1_games) }
+      let(:s1_t1_matches) { create_list(:match, 1, opponent1: team1, opponent2: team2, games: s1_t1_m1_games) }
       let(:s1_t1_m1_games) { create_list(:game, 1, winner: team1, end_at: "2020-01-02") }
       
       let(:serie2) { create(:serie, tournaments: [s2_tournament], begin_at: "2020-06-01", year: 2020) }
       let(:s2_tournament) { create(:tournament, teams: [team1, team2], matches: s2_t1_matches) }
-      let(:s2_t1_matches) { create_list(:match, 1, opponent_1: team1, opponent_2: team2, games: s2_t1_m1_games) }
+      let(:s2_t1_matches) { create_list(:match, 1, opponent1: team1, opponent2: team2, games: s2_t1_m1_games) }
       let(:s2_t1_m1_games) { create_list(:game, 1, winner: team2, end_at: "2020-06-02") }
 
       it "calculates the series in the correct order" do

@@ -51,33 +51,33 @@ export const Chart = ({ chartData }) => {
   }
 
   function renderMatch(match) {
-    let score = `${match.opponent_1_score} - ${match.opponent_2_score}`;
+    let score = `${match.opponent1_score} - ${match.opponent2_score}`;
 
     return (
       <li className={styles.match}>
         <div className={styles.opponent}>
           <div
             className={styles.opponentAcronym}
-            style={{ borderBottom: `2px solid ${match.opponent_1.color}` }}
+            style={{ borderBottom: `2px solid ${match.opponent1.color}` }}
           >
-            {match.opponent_1.acronym}
+            {match.opponent1.acronym}
           </div>
           <div className={styles.opponentEloData}>
-            <div className={styles.opponentElo}>{match.opponent_1_elo}</div>
-            {renderEloChange(match.opponent_1_elo_change)}
+            <div className={styles.opponentElo}>{match.opponent1_elo}</div>
+            {renderEloChange(match.opponent1_elo_change)}
           </div>
         </div>
         <div className={styles.matchResult}>{score}</div>
         <div className={styles.opponent}>
           <div
             className={styles.opponentAcronym}
-            style={{ borderBottom: `2px solid ${match.opponent_2.color}` }}
+            style={{ borderBottom: `2px solid ${match.opponent2.color}` }}
           >
-            {match.opponent_2.acronym}
+            {match.opponent2.acronym}
           </div>
           <div className={styles.opponentEloData}>
-            <div className={styles.opponentElo}>{match.opponent_2_elo}</div>
-            {renderEloChange(match.opponent_2_elo_change)}
+            <div className={styles.opponentElo}>{match.opponent2_elo}</div>
+            {renderEloChange(match.opponent2_elo_change)}
           </div>
         </div>
       </li>

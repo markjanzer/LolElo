@@ -9,10 +9,10 @@ class Game < ApplicationRecord
     return if winner.nil?
     
     # There probably is a more elegant way to do this
-    if winner == match.opponent_1
-      match.opponent_2
+    if winner == match.opponent1
+      match.opponent2
     else
-      match.opponent_1
+      match.opponent1
     end
   end
 end
