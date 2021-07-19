@@ -39,16 +39,8 @@ class Seeder
     def create_all_tournaments
       Tournament.transaction do
         Serie.all.each do |serie|
-          create_tournaments(serie)
+          Seeder::CreateTournaments.new(serie).call
         end
-      end
-    end
-
-    def create_tournaments(serie)
-      tournaments_data = PandaScore.tournaments(serie_id: serie.external_id)
-      tournaments_data.each do |tournament_data|
-        tournament = TournamentFactory.new(tournament_data).call
-        serie.tournaments << tournament
       end
     end
     
