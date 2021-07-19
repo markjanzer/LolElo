@@ -30,7 +30,7 @@ RSpec.describe TeamFactory do
 
     it "returns a team with set attributes" do
       expect(subject).to have_attributes({
-        external_id: team_data["id"],
+        panda_score_id: team_data["id"],
         name: team_data["name"],
         acronym: team_data["acronym"],
         color: color,

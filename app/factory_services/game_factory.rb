@@ -36,10 +36,10 @@ class GameFactory
   end
 
   def winner
-    Team.find_by(external_id: game_data['winner']['id'])
+    Team.find_by(panda_score_id: game_data['winner']['id'])
   end
 
   def game
-    @game ||= Game.find_or_initialize_by(external_id: game_data['id'])
+    @game ||= Game.find_or_initialize_by(panda_score_id: game_data['id'])
   end
 end

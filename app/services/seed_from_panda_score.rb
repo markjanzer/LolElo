@@ -1,3 +1,4 @@
+# REMOVE THIS
 class SeedFromPandaScore
 
   UNIQUE_COLORS = ['#e6194B', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#42d4f4', '#f032e6', '#bfef45', '#fabed4', '#469990', '#dcbeff', '#9A6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#a9a9a9', '#000000'].freeze
@@ -42,7 +43,7 @@ class SeedFromPandaScore
   end
 
   def create_series(league)
-    series_data = PandaScore.series(league_id: league.external_id)
+    series_data = PandaScore.series(league_id: league.panda_score_id)
     valid_series_data = series_data.select { |serie_data| valid_serie(serie_data) }
     valid_series_data.each do |serie_data|
       serie = SerieFactory.new(serie_data).call
@@ -63,7 +64,7 @@ class SeedFromPandaScore
   end
 
   def create_tournaments(serie)
-    tournaments_data = PandaScore.tournaments(serie_id: serie.external_id)
+    tournaments_data = PandaScore.tournaments(serie_id: serie.panda_score_id)
     tournaments_data.each do |tournament_data|
       tournament = TournamentFactory.new(tournament_data).call
       serie.tournaments << tournament
@@ -73,7 +74,7 @@ class SeedFromPandaScore
   def create_all_teams
     Team.transaction do
       Tournament.all.each do |tournament|
-        teams_data = PandaScore.teams(tournament_id: tournament.external_id)
+        teams_data = PandaScore.teams(tournament_id: tournament.panda_score_id)
         teams_data.each do |team_data|
           color = unique_team_color(tournament.serie)
           team = TeamFactory.new(team_data: team_data, color: color).call
@@ -92,7 +93,7 @@ class SeedFromPandaScore
   def create_all_matches
     Match.transaction do
       Tournament.all.each do |tournament|
-        matches_data = PandaScore.matches(tournament_id: tournament.external_id)
+        matches_data = PandaScore.matches(tournament_id: tournament.panda_score_id)
         matches_data.each do |match_data|
           match = MatchFactory.new(match_data).call
           tournament.matches << match
@@ -104,7 +105,7 @@ class SeedFromPandaScore
   def create_all_games
     Game.transaction do
       Match.all.each do |match|
-        games_data = PandaScore.games(match_id: match.external_id)
+        games_data = PandaScore.games(match_id: match.panda_score_id)
         completed_games_data = games_data.reject { |game| game['forfeit'] }
         completed_games_data.each do |game_data|
           game = GameFactory.new(game_data).call

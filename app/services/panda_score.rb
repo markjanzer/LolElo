@@ -40,7 +40,7 @@ class PandaScore
 
   def self.get_data_for(object)
     path = object_path(object)
-    get_data(path: path, id: object.external_id)
+    get_data(path: path, id: object.panda_score_id)
   end
 
   private

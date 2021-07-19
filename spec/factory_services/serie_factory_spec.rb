@@ -22,7 +22,7 @@ RSpec.describe SerieFactory do
 
     it "returns a serie with set attributes" do
       expect(subject).to have_attributes({
-        external_id: 1,
+        panda_score_id: 1,
         year: 2019,
         begin_at: DateTime.parse("2019-01-26T22:00:00Z"),
         full_name: "Spring 2019"

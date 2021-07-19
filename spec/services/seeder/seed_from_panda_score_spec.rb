@@ -205,7 +205,7 @@ RSpec.describe Seeder::SeedFromPandaScore do
       
       it "does not create forfeit games" do
         expect(Game.count).to eq 1
-        expect(Game.first.external_id).to eq 1
+        expect(Game.first.panda_score_id).to eq 1
       end
     end
   end

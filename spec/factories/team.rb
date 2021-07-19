@@ -2,6 +2,6 @@
 
 FactoryBot.define do
   factory :team do
-    external_id { 1 }
+    panda_score_id { 1 }
   end
 end

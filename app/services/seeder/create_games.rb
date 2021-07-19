@@ -15,7 +15,7 @@ class Seeder
     attr_reader :match
 
     def games_data
-      @games_data ||= PandaScore.games(match_id: match.external_id)
+      @games_data ||= PandaScore.games(match_id: match.panda_score_id)
     end
 
     def completed_games_data

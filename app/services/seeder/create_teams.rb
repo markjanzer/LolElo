@@ -20,7 +20,7 @@ class Seeder
     delegate :serie, to: :tournament
 
     def teams_data
-      @teams_data ||= PandaScore.teams(tournament_id: tournament.external_id)
+      @teams_data ||= PandaScore.teams(tournament_id: tournament.panda_score_id)
     end
 
     def new_tournament(tournament_data)

@@ -24,7 +24,7 @@ RSpec.describe LeagueFactory do
 
     it "returns a league with set attributes" do
       expect(subject).to have_attributes({
-        external_id: 1,
+        panda_score_id: 1,
         name: "First League",
         time_zone: time_zone
       })

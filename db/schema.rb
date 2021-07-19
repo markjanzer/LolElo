@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -12,75 +10,77 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20_200_721_040_936) do
+ActiveRecord::Schema.define(version: 2021_07_19_053917) do
+
   # These are extensions that must be enabled in order to support this database
-  enable_extension 'plpgsql'
+  enable_extension "plpgsql"
 
-  create_table 'games', force: :cascade do |t|
-    t.bigint 'match_id'
-    t.bigint 'winner_id'
-    t.integer 'external_id'
-    t.datetime 'end_at'
-    t.index ['external_id'], name: 'index_games_on_external_id'
-    t.index ['match_id'], name: 'index_games_on_match_id'
-    t.index ['winner_id'], name: 'index_games_on_winner_id'
+  create_table "games", force: :cascade do |t|
+    t.bigint "match_id"
+    t.bigint "winner_id"
+    t.integer "panda_score_id"
+    t.datetime "end_at"
+    t.index ["match_id"], name: "index_games_on_match_id"
+    t.index ["panda_score_id"], name: "index_games_on_panda_score_id"
+    t.index ["winner_id"], name: "index_games_on_winner_id"
   end
 
-  create_table 'leagues', force: :cascade do |t|
-    t.string 'name'
-    t.integer 'external_id'
-    t.string 'time_zone'
-    t.index ['external_id'], name: 'index_leagues_on_external_id'
+  create_table "leagues", force: :cascade do |t|
+    t.string "name"
+    t.integer "panda_score_id"
+    t.string "time_zone"
+    t.index ["panda_score_id"], name: "index_leagues_on_panda_score_id"
   end
 
-  create_table 'matches', force: :cascade do |t|
-    t.datetime 'end_at'
-    t.bigint 'opponent_1_id'
-    t.bigint 'opponent_2_id'
-    t.integer 'external_id'
-    t.bigint 'tournament_id'
-    t.index ['opponent_1_id'], name: 'index_matches_on_opponent_1_id'
-    t.index ['opponent_2_id'], name: 'index_matches_on_opponent_2_id'
-    t.index ['tournament_id'], name: 'index_matches_on_tournament_id'
+  create_table "matches", force: :cascade do |t|
+    t.datetime "end_at"
+    t.bigint "opponent_1_id"
+    t.bigint "opponent_2_id"
+    t.integer "panda_score_id"
+    t.bigint "tournament_id"
+    t.index ["opponent_1_id"], name: "index_matches_on_opponent_1_id"
+    t.index ["opponent_2_id"], name: "index_matches_on_opponent_2_id"
+    t.index ["tournament_id"], name: "index_matches_on_tournament_id"
   end
 
-  create_table 'series', force: :cascade do |t|
-    t.integer 'external_id'
-    t.datetime 'begin_at'
-    t.string 'full_name'
-    t.integer 'year'
-    t.bigint 'league_id'
-    t.index ['league_id'], name: 'index_series_on_league_id'
+  create_table "series", force: :cascade do |t|
+    t.integer "panda_score_id"
+    t.datetime "begin_at"
+    t.string "full_name"
+    t.integer "year"
+    t.bigint "league_id"
+    t.index ["league_id"], name: "index_series_on_league_id"
   end
 
-  create_table 'snapshots', force: :cascade do |t|
-    t.bigint 'team_id'
-    t.bigint 'game_id'
-    t.datetime 'date'
-    t.integer 'elo'
-    t.index ['game_id'], name: 'index_snapshots_on_game_id'
-    t.index ['team_id'], name: 'index_snapshots_on_team_id'
+  create_table "snapshots", force: :cascade do |t|
+    t.bigint "team_id"
+    t.bigint "game_id"
+    t.datetime "date"
+    t.integer "elo"
+    t.index ["game_id"], name: "index_snapshots_on_game_id"
+    t.index ["team_id"], name: "index_snapshots_on_team_id"
   end
 
-  create_table 'teams', force: :cascade do |t|
-    t.string 'name'
-    t.string 'acronym'
-    t.integer 'external_id'
-    t.string 'color'
-    t.index ['external_id'], name: 'index_teams_on_external_id'
+  create_table "teams", force: :cascade do |t|
+    t.string "name"
+    t.string "acronym"
+    t.integer "panda_score_id"
+    t.string "color"
+    t.index ["panda_score_id"], name: "index_teams_on_panda_score_id"
   end
 
-  create_table 'teams_tournaments', force: :cascade do |t|
-    t.bigint 'team_id'
-    t.bigint 'tournament_id'
-    t.index ['team_id'], name: 'index_teams_tournaments_on_team_id'
-    t.index ['tournament_id'], name: 'index_teams_tournaments_on_tournament_id'
+  create_table "teams_tournaments", force: :cascade do |t|
+    t.bigint "team_id"
+    t.bigint "tournament_id"
+    t.index ["team_id"], name: "index_teams_tournaments_on_team_id"
+    t.index ["tournament_id"], name: "index_teams_tournaments_on_tournament_id"
   end
 
-  create_table 'tournaments', force: :cascade do |t|
-    t.integer 'external_id'
-    t.string 'name'
-    t.bigint 'serie_id'
-    t.index ['serie_id'], name: 'index_tournaments_on_serie_id'
+  create_table "tournaments", force: :cascade do |t|
+    t.integer "panda_score_id"
+    t.string "name"
+    t.bigint "serie_id"
+    t.index ["serie_id"], name: "index_tournaments_on_serie_id"
   end
+
 end

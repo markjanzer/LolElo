@@ -24,25 +24,9 @@ class LeagueFactory
 
   def initialize_league
     League.find_or_initialize_by(
-      external_id: league_data['id'],
+      panda_score_id: league_data['id'],
       name: league_data['name'],
       time_zone: time_zone
     )
   end
-
-  # def create_series
-  #   filtered_series_ids.each do |series_id|
-  #     SerieFactory.new(series_id).call
-  #   end
-  # end
-
-  # def filtered_series
-  #   league_data['series'].filter do |series|
-  #     series['full_name'].split.first.match?('Spring|Summer')
-  #   end
-  # end
-
-  # def filtered_series_ids
-  #   filtered_series.pluck('id')
-  # end
 end

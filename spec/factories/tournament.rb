@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :tournament do
-    external_id { 1 }
+    panda_score_id { 1 }
     serie
   end
 end

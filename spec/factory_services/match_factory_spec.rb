@@ -13,19 +13,19 @@ RSpec.describe MatchFactory do
       [
         { 
           "opponent" => { 
-            "id" => team1.external_id
+            "id" => team1.panda_score_id
           }
         },
         {
           "opponent" => {
-            "id" => team2.external_id
+            "id" => team2.panda_score_id
           }
         }
       ]
     }
 
-    let(:team1) { create(:team, external_id: 1) }
-    let(:team2) { create(:team, external_id: 2) }
+    let(:team1) { create(:team, panda_score_id: 1) }
+    let(:team2) { create(:team, panda_score_id: 2) }
 
     context "without match_data" do
       let(:match_data) { nil }
@@ -58,7 +58,7 @@ RSpec.describe MatchFactory do
 
     it "returns a match with set attributes" do
       expect(subject).to have_attributes({
-        external_id: 1,
+        panda_score_id: 1,
       })
     end
 

@@ -20,7 +20,7 @@ RSpec.describe TournamentFactory do
 
     it "returns a tournament with set attributes" do
       expect(subject).to have_attributes({
-        external_id: 1,
+        panda_score_id: 1,
         name: "Regular season",
       })
     end

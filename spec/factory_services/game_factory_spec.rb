@@ -12,7 +12,7 @@ RSpec.describe GameFactory do
         "id" => 1,
         "end_at" => end_at,
         "winner" => {
-          "id" => winner&.external_id
+          "id" => winner&.panda_score_id
         }
       }
     }
@@ -38,7 +38,7 @@ RSpec.describe GameFactory do
 
     it "returns a match with set attributes" do
       expect(subject).to have_attributes({
-        external_id: 1,
+        panda_score_id: 1,
         end_at: Date.parse(end_at),
         winner: winner
       })
@@ -52,7 +52,7 @@ RSpec.describe GameFactory do
           "begin_at" => (Date.current - 1.day).to_s,
           "length" => 3600,
           "winner" => {
-            "id" => winner&.external_id
+            "id" => winner&.panda_score_id
           }
         }
       }

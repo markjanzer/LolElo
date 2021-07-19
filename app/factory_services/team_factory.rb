@@ -15,12 +15,12 @@ class TeamFactory
       raise "color is required"
     end
 
-    if Team.exists?(external_id: team_data["id"])
-      return Team.find_by(external_id: team_data["id"])
+    if Team.exists?(panda_score_id: team_data["id"])
+      return Team.find_by(panda_score_id: team_data["id"])
     end
 
     Team.new(
-      external_id: team_data["id"],
+      panda_score_id: team_data["id"],
       name: team_data["name"],
       acronym: team_data["acronym"],
       color: color,
