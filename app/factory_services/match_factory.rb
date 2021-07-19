@@ -39,8 +39,4 @@ class MatchFactory
   def opponent_2
     Team.find_by(panda_score_id: match_data['opponents'].second['opponent']['id'])
   end
-
-  # def completed_games_data(match_data)
-  #   match_data['games'].reject { |game| game['forfeit'] }
-  # end
 end
