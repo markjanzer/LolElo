@@ -9,20 +9,20 @@ RSpec.describe Seeder::SeedFromPandaScore do
 
     let(:leagues_seed_data) { [{ abbreviation: "nalcs", league_id: 1, time_zone: 'America/Los_Angeles' }] }
     let(:league_data) { { "id" => 1, "name" => "First League" } }
-    let(:series_data) { 
+    let(:series_data) do 
       [{ 
         "id" => 1, 
         "year" => 2019, 
         "begin_at" => "2019-01-26T22:00:00Z",
         "full_name" => "Spring 2019",
       }] 
-    }
-    let(:tournaments_data) {
+    end
+    let(:tournaments_data) do
       [{
         "id" => 1, 
         "name" => "Regular season",
       }]
-    }
+    end
     let(:teams_data) {
       [
         {

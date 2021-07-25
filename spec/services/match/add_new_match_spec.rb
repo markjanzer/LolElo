@@ -2,10 +2,29 @@
 
 require 'rails_helper'
 
-RSpec.describe Match::AddNewMatch do
+RSpec.fdescribe Match::AddNewMatch do
   describe "#call" do
+    subject { Match::AddNewMatch.new(match_data).call }
+
+    let(:match_data) do
+      {
+        "id" => 1,
+        "serie" => match_serie_data,
+      }
+    end
+
+    let(:match_serie_data) do
+      {
+        "full_name" => "Spring 2020",
+      }
+    end
+
     context "when the match already exists" do
-      it "does nothing"
+      let!(:existing_match) { create(:match, panda_score_id: 1) }
+
+      it "does nothing" do
+        expect { subject }.not_to change { Match.count }
+      end
     end
 
     context "when the serie is not legitimate" do

@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :match do
     tournament
-    opponent1 { team }
-    opponent2 { team }
+    association :opponent1, factory: :team
+    association :opponent2, factory: :team
   end
 end

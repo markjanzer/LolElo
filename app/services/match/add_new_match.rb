@@ -38,7 +38,7 @@ class Match
     end
 
     def tournament
-      @tournament ||= Tournament.find_by(panda_score_id: match_data["tournament_id"]) || do
+      @tournament ||= Tournament.find_by(panda_score_id: match_data["tournament_id"]) || begin
         tournament = TournamentFactory.new(match_data["tournament"]).call
         league.tournaments << tournament
 
@@ -51,7 +51,7 @@ class Match
     end
 
     def find_or_create_team(team_data)
-      Team.find_by(panda_score_id: team_data["id"]) || do
+      Team.find_by(panda_score_id: team_data["id"]) || begin
         team = TeamFactory.new(team_data).tcall
         team.save
         team
@@ -59,7 +59,7 @@ class Match
     end
 
     def serie
-      @serie ||= Serie.find_by(panda_score_id: match_data["serie_id"]) || do
+      @serie ||= Serie.find_by(panda_score_id: match_data["serie_id"]) || begin
         serie = SerieFactory.new(match_data["serie"]).call
         tournament.series << serie
         serie
