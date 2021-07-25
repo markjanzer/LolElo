@@ -23,7 +23,7 @@ class Seeder
     end
 
     def valid_serie(serie_data)
-      serie_data['full_name'].split.first.match?('Spring|Summer')
+      Serie.valid_name?(serie_data['full_name'])
     end
 
     def new_serie(serie_data)
