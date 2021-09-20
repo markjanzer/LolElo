@@ -12,6 +12,9 @@ class Match
       return if match_exists?
       return unless valid_serie?
 
+      # Do I need these?
+      # Also this feels too implicit. I think I should explictly create
+      # them if they don't exist
       serie
       tournament
 
@@ -57,7 +60,7 @@ class Match
 
     def find_or_create_team(team_data)
       Team.find_by(panda_score_id: team_data["id"]) || begin
-        team = TeamFactory.new(team_data).tcall
+        team = TeamFactory.new(team_data).call
         team.save
         team
       end

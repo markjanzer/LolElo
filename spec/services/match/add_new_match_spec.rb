@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Match::AddNewMatch do
+RSpec.fdescribe Match::AddNewMatch do
   describe "#call" do
     subject { Match::AddNewMatch.new(match_data).call }
 
@@ -50,17 +50,17 @@ RSpec.describe Match::AddNewMatch do
       ]
     end
 
-    let!(:league) { create(:league, panda_score_id: 1) }
-    let!(:tournament) { create(:tournament, panda_score_id: 1) }
+    let(:league) { create(:league, panda_score_id: 1) }
+    let!(:tournament) { create(:tournament, panda_score_id: 1, league_id: league) }
     let!(:serie) { create(:serie, panda_score_id: 1) }
     let!(:team1) { create(:team, panda_score_id: 1) }
     let!(:team2) { create(:team, panda_score_id: 2) }
 
     context "when the league does not exist" do
       let!(:league) { nil }
+      # League.first is returning something 
 
       it "raises an error" do
-
         expect { subject }.to raise_error "League does not exist"
       end
     end

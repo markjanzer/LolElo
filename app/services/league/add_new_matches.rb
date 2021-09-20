@@ -14,7 +14,7 @@ class League
 
     attr_reader :league
 
-    def last_end_at
+    def last_match_end_at
       Match.order(:end_at).last.end_at
     end
 
@@ -24,7 +24,7 @@ class League
         path: 'matches',
         params: {
           "filter[league_id]": league.panda_score_id,
-          "range[end_at]": "#{last_end_at.iso8601},#{DateTime.current.iso8601}"
+          "range[end_at]": "#{last_match_end_at.iso8601},#{DateTime.current.iso8601}"
         }
       )
     end
