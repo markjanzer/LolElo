@@ -11,7 +11,6 @@ RSpec.describe TeamFactory do
       }
     }
     let(:serie) { create(:serie) }
-    # let(:color) { "#000000" }
 
     context "without team_data" do
       let(:team_data) { nil }
@@ -34,7 +33,6 @@ RSpec.describe TeamFactory do
         panda_score_id: team_data["id"],
         name: team_data["name"],
         acronym: team_data["acronym"],
-        # color: color,
       })
     end
 

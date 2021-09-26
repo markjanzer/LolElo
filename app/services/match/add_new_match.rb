@@ -94,7 +94,7 @@ class Match
 
     def find_or_create_teams
       match_data["teams"].each do |team_data|
-        tournament.teams << find_or_create_team(team_data)
+        find_or_create_team(team_data)
       end
     end
   end
