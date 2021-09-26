@@ -175,9 +175,10 @@ RSpec.fdescribe Match::AddNewMatch do
           expect { subject }.to change { Team.count }.by 2
         end
 
-        it "assigns the teams to the tournament"
+        it "assigns the teams to the tournament" do
+          expect { subject }.to change { tournament.reload.teams.count }.by 2
+        end
       end
     end
-
   end
 end
