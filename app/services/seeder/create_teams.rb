@@ -31,12 +31,8 @@ class Seeder
       remaining_colors.sample
     end
 
-    def remaining_colors
-      Team::UNIQUE_COLORS - serie.teams.pluck(:color)
-    end
-
     def new_team(team_data)
-      TeamFactory.new(team_data: team_data, color: unique_team_color).call
+      TeamFactory.new(team_data: team_data, serie: serie).call
     end
   end
 end

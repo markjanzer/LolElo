@@ -2,7 +2,7 @@
 
 RSpec.describe TeamFactory do
   describe "#call" do
-    subject { TeamFactory.new(team_data: team_data, color: color).call }
+    subject { TeamFactory.new(team_data: team_data, serie: serie).call }
     let(:team_data) {
       {
         "id" => 1,
@@ -10,7 +10,8 @@ RSpec.describe TeamFactory do
         "acronym" => "C9"
       }
     }
-    let(:color) { "#000000" }
+    let(:serie) { create(:serie) }
+    # let(:color) { "#000000" }
 
     context "without team_data" do
       let(:team_data) { nil }
@@ -20,11 +21,11 @@ RSpec.describe TeamFactory do
       end
     end
 
-    context "without color" do
-      let(:color) { nil }
+    context "without serie" do
+      let(:serie) { nil }
 
       it "raises and error" do
-        expect { subject }.to raise_error "color is required"
+        expect { subject }.to raise_error "serie is required to set the color"
       end
     end
 
@@ -33,7 +34,7 @@ RSpec.describe TeamFactory do
         panda_score_id: team_data["id"],
         name: team_data["name"],
         acronym: team_data["acronym"],
-        color: color,
+        # color: color,
       })
     end
 

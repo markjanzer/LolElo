@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class TeamFactory
-  def initialize(team_data:, color:)
+  def initialize(team_data:, serie:)
     @team_data = team_data
-    @color = color
+    @serie = serie
   end
   
   def call
@@ -11,8 +11,8 @@ class TeamFactory
       raise "team_data is required"
     end
 
-    if color.nil?
-      raise "color is required"
+    if serie.nil?
+      raise "serie is required to set the color"
     end
 
     if Team.exists?(panda_score_id: team_data["id"])
@@ -29,5 +29,13 @@ class TeamFactory
   
   private
   
-  attr_reader :team_data, :color
+  attr_reader :team_data, :serie
+
+  def remaining_colors
+    Team::UNIQUE_COLORS - serie.teams.pluck(:color)
+  end
+
+  def color
+    remaining_colors.sample
+  end
 end

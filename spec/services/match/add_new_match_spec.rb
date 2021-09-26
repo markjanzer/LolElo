@@ -152,8 +152,8 @@ RSpec.fdescribe Match::AddNewMatch do
         end
 
         context "the teams belongs to the tournament" do
-          let!(:teams_tournament_1) { create(:teams_tournament, team: team1, tournament: tournament) }
-          let!(:teams_tournament_2) { create(:teams_tournament, team: team2, tournament: tournament) }
+          let!(:teams_tournament1) { create(:teams_tournament, team: team1, tournament: tournament) }
+          let!(:teams_tournament2) { create(:teams_tournament, team: team2, tournament: tournament) }
 
           it "does not add the teams to the tournament" do
             expect { subject }.not_to change { tournament.teams.count }
@@ -168,7 +168,13 @@ RSpec.fdescribe Match::AddNewMatch do
       end
 
       context "the teams do not exist" do
-        it "creates new teams"
+        let(:team1) { nil }
+        let(:team2) { nil }
+
+        it "creates new teams" do
+          expect { subject }.to change { Team.count }.by 2
+        end
+
         it "assigns the teams to the tournament"
       end
     end
