@@ -17,8 +17,9 @@ class Match
       serie
       tournament
 
-      match = MatchFactory.new(match_data).call
       tournament.matches << match
+
+      assign_teams_to_tournament
 
       # Create the games for the match
       match_data["games"].each do |new_game|
@@ -38,6 +39,10 @@ class Match
 
     def match_exists?
       Match.find_by(panda_score_id: match_data["id"])
+    end
+    
+    def match
+      @match ||= MatchFactory.new(match_data).call
     end
 
     def league
@@ -60,7 +65,7 @@ class Match
     def find_or_create_team(team_data)
       Team.find_by(panda_score_id: team_data["id"]) || begin
         team = TeamFactory.new(team_data).call
-        team.save
+        tournament.teams << team
         team
       end
     end
@@ -70,6 +75,14 @@ class Match
         serie = SerieFactory.new(match_data["serie"]).call
         league.series << serie
         serie
+      end
+    end
+
+    def assign_teams_to_tournament
+      match.teams.each do |team|
+        unless tournament.teams.include?(team)
+          tournament.teams << team
+        end
       end
     end
 

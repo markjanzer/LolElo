@@ -74,20 +74,11 @@ RSpec.fdescribe Match::AddNewMatch do
       ]
     end
 
-    let(:league) { create(:league, panda_score_id: 1) }
+    let!(:league) { create(:league, panda_score_id: 1) }
     let!(:serie) { create(:serie, panda_score_id: 1, league: league) }
     let!(:tournament) { create(:tournament, panda_score_id: 1, serie: serie) }
-    let!(:team1) { create(:team, panda_score_id: 1) }
-    let!(:team2) { create(:team, panda_score_id: 2) }
-
-    # context "when the league does not exist" do
-    #   let!(:league) { nil }
-    #   # League.first is returning something 
-
-    #   fit "raises an error" do
-    #     expect { subject }.to raise_error "League does not exist"
-    #   end
-    # end
+    let!(:team1) { create(:team, panda_score_id: 1, name: "Cloud9", acronym: "C9") }
+    let!(:team2) { create(:team, panda_score_id: 2, name: "Golden Guardians", acronym: "GG") }
 
     context "when the match already exists" do
       let!(:existing_match) { create(:match, panda_score_id: 1) }
@@ -109,6 +100,38 @@ RSpec.fdescribe Match::AddNewMatch do
       end
     end
 
+    context "when the serie does not exist" do
+      let(:serie) { nil }
+      let(:tournament) { nil }
+
+      it "creates a serie" do
+        expect { subject }.to change { Serie.count }.by 1
+      end
+      
+      it "creates a serie that belongs to the league" do
+        subject
+        expect(Serie.last.league).to eq league
+      end
+    end
+
+    context "when the tournament does not exist" do
+      let(:tournament) { nil }
+
+      it "creates a tournament" do
+        expect { subject }.to change { Tournament.count }.by 1
+      end
+
+      it "creates a tournament that belongs to the serie" do
+        subject
+        expect(Tournament.last.serie).to eq serie
+      end
+
+      it "creates teams for the tournament" do
+        subject
+        expect(Tournament.last.teams.length).to eq 2
+      end
+    end
+
     context "when the match does not exist" do
       it "creates the match" do
         expect { subject }.to change { Match.count }.by 1
@@ -122,22 +145,33 @@ RSpec.fdescribe Match::AddNewMatch do
         match = subject
         expect(match.games.first.match).to eq match
       end
-    end
 
-    context "when the tournament does not exist" do
-      let(:tournament) { nil }
+      context "the teams already exist" do
+        it "does not create new teams" do
+          expect { subject }.not_to change { Team.count }
+        end
 
-      it "creates a tournament" do
-        expect { subject }.to change { Tournament.count }.by 1
+        context "the teams belongs to the tournament" do
+          let!(:teams_tournament_1) { create(:teams_tournament, team: team1, tournament: tournament) }
+          let!(:teams_tournament_2) { create(:teams_tournament, team: team2, tournament: tournament) }
+
+          it "does not add the teams to the tournament" do
+            expect { subject }.not_to change { tournament.teams.count }
+          end
+        end
+
+        context "the teams don't belong to the tournament" do
+          it "adds the teams to the tournament" do
+            expect { subject }.to change { tournament.reload.teams.count }.by 2
+          end
+        end
       end
 
-      it "creates a tournament that belongs to the league"
-      it "creates teams for the tournament"
+      context "the teams do not exist" do
+        it "creates new teams"
+        it "assigns the teams to the tournament"
+      end
     end
 
-    context "when the serie does not exist" do
-      it "creates a serie"
-      it "creates a serie that belongs to the tournament"
-    end
   end
 end
