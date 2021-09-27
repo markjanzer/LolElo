@@ -6,6 +6,8 @@ class Team
     end
 
     def call
+      return if team.snapshots.where("date <= ?", serie.begin_at)
+
       if !team_in_previous_serie
         create_new_team_elo
       elsif previous_serie_in_other_season

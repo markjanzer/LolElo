@@ -15,6 +15,11 @@ RSpec.describe Team::SetInitialSerieElo do
 
 
     context "when the team has an elo from the current serie" do
+      # let(:match) { create(:match, tournament: tournament) }
+      # let(:other_team) { create(:team) }
+      # let(:game) { create(:game, opponent1: team, opponent2: other_team, match: match) }
+      let(:snapshot) { create(:snapshot, elo: 1500, team: team, date: "2020-06-01") }
+      
       it "does nothing" do
         expect { subject }.not_to change { Snapshot.count }
       end
