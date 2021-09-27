@@ -5,6 +5,7 @@ class Game
     end
 
     def call
+
       new_winner_elo, new_loser_elo = EloCalculator::GameResults.new(winner_elo: winner.elo, loser_elo: loser.elo).new_elos
       create_snapshot(team: winner, elo: new_winner_elo)
       create_snapshot(team: loser, elo: new_loser_elo)

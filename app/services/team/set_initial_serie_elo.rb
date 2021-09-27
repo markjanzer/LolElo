@@ -6,9 +6,9 @@ class Team
     end
 
     def call
-      return if team.snapshots.where("date <= ?", serie.begin_at)
+      return if team.snapshots.where("date >= ?", serie.begin_at).present?
 
-      if !team_in_previous_serie
+      if !previous_serie || !team_in_previous_serie
         create_new_team_elo
       elsif previous_serie_in_other_season
         create_reverted_elo
@@ -43,15 +43,11 @@ class Team
     end
 
     def create_reverted_elo
-      Snapshot.create!(team: team, elo: reverted_elo, date: first_of_year(serie.year))
+      Snapshot.create!(team: team, elo: reverted_elo, date: serie.begin_at)
     end
 
     def reverted_elo
       EloCalculator::Revert.new(team.elo).call
-    end
-
-    def first_of_year(year)
-      Date.new(year, 1, 1)
     end
   end
 end
