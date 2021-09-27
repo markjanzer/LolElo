@@ -14,6 +14,9 @@ RSpec.describe Game::CreateSnapshots do
     let(:winning_team_snapshot) { create(:snapshot, elo: 1500, date: "2020-01-01") }
     let(:losing_team_snapshot) { create(:snapshot, elo: 1500, date: "2020-01-01") }
 
+    context "the winning_team doesn't have a previous elo"
+    context "the winning_team doesn't have a previous elo from the series"
+
     it "creates a snapshot for the winning team" do
       expect { subject }.to change { winning_team.snapshots.count }.by(1)
     end

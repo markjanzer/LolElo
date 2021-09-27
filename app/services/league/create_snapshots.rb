@@ -9,12 +9,17 @@ class League
     def call
       raise "league not defined" unless league
 
+      # ordered_games.each do |game|
+      #   Game::CreateSnapshots.new(game).call
+      # end
+
       ordered_series.each do |serie|
         set_initial_elo_for_teams(serie)
         create_snapshots_from_matches(serie)
       end
     end
 
+    # This doesn't belong here
     def remove
       Snapshot.destroy_all
     end
