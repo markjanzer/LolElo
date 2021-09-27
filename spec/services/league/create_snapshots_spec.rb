@@ -3,7 +3,7 @@
 # Needed for when I want to run individual specs...
 require 'rails_helper'
 
-RSpec.xdescribe League::CreateSnapshots do
+RSpec.describe League::CreateSnapshots do
   describe "#call" do
     subject { League::CreateSnapshots.new(league).call }
 

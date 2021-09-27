@@ -7,6 +7,8 @@ RSpec.describe Game::CreateSnapshots do
   describe "#call" do
     subject { Game::CreateSnapshots.new(game).call }
 
+    let!(:serie) { create(:serie, begin_at: "2020-01-01", tournaments: [tournament] )}
+    let(:tournament) { create(:tournament, matches: [match]) }
     let!(:match) { create(:match, opponent1: winning_team, opponent2: losing_team, games: [game]) }
     let(:game) { create(:game, winner: winning_team, end_at: "2020-02-01") }
     let(:winning_team) { create(:team, name: "winning_team", snapshots: [winning_team_snapshot]) }

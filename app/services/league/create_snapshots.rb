@@ -9,14 +9,14 @@ class League
     def call
       raise "league not defined" unless league
 
-      # ordered_games.each do |game|
-      #   Game::CreateSnapshots.new(game).call
-      # end
-
-      ordered_series.each do |serie|
-        set_initial_elo_for_teams(serie)
-        create_snapshots_from_matches(serie)
+      ordered_games.each do |game|
+        Game::CreateSnapshots.new(game).call
       end
+
+      # ordered_series.each do |serie|
+      #   set_initial_elo_for_teams(serie)
+      #   create_snapshots_from_matches(serie)
+      # end
     end
 
     # This doesn't belong here
@@ -27,6 +27,12 @@ class League
     private
 
     attr_reader :league
+
+    def ordered_games
+      league.games.order(end_at: :asc)
+      # Game.joins(match: { tournament: { serie: :league }}).where(league: league).order(end_at: :asc)
+      # Game.where(match: { tournament: { serie: { league: league } } }).order(end_at: :asc)
+    end
 
     def set_initial_elo_for_teams(serie)
       serie.teams.each do |team|
