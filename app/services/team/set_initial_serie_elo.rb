@@ -1,6 +1,5 @@
 class Team
-  # Let's rename this after changing functionality
-  class SetInitialEloForSerie
+  class SetInitialSerieElo
     def initialize(team:, serie:)
       @serie = serie
       @team = team

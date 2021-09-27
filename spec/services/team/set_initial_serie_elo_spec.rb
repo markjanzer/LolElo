@@ -3,9 +3,9 @@
 # Needed for when I want to run individual specs...
 require 'rails_helper'
 
-RSpec.describe Team::SetInitialEloForSerie do
+RSpec.describe Team::SetInitialSerieElo do
   describe "#call" do
-    subject { Team::SetInitialEloForSerie.new(team: team, serie: serie).call }
+    subject { Team::SetInitialSerieElo.new(team: team, serie: serie).call }
 
     let!(:league) { create(:league, series: series) }
     let(:series) { [serie] }

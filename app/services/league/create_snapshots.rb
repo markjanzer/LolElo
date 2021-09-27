@@ -30,7 +30,7 @@ class League
 
     def set_initial_elo_for_teams(serie)
       serie.teams.each do |team|
-        Team::SetInitialEloForSerie.new(team: team, serie: serie).call
+        Team::SetInitialSerieElo.new(team: team, serie: serie).call
       end
     end
 
