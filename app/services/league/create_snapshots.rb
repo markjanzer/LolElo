@@ -12,11 +12,6 @@ class League
       ordered_games.each do |game|
         Game::CreateSnapshots.new(game).call
       end
-
-      # ordered_series.each do |serie|
-      #   set_initial_elo_for_teams(serie)
-      #   create_snapshots_from_matches(serie)
-      # end
     end
 
     # This doesn't belong here
@@ -31,33 +26,6 @@ class League
     def ordered_games
       league.games.order(end_at: :asc)
       # Game.joins(match: { tournament: { serie: :league }}).where(league: league).order(end_at: :asc)
-      # Game.where(match: { tournament: { serie: { league: league } } }).order(end_at: :asc)
-    end
-
-    def set_initial_elo_for_teams(serie)
-      serie.teams.each do |team|
-        Team::SetInitialSerieElo.new(team: team, serie: serie).call
-      end
-    end
-
-    def create_snapshots_from_matches(serie)
-      serie.matches.includes(:opponent1, :opponent2).order(:end_at).each do |match|
-        create_snapshots_for_match(match)
-      end
-    end
-
-    def create_snapshots_for_match(match)
-      match.games.order(:end_at).each do |game|
-        create_snapshots_for_game(game)
-      end
-    end
-
-    def create_snapshots_for_game(game)
-      Game::CreateSnapshots.new(game).call
-    end
-
-    def ordered_series
-      league.series.order(:begin_at)
     end
   end
 end
