@@ -57,10 +57,10 @@ ActiveRecord::Schema.define(version: 2021_09_29_214729) do
     t.bigint "game_id"
     t.datetime "date"
     t.integer "elo"
-    t.bigint "league_id"
+    t.bigint "serie_id"
     t.boolean "elo_reset", default: true, null: false
     t.index ["game_id"], name: "index_snapshots_on_game_id"
-    t.index ["league_id"], name: "index_snapshots_on_league_id"
+    t.index ["serie_id"], name: "index_snapshots_on_serie_id"
     t.index ["team_id"], name: "index_snapshots_on_team_id"
   end
 
@@ -87,5 +87,5 @@ ActiveRecord::Schema.define(version: 2021_09_29_214729) do
     t.index ["serie_id"], name: "index_tournaments_on_serie_id"
   end
 
-  add_foreign_key "snapshots", "leagues"
+  add_foreign_key "snapshots", "series", column: "serie_id"
 end

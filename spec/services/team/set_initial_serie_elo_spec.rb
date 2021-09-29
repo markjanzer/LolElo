@@ -43,6 +43,16 @@ RSpec.describe Team::SetInitialSerieElo do
         expect(Snapshot.last.elo).to eq(EloCalculator::NEW_TEAM_ELO)
       end
 
+      it "creates a snapshot that belongs to the serie" do
+        subject
+        expect(Snapshot.last.serie).to eq serie
+      end
+
+      it "creates a snapshots that is an elo_reset" do
+        subject
+        expect(Snapshot.last.elo_reset).to be true
+      end
+
       it "creates a snapshot with the time of the serie begin_at" do
         subject
         expect(Snapshot.last.date).to eq serie.begin_at
@@ -59,6 +69,16 @@ RSpec.describe Team::SetInitialSerieElo do
       it "creates a snapshot with elo of NEW_TEAM_ELO" do
         subject
         expect(Snapshot.last.elo).to eq(EloCalculator::NEW_TEAM_ELO)
+      end
+
+      it "creates a snapshot that belongs to the serie" do
+        subject
+        expect(Snapshot.last.serie).to eq serie
+      end
+
+      it "creates a snapshots that is an elo_reset" do
+        subject
+        expect(Snapshot.last.elo_reset).to be true
       end
 
       it "creates a snapshot with the time of the serie begin_at" do
@@ -80,6 +100,16 @@ RSpec.describe Team::SetInitialSerieElo do
         reverted_elo = EloCalculator::Revert.new(team.elo).call
         subject
         expect(team.elo).to eq(reverted_elo)
+      end
+
+      it "creates a snapshot that belongs to the serie" do
+        subject
+        expect(Snapshot.last.serie).to eq serie
+      end
+
+      it "creates a snapshots that is an elo_reset" do
+        subject
+        expect(Snapshot.last.elo_reset).to be true
       end
 
       it "creates a snapshot with the time of the serie begin_at" do

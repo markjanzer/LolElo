@@ -3,5 +3,6 @@
 FactoryBot.define do
   factory :snapshot do
     team
+    serie
   end
 end

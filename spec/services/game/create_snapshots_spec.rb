@@ -39,6 +39,18 @@ RSpec.describe Game::CreateSnapshots do
       expect { subject }.to change { losing_team.snapshots.count }.by(1)
     end
 
+    it "create snapshots that belong to the serie" do
+      subject
+      expect(winning_team.snapshots.reload.last.serie).to eq serie
+      expect(losing_team.snapshots.reload.last.serie).to eq serie
+    end
+
+    it "creates snapshots that are not elo_resets" do
+      subject
+      expect(winning_team.snapshots.reload.last.elo_reset).to be false
+      expect(losing_team.snapshots.reload.last.elo_reset).to be false
+    end
+
     it "creates snapshots that belong to the game" do
       subject
       expect(winning_team.snapshots.reload.last.game).to eq(game)
