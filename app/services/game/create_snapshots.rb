@@ -27,6 +27,7 @@ class Game
       Snapshot.create!(
         team: team,
         game: game,
+        serie: serie,
         date: game.end_at,
         elo: elo
       )

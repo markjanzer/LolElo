@@ -58,7 +58,7 @@ ActiveRecord::Schema.define(version: 2021_09_29_214729) do
     t.datetime "date"
     t.integer "elo"
     t.bigint "serie_id"
-    t.boolean "elo_reset", default: true, null: false
+    t.boolean "elo_reset", default: false, null: false
     t.index ["game_id"], name: "index_snapshots_on_game_id"
     t.index ["serie_id"], name: "index_snapshots_on_serie_id"
     t.index ["team_id"], name: "index_snapshots_on_team_id"

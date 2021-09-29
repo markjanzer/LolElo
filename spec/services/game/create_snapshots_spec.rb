@@ -32,11 +32,11 @@ RSpec.describe Game::CreateSnapshots do
     end
     
     it "creates a snapshot for the winning team" do
-      expect { subject }.to change { winning_team.snapshots.count }.by(1)
+      expect { subject }.to change { winning_team.snapshots.count }.by 1
     end
 
     it "creates a snapshot for the losing team" do
-      expect { subject }.to change { losing_team.snapshots.count }.by(1)
+      expect { subject }.to change { losing_team.snapshots.count }.by 1
     end
 
     it "create snapshots that belong to the serie" do
