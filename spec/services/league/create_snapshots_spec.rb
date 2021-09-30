@@ -64,37 +64,36 @@ It finds the first game without an elo and removes/recalculates elos after that 
       end
     end
 
-    xcontext "when the serie has three games, the first and third of which already has a elo" do
-      before { subject }
-
+    context "when the serie has three games, the first and third of which already has a elo" do
       let(:s1_t1_matches) { create_list(:match, 1, opponent1: team1, opponent2: team2, games: s1_t1_m1_games) }
       let(:s1_t1_m1_games) { [s1_t1_m1_game2, s1_t1_m1_game1, s1_t1_m1_game3] }
       let(:s1_t1_m1_game1) { create(:game, winner: team1, end_at: "2020-01-02") }
       let(:s1_t1_m1_game2) { create(:game, winner: team2, end_at: Date.parse("2020-01-02") + 1.hour) }
       let(:s1_t1_m1_game3) { create(:game, winner: team2, end_at: Date.parse("2020-01-02") + 2.hours) }
-      let(:game1_team1_snapshot) { create(:snapshot, game: s1_t1_m1_game1, team: team1, elo: 1550, date: s1_t1_m1_game1.end_at) }
-      let(:game1_team2_snapshot) { create(:snapshot, game: s1_t1_m1_game1, team: team2, elo: 1450, date: s1_t1_m1_game1.end_at) }
-      let(:game3_team1_snapshot) { create(:snapshot, game: s1_t1_m1_game3, team: team1, elo: 1600, date: s1_t1_m1_game3.end_at) }
-      let(:game3_team2_snapshot) { create(:snapshot, game: s1_t1_m1_game3, team: team2, elo: 1400, date: s1_t1_m1_game3.end_at) }
+      let!(:game1_team1_snapshot) { create(:snapshot, game: s1_t1_m1_game1, team: team1, elo: 2550, date: s1_t1_m1_game1.end_at, serie: serie1) }
+      let!(:game1_team2_snapshot) { create(:snapshot, game: s1_t1_m1_game1, team: team2, elo: 2450, date: s1_t1_m1_game1.end_at, serie: serie1) }
+      let!(:game3_team1_snapshot) { create(:snapshot, game: s1_t1_m1_game3, team: team1, elo: 2600, date: s1_t1_m1_game3.end_at, serie: serie1) }
+      let!(:game3_team2_snapshot) { create(:snapshot, game: s1_t1_m1_game3, team: team2, elo: 2400, date: s1_t1_m1_game3.end_at, serie: serie1) }
 
       it "creates snapshots for games without snapshots" do
+        subject
         expect(Snapshot.where(game: s1_t1_m1_game2).count).to eq 2
       end
 
       it "deletes the snapshots with a date that is after the games without snapshots" do
-        expect(game3_team1_snapshot).to_not be_present
-        expect(game3_team2_snapshot).to_not be_present
+        subject
+        expect(Snapshot.where(id: game3_team1_snapshot.id)).to be_empty
+        expect(Snapshot.where(id: game3_team2_snapshot.id)).to be_empty
       end
 
       it "doesn't delete snapshots with a date that  is before games without snapshots" do
-        expect(game1_team1_snapshot).to be_present
-        expect(game1_team2_snapshot).to be_present
+        subject
+        expect(Snapshot.where(id: game1_team1_snapshot.id)).to be_present
+        expect(Snapshot.where(id: game1_team2_snapshot.id)).to be_present
       end
     end
 
     context "when the league has two series in different years" do
-      before { subject }
-
       let(:series) { [serie0, serie1]}
       let(:s1_t1_matches) { create_list(:match, 1, opponent1: team1, opponent2: team2, games: s1_t1_m1_games) }
       let(:s1_t1_m1_games) { create_list(:game, 1, winner: team1, end_at: "2020-01-02") }
@@ -104,19 +103,21 @@ It finds the first game without an elo and removes/recalculates elos after that 
       let(:s0_t1_matches) { create_list(:match, 1, opponent1: team1, opponent2: team2, games: s0_t1_m1_games) }
       let(:s0_t1_m1_games) { create_list(:game, 1, winner: team2, end_at: "2019-06-02") }
 
-      xit "generates a elo reset for both teams" do
-        # Include other columns when we add them
-        expect(Snapshot.where(team: team1, date: serie0.begin_at)).to be_present
-        expect(Snapshot.where(team: team2, date: serie0.begin_at)).to be_present
+      it "generates a elo reset for both teams" do
+        subject
+        expect(Snapshot.where(team: team1, date: serie0.begin_at, elo_reset: true, serie: serie0)).to be_present
+        expect(Snapshot.where(team: team2, date: serie0.begin_at, elo_reset: true, serie: serie0)).to be_present
       end
 
-      xcontext "when there are already reset snapshots for the second serie" do
-        let!(:t1_s1_reset_snapshot) { create(:snapshot, team: team1, elo: 1500, date: serie1.begin_at) }
-        let!(:t2_s1_reset_snapshot) { create(:snapshot, team: team2, elo: 1500, date: serie1.begin_at) }
+      context "when there are already reset snapshots for the second serie" do
+        let!(:t1_s1_reset_snapshot) { create(:snapshot, team: team1, elo: 1500, date: serie1.begin_at, elo_reset: true, serie: serie1) }
+        let!(:t2_s1_reset_snapshot) { create(:snapshot, team: team2, elo: 1500, date: serie1.begin_at, elo_reset: true, serie: serie1) }
 
         it "removes the previous elo resets" do
-          expect(t1_s1_reset_snapshot).not_to be_present
-          expect(t2_s1_reset_snapshot).not_to be_present
+          subject
+
+          expect(Snapshot.where(id: t1_s1_reset_snapshot.id)).not_to be_present
+          expect(Snapshot.where(id: t2_s1_reset_snapshot.id)).not_to be_present
         end
       end
     end

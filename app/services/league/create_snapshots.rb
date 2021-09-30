@@ -8,15 +8,11 @@ class League
 
     def call
       raise "league not defined" unless league
+      return "No snapshots to create" unless first_game_without_snapshots
 
-      # Get the games without snapshots
-      # Order them chronologically
+      league.snapshots.where("date >= ?", create_snapshots_from).destroy_all
 
-      # Destroy all snapshots that occur after the first of these games
-      # invalid_snapshots.destroy_all
-      # Create a snapshot for each game
-
-      ordered_games.each do |game|
+      league.reload.games.where("games.end_at >= ?", create_snapshots_from).order(end_at: :asc).each do |game|
         Game::CreateSnapshots.new(game).call
       end
     end
@@ -25,23 +21,13 @@ class League
 
     attr_reader :league
 
-    def ordered_games_without_snapshots
-      game_ids = league.games.pluck(:id)
-      game_ids_with_snapshots = Snapshot.where(game_id: game_ids).pluck(:game_id)
-      Game.where(id: game_ids - game_ids_with_snapshots).order(end_at: :asc)
+    def first_game_without_snapshots
+      # SLQ REFACTOR
+      league.games.order(end_at: :asc).find { |g| g.snapshots.count < 2 }
     end
 
-    def earliest_snapshot_creation
-      ordered_games_without_snapshots.first.date
-    end
-
-    def invalid_snapshots
-      League.snapshots.where("date >= ?", earliest_snapshot_creation)
-    end
-
-    def ordered_games
-      league.games.order(end_at: :asc)
-      # Game.joins(match: { tournament: { serie: :league }}).where(league: league).order(end_at: :asc)
+    def create_snapshots_from
+      first_game_without_snapshots.end_at
     end
   end
 end

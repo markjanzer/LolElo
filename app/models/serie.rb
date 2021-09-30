@@ -5,6 +5,7 @@ class Serie < ApplicationRecord
   has_many :tournaments
   has_many :teams, -> { distinct }, through: :tournaments
   has_many :matches, through: :tournaments
+  has_many :snapshots
 
   def self.valid_name?(name)
     name.split.first.match?('Spring|Summer')
