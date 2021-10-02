@@ -70,10 +70,10 @@ It finds the first game without an elo and removes/recalculates elos after that 
       let(:s1_t1_m1_game1) { create(:game, winner: team1, end_at: "2020-01-02") }
       let(:s1_t1_m1_game2) { create(:game, winner: team2, end_at: Date.parse("2020-01-02") + 1.hour) }
       let(:s1_t1_m1_game3) { create(:game, winner: team2, end_at: Date.parse("2020-01-02") + 2.hours) }
-      let!(:game1_team1_snapshot) { create(:snapshot, game: s1_t1_m1_game1, team: team1, elo: 2550, date: s1_t1_m1_game1.end_at, serie: serie1) }
-      let!(:game1_team2_snapshot) { create(:snapshot, game: s1_t1_m1_game1, team: team2, elo: 2450, date: s1_t1_m1_game1.end_at, serie: serie1) }
-      let!(:game3_team1_snapshot) { create(:snapshot, game: s1_t1_m1_game3, team: team1, elo: 2600, date: s1_t1_m1_game3.end_at, serie: serie1) }
-      let!(:game3_team2_snapshot) { create(:snapshot, game: s1_t1_m1_game3, team: team2, elo: 2400, date: s1_t1_m1_game3.end_at, serie: serie1) }
+      let!(:game1_team1_snapshot) { create(:snapshot, game: s1_t1_m1_game1, team: team1, elo: 2550, datetime: s1_t1_m1_game1.end_at, serie: serie1) }
+      let!(:game1_team2_snapshot) { create(:snapshot, game: s1_t1_m1_game1, team: team2, elo: 2450, datetime: s1_t1_m1_game1.end_at, serie: serie1) }
+      let!(:game3_team1_snapshot) { create(:snapshot, game: s1_t1_m1_game3, team: team1, elo: 2600, datetime: s1_t1_m1_game3.end_at, serie: serie1) }
+      let!(:game3_team2_snapshot) { create(:snapshot, game: s1_t1_m1_game3, team: team2, elo: 2400, datetime: s1_t1_m1_game3.end_at, serie: serie1) }
 
       it "creates snapshots for games without snapshots" do
         subject
@@ -105,13 +105,13 @@ It finds the first game without an elo and removes/recalculates elos after that 
 
       it "generates a elo reset for both teams" do
         subject
-        expect(Snapshot.where(team: team1, date: serie0.begin_at, elo_reset: true, serie: serie0)).to be_present
-        expect(Snapshot.where(team: team2, date: serie0.begin_at, elo_reset: true, serie: serie0)).to be_present
+        expect(Snapshot.where(team: team1, datetime: serie0.begin_at, elo_reset: true, serie: serie0)).to be_present
+        expect(Snapshot.where(team: team2, datetime: serie0.begin_at, elo_reset: true, serie: serie0)).to be_present
       end
 
       context "when there are already reset snapshots for the second serie" do
-        let!(:t1_s1_reset_snapshot) { create(:snapshot, team: team1, elo: 1500, date: serie1.begin_at, elo_reset: true, serie: serie1) }
-        let!(:t2_s1_reset_snapshot) { create(:snapshot, team: team2, elo: 1500, date: serie1.begin_at, elo_reset: true, serie: serie1) }
+        let!(:t1_s1_reset_snapshot) { create(:snapshot, team: team1, elo: 1500, datetime: serie1.begin_at, elo_reset: true, serie: serie1) }
+        let!(:t2_s1_reset_snapshot) { create(:snapshot, team: team2, elo: 1500, datetime: serie1.begin_at, elo_reset: true, serie: serie1) }
 
         it "removes the previous elo resets" do
           subject

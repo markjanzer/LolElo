@@ -55,7 +55,7 @@ ActiveRecord::Schema.define(version: 2021_09_29_214729) do
   create_table "snapshots", force: :cascade do |t|
     t.bigint "team_id"
     t.bigint "game_id"
-    t.datetime "date"
+    t.datetime "datetime"
     t.integer "elo"
     t.bigint "serie_id"
     t.boolean "elo_reset", default: false, null: false

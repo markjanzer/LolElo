@@ -10,7 +10,7 @@ class League
       raise "league not defined" unless league
       return "No snapshots to create" unless first_game_without_snapshots
 
-      league.snapshots.where("date >= ?", create_snapshots_from).destroy_all
+      league.snapshots.where("datetime >= ?", create_snapshots_from).destroy_all
 
       league.reload.games.where("games.end_at >= ?", create_snapshots_from).order(end_at: :asc).each do |game|
         Game::CreateSnapshots.new(game).call

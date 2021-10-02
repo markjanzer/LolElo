@@ -20,15 +20,15 @@ class Team < ApplicationRecord
   end
 
   def elo_at(datetime)
-    snapshots.where('date <= ?', datetime).order(:date).last.elo
+    snapshots.where('datetime <= ?', datetime).order(:datetime).last.elo
   end
 
-  def elo_after(date)
-    snapshots.where('date >= ?', date).order(:date).first.elo
+  def elo_after(datetime)
+    snapshots.where('datetime >= ?', datetime).order(:datetime).first.elo
   end
 
-  def elo_before(date)
-    snapshots.where('date < ?', date).order(:date).last.elo
+  def elo_before(datetime)
+    snapshots.where('datetime < ?', datetime).order(:datetime).last.elo
   end
 
   def matches
@@ -38,6 +38,6 @@ class Team < ApplicationRecord
   private
 
   def last_snapshot
-    snapshots.order(:date).last
+    snapshots.order(:datetime).last
   end
 end

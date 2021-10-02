@@ -13,8 +13,8 @@ RSpec.describe Game::CreateSnapshots do
     let(:game) { create(:game, winner: winning_team, end_at: "2020-02-01") }
     let(:winning_team) { create(:team, name: "winning_team", snapshots: [winning_team_snapshot]) }
     let(:losing_team) { create(:team, name: "losing_team", snapshots: [losing_team_snapshot]) }
-    let(:winning_team_snapshot) { create(:snapshot, elo: 1500, date: "2020-01-01") }
-    let(:losing_team_snapshot) { create(:snapshot, elo: 1500, date: "2020-01-01") }
+    let(:winning_team_snapshot) { create(:snapshot, elo: 1500, datetime: "2020-01-01") }
+    let(:losing_team_snapshot) { create(:snapshot, elo: 1500, datetime: "2020-01-01") }
 
     context "teams do not have existing elos from this year" do
       let(:winning_team) { create(:team, name: "winning_team", snapshots: []) }
@@ -57,10 +57,10 @@ RSpec.describe Game::CreateSnapshots do
       expect(losing_team.snapshots.reload.last.game).to eq(game) 
     end
 
-    it "creates snapshots that have the date of the game end_at" do
+    it "creates snapshots that have datetime of the game end_at" do
       subject
-      expect(winning_team.snapshots.reload.last.date).to eq(game.end_at)
-      expect(losing_team.snapshots.reload.last.date).to eq(game.end_at)
+      expect(winning_team.snapshots.reload.last.datetime).to eq(game.end_at)
+      expect(losing_team.snapshots.reload.last.datetime).to eq(game.end_at)
     end
 
     it "creates a higher elo snapshot for the team that won" do

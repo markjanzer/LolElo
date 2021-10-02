@@ -5,7 +5,7 @@ class CreateSnapshots < ActiveRecord::Migration[6.0]
     create_table :snapshots do |t|
       t.references :team
       t.references :game
-      t.datetime :date
+      t.datetime :datetime
       t.integer :elo
     end
   end

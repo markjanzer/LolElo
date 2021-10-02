@@ -28,7 +28,7 @@ class Game
         team: team,
         game: game,
         serie: serie,
-        date: game.end_at,
+        datetime: game.end_at,
         elo: elo
       )
     end

@@ -17,7 +17,7 @@ RSpec.describe Team::SetInitialSerieElo do
 
 
     context "when the team has an elo from the current serie" do
-      let!(:snapshot) { create(:snapshot, elo: 1500, team: team, date: "2020-06-01") }
+      let!(:snapshot) { create(:snapshot, elo: 1500, team: team, datetime: "2020-06-01") }
       
       it "does nothing" do
         expect { subject }.not_to change { Snapshot.count }
@@ -55,7 +55,7 @@ RSpec.describe Team::SetInitialSerieElo do
 
       it "creates a snapshot with the time of the serie begin_at" do
         subject
-        expect(Snapshot.last.date).to eq serie.begin_at
+        expect(Snapshot.last.datetime).to eq serie.begin_at
       end
     end
 
@@ -83,14 +83,14 @@ RSpec.describe Team::SetInitialSerieElo do
 
       it "creates a snapshot with the time of the serie begin_at" do
         subject
-        expect(Snapshot.last.date).to eq serie.begin_at
+        expect(Snapshot.last.datetime).to eq serie.begin_at
       end
     end
 
     context "when the team has not gotten an elo rating this year" do
       let!(:previous_serie) { create(:serie, tournaments: [previous_serie_tournament], begin_at: "2019-06-01", year: 2019) }
       let(:previous_serie_tournament) { create(:tournament, teams: [team]) }
-      let!(:snapshot) { create(:snapshot, team: team, elo: 1200, date: "2019-06-01") }
+      let!(:snapshot) { create(:snapshot, team: team, elo: 1200, datetime: "2019-06-01") }
 
       it "creates a snapshot for the team" do
         expect { subject }.to change { Snapshot.count }.by 1
@@ -114,7 +114,7 @@ RSpec.describe Team::SetInitialSerieElo do
 
       it "creates a snapshot with the time of the serie begin_at" do
         subject
-        expect(Snapshot.last.date).to eq serie.begin_at
+        expect(Snapshot.last.datetime).to eq serie.begin_at
       end
     end
   end
