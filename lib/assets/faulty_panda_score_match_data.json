@@ -1,0 +1,36 @@
+[
+  {
+    "id": 537013,
+    "opponents": [
+      {
+        "opponent": {
+          "id": 390,
+          "acronym": "TL"
+        }
+      },
+      {
+        "opponent": {
+          "id": 1097,
+          "acronym": "C9"
+        }
+      }
+    ]
+  },
+  {
+    "id": 537047,
+    "opponents": [
+      {
+        "opponent": {
+          "id": 387,
+          "acronym": "TSM"
+        }
+      },
+      {
+        "opponent": {
+          "id": 1537,
+          "acronym": "100"
+        }
+      }
+    ]
+  }
+]

@@ -11,9 +11,15 @@ class MatchFactory
       raise "match_data is required"
     end
 
+    if match_data['opponents'].nil?
+      binding.pry
+      raise "need match_data['opponents']"
+    end
+
     if opponent1.nil? || opponent2.nil?
       raise "team does not exist"
     end
+
     
     match.assign_attributes({
       end_at: match_data['end_at'],

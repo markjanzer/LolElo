@@ -14,8 +14,12 @@ class Seeder
 
     attr_reader :tournament
 
+    def panda_score_matches_data
+      PandaScore.matches(tournament_id: tournament.panda_score_id)
+    end
+
     def matches_data
-      @matches_data ||= PandaScore.matches(tournament_id: tournament.panda_score_id)
+      @matches_data ||= InvalidMatchesCorrector.new(matches_data: panda_score_matches_data).call
     end
 
     def new_match(match_data)
