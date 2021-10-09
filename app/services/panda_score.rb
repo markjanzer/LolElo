@@ -2,6 +2,8 @@
 
 class PandaScore
 
+  # TODO Refactor these methods. Probably un-abstract then re-abstract everything again.
+  
   def self.league(id:)
     get_data(path: 'leagues', id: id)
   end
@@ -19,23 +21,29 @@ class PandaScore
   end
 
   def self.series(league_id:)
-    league(id: league_id)["series"]
+    request(path: "series", params: { "filter[league_id]": league_id })
+    # league(id: league_id)["series"]
   end
 
   def self.tournaments(serie_id:)
-    serie(id: serie_id)["tournaments"]
+    request(path: "tournaments", params: { "filter[serie_id]": serie_id })
+    # serie(id: serie_id)["tournaments"]
   end
 
   def self.teams(tournament_id:)
-    tournament(id: tournament_id)["teams"]
+    request(path: "tournaments/#{tournament_id}/teams")
+    # tournament(id: tournament_id)["teams"]
+
   end
 
   def self.matches(tournament_id:)
-    tournament(id: tournament_id)["matches"]
+    request(path: "matches", params: { "filter[tournament_id]": tournament_id })
+    # tournament(id: tournament_id)["matches"]
   end
 
   def self.games(match_id:)
-    match(id: match_id)["games"]
+    request(path: "games", params: { "filter[match_id]": match_id })
+    # match(id: match_id)["games"]
   end
 
   def self.get_data_for(object)
@@ -56,10 +64,6 @@ class PandaScore
   end
 
   def self.request(path: '', params: {})
-    response = HTTParty.get(
-      "http://api.pandascore.co/lol/#{path}",
-      query: params.merge({ 'token' => ENV['panda_score_key'] })
-    )
-    JSON.parse(response.body)
+    PandaScore::Request.new(path: path, params: params).call
   end
 end

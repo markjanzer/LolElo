@@ -12,7 +12,6 @@ class MatchFactory
     end
 
     if match_data['opponents'].nil?
-      binding.pry
       raise "need match_data['opponents']"
     end
 
