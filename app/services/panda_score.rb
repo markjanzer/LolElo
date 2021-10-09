@@ -46,22 +46,22 @@ class PandaScore
     # match(id: match_id)["games"]
   end
 
-  def self.get_data_for(object)
-    path = object_path(object)
-    get_data(path: path, id: object.panda_score_id)
-  end
+  # def self.get_data_for(object)
+  #   path = object_path(object)
+  #   get_data(path: path, id: object.panda_score_id)
+  # end
 
   private
 
-  def self.object_path(object)
-    object.class.name.downcase.pluralize
-  end
+  # def self.object_path(object)
+  #   object.class.name.downcase.pluralize
+  # end
 
-  def self.get_data(path:, id:)
-    params = { "filter[id]": id }
-    response = request(path: path, params: params)
-    response.first
-  end
+  # def self.get_data(path:, id:)
+  #   params = { "filter[id]": id }
+  #   response = request(path: path, params: params)
+  #   response.first
+  # end
 
   def self.request(path: '', params: {})
     PandaScore::Request.new(path: path, params: params).call
