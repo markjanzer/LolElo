@@ -4,6 +4,7 @@ class PandaScore
     RESULTS_PER_PAGE = 100
     
     def initialize(path: '', params: {})
+      puts "PandaScore::Request path: #{path}, params: #{params}"
       @path = path
       @params = params
       @result = []
@@ -18,6 +19,7 @@ class PandaScore
       
       if json_response.is_a?(Hash)
         if json_response.keys.include?("error")
+          binding.pry
           raise error_string(json_response)
         else
           return json_response

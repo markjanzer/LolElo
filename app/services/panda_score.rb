@@ -42,8 +42,9 @@ class PandaScore
   end
 
   def self.games(match_id:)
-    request(path: "games", params: { "filter[match_id]": match_id })
-    # match(id: match_id)["games"]
+    # Getting unauthorized error for this request
+    # request(path: "matches/#{match_id}/games")
+    match(id: match_id)["games"]
   end
 
   # def self.get_data_for(object)
@@ -57,11 +58,11 @@ class PandaScore
   #   object.class.name.downcase.pluralize
   # end
 
-  # def self.get_data(path:, id:)
-  #   params = { "filter[id]": id }
-  #   response = request(path: path, params: params)
-  #   response.first
-  # end
+  def self.get_data(path:, id:)
+    params = { "filter[id]": id }
+    response = request(path: path, params: params)
+    response.first
+  end
 
   def self.request(path: '', params: {})
     PandaScore::Request.new(path: path, params: params).call
