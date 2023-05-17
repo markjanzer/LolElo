@@ -29,7 +29,7 @@ class Seeder
     def create_all_series
       Serie.transaction do
         League.all.each do |league|
-          Seeder::CreateSeries.new(league).call
+          Seeder::CreateSeries.new(league).create_last
         end
       end
     end

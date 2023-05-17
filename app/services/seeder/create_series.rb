@@ -10,6 +10,10 @@ class Seeder
       end
     end
 
+    def create_last
+      league.series << new_serie(valid_series_data.last)
+    end
+
     private
 
     attr_reader :league

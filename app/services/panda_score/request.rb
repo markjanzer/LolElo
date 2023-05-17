@@ -12,14 +12,14 @@ class PandaScore
 
     def call(page_number: 1)
       response = HTTParty.get(
-        "http://api.pandascore.co/lol/#{path}",
+        path,
         query: params_with_pagination(page_number)
       )
       json_response = JSON.parse(response.body)
       
       if json_response.is_a?(Hash)
         if json_response.keys.include?("error")
-          binding.pry
+          # binding.pry
           raise error_string(json_response)
         else
           return json_response

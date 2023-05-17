@@ -3,53 +3,55 @@
 class PandaScore
 
   # TODO Refactor these methods. Probably un-abstract then re-abstract everything again.
+
+  LOL_PATH = "http://api.pandascore.co/lol/"
+  GENERAL_PATH = "http://api.pandascore.co/"
   
   def self.league(id:)
-    get_data(path: 'leagues', id: id)
+    get_data(path: LOL_PATH + 'leagues', id: id)
   end
 
   def self.serie(id:)
-    get_data(path: 'series', id: id)
+    get_data(path: LOL_PATH + 'series', id: id)
   end
 
   def self.tournament(id:)
-    get_data(path: 'tournaments', id: id)
+    get_data(path: LOL_PATH + 'tournaments', id: id)
   end
 
   def self.match(id:)
-    get_data(path: 'matches', id: id)
+    get_data(path: LOL_PATH + 'matches', id: id)
   end
 
   def self.series(league_id:)
-    request(path: "series", params: { "filter[league_id]": league_id })
+    request(path: LOL_PATH + "series", params: { "filter[league_id]": league_id })
     # league(id: league_id)["series"]
   end
 
   def self.tournaments(serie_id:)
-    request(path: "tournaments", params: { "filter[serie_id]": serie_id })
+    request(path: LOL_PATH + "tournaments", params: { "filter[serie_id]": serie_id })
     # serie(id: serie_id)["tournaments"]
   end
 
   def self.teams(tournament_id:)
-    request(path: "tournaments/#{tournament_id}/teams")
+    request(path: GENERAL_PATH + "tournaments/#{tournament_id}/teams")
     # tournament(id: tournament_id)["teams"]
-
   end
 
   def self.matches(tournament_id:)
-    request(path: "matches", params: { "filter[tournament_id]": tournament_id })
+    request(path: LOL_PATH + "matches", params: { "filter[tournament_id]": tournament_id })
     # tournament(id: tournament_id)["matches"]
   end
 
   def self.games(match_id:)
     # Getting unauthorized error for this request
-    # request(path: "matches/#{match_id}/games")
+    # request(path: LOL_PATH + "matches/#{match_id}/games")
     match(id: match_id)["games"]
   end
 
   # def self.get_data_for(object)
   #   path = object_path(object)
-  #   get_data(path: path, id: object.panda_score_id)
+  #   get_data(path: LOL_PATH + path, id: object.panda_score_id)
   # end
 
   private
