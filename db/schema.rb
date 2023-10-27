@@ -2,16 +2,15 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# This file is the source Rails uses to define your schema when running `rails
-# db:schema:load`. When creating a new database, `rails db:schema:load` tends to
+# This file is the source Rails uses to define your schema when running `bin/rails
+# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
 # be faster and is potentially less error prone than running all of your
 # migrations from scratch. Old migrations may fail to apply correctly if those
 # migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[6.1].define(version: 2021_09_29_214729) do
-
+ActiveRecord::Schema[7.0].define(version: 2023_10_27_232023) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -19,7 +18,7 @@ ActiveRecord::Schema[6.1].define(version: 2021_09_29_214729) do
     t.bigint "match_id"
     t.bigint "winner_id"
     t.integer "panda_score_id"
-    t.datetime "end_at"
+    t.datetime "end_at", precision: nil
     t.index ["match_id"], name: "index_games_on_match_id"
     t.index ["panda_score_id"], name: "index_games_on_panda_score_id"
     t.index ["winner_id"], name: "index_games_on_winner_id"
@@ -33,7 +32,7 @@ ActiveRecord::Schema[6.1].define(version: 2021_09_29_214729) do
   end
 
   create_table "matches", force: :cascade do |t|
-    t.datetime "end_at"
+    t.datetime "end_at", precision: nil
     t.bigint "opponent1_id"
     t.bigint "opponent2_id"
     t.integer "panda_score_id"
@@ -45,7 +44,7 @@ ActiveRecord::Schema[6.1].define(version: 2021_09_29_214729) do
 
   create_table "series", force: :cascade do |t|
     t.integer "panda_score_id"
-    t.datetime "begin_at"
+    t.datetime "begin_at", precision: nil
     t.string "full_name"
     t.integer "year"
     t.bigint "league_id"
@@ -55,7 +54,7 @@ ActiveRecord::Schema[6.1].define(version: 2021_09_29_214729) do
   create_table "snapshots", force: :cascade do |t|
     t.bigint "team_id"
     t.bigint "game_id"
-    t.datetime "datetime"
+    t.datetime "datetime", precision: nil
     t.integer "elo"
     t.bigint "serie_id"
     t.boolean "elo_reset", default: false, null: false
@@ -76,7 +75,6 @@ ActiveRecord::Schema[6.1].define(version: 2021_09_29_214729) do
     t.bigint "team_id"
     t.bigint "tournament_id"
     t.index ["team_id", "tournament_id"], name: "index_teams_tournaments_on_team_id_and_tournament_id", unique: true
-    t.index ["team_id"], name: "index_teams_tournaments_on_team_id"
     t.index ["tournament_id"], name: "index_teams_tournaments_on_tournament_id"
   end
 

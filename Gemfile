@@ -35,7 +35,7 @@ gem 'bootsnap', '>= 1.4.2', require: false
 
 group :development, :test do
   gem 'rspec-rails'
-  gem 'rubocop-rails', require: false
+  # gem 'rubocop-rails', require: false
   gem 'pry'
   gem "factory_bot_rails"
   gem "did_you_mean"

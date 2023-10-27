@@ -1,24 +1,13 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Run with `rails s`
 
-Things you may want to cover:
+Seed with `rails db:seed`?
 
-* Ruby version
+# PandaScore structure
 
-* System dependencies
+Leagues > Series > Tournaments > Matches > Games
 
-* Configuration
+Teams belong to tournaments
 
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Snapshots are taken for teams in between (before or after?) each game and at the start of a season

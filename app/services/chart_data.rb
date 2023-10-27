@@ -53,6 +53,7 @@ class ChartData
     end
   end
 
+  # I should probably maket his more efficient
   def match_datum(match)
     opponent1 = teams.find { |t| t[:id] == match.opponent1_id }
     opponent2 = teams.find { |t| t[:id] == match.opponent2_id }
