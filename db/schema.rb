@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_27_232023) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_27_234859) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -40,6 +40,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_27_232023) do
     t.index ["opponent1_id"], name: "index_matches_on_opponent1_id"
     t.index ["opponent2_id"], name: "index_matches_on_opponent2_id"
     t.index ["tournament_id"], name: "index_matches_on_tournament_id"
+  end
+
+  create_table "panda_score_leagues", force: :cascade do |t|
+    t.integer "panda_score_id", null: false
+    t.jsonb "data", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["panda_score_id"], name: "index_panda_score_leagues_on_panda_score_id", unique: true
   end
 
   create_table "series", force: :cascade do |t|
