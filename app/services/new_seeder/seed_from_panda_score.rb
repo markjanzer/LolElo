@@ -1,4 +1,4 @@
-class NewSeeder
+module NewSeeder
   class SeedFromPandaScore
     SEED_DATA = leagues_seed_data = [
       { abbreviation: "lcs", league_id: 4198, time_zone: "America/Los_Angeles" },
