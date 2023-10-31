@@ -7,7 +7,12 @@ leagues_seed_data = [
 # { abbreviation: "lck", league_id: 293, time_zone: "Asia/Seoul" },
 # { abbreviation: "lpl", league_id: 294, time_zone: "Asia/Shanghai" },
 
-Seeder::SeedFromPandaScore.new(leagues_seed_data).call
+# Pull data from PandaScore
+# Seeder::SeedFromPandaScore.new(leagues_seed_data).call
+
+NewSeeder::SeedFromPandaScore.new.call
+
+# Create snapshots
 League.all.each do |league|
   League::CreateSnapshots.new(league).call
 end

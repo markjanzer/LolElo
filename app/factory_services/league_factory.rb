@@ -15,18 +15,14 @@ class LeagueFactory
       raise 'time_zone is required'
     end
 
-    initialize_league
-  end
-
-  private
-
-  attr_reader :league_data, :time_zone
-
-  def initialize_league
     League.find_or_initialize_by(
       panda_score_id: league_data['id'],
       name: league_data['name'],
       time_zone: time_zone
     )
   end
+
+  private
+
+  attr_reader :league_data, :time_zone
 end

@@ -108,6 +108,8 @@ GEM
       net-pop
       net-smtp
     marcel (1.0.2)
+    memery (1.5.0)
+      ruby2_keywords (~> 0.0.2)
     method_source (1.0.0)
     mini_mime (1.1.2)
     mini_portile2 (2.8.2)
@@ -186,6 +188,7 @@ GEM
       rspec-mocks (~> 3.12)
       rspec-support (~> 3.12)
     rspec-support (3.12.0)
+    ruby2_keywords (0.0.5)
     sass-rails (6.0.0)
       sassc-rails (~> 2.1, >= 2.1.1)
     sassc (2.4.0)
@@ -243,6 +246,7 @@ DEPENDENCIES
   httparty
   jbuilder (~> 2.7)
   listen (~> 3.2)
+  memery
   pg (~> 1.5, >= 1.5.3)
   pry
   puma (~> 4.1)
