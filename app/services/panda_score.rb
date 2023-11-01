@@ -4,8 +4,8 @@ class PandaScore
 
   # TODO Refactor these methods. Probably un-abstract then re-abstract everything again.
 
-  LOL_PATH = "http://api.pandascore.co/lol/"
   GENERAL_PATH = "http://api.pandascore.co/"
+  LOL_PATH = "#{GENERAL_PATH}lol/"
   
   def self.league(id:)
     get_data(path: LOL_PATH + 'leagues', id: id)
