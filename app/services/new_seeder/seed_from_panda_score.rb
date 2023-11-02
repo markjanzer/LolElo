@@ -19,13 +19,34 @@ module NewSeeder
       294   # LPL
     ]
 
+    # This method is meant to be called multiple times and to only move on to the next stage when
+    # The previous set of objects have been created and populated with data
     def call
-      NewSeeder::CreateLeagues.call(LEAGUE_IDS)
-      NewSeeder::CreateSeries.call
-      NewSeeder::CreateTournaments.call
-      NewSeeder::CreateTeams.call
-      NewSeeder::CreateMatches.call
-      NewSeeder::CreateGames.call
+      if PandaScore::League.count.zero?
+        return NewSeeder::CreateLeagues.call(LEAGUE_IDS)
+      end
+
+      if PandaScore::League.where(data: {}).count = 0 && PandaScore::Serie.count.zero?
+        return NewSeeder::CreateSeries.call
+      end
+
+      if PandaScore::Serie.where(data: {}).count.zero? && PandaScore::Tournament.count.zero?
+        return NewSeeder::CreateTournaments.call
+      end
+
+      if PandaScore::Tournament.where(data: {}).count.zero? && PandaScore::Team.count.zero?
+        return NewSeeder::CreateTeams.call
+      end
+
+      if PandaScore::Team.where(data: {}).count.zero? && PandaScore::Match.count.zero?
+        return NewSeeder::CreateMatches.call
+      end
+
+      if PandaScore::Match.where(data: {}).count.zero? && PandaScore::Game.count.zero?
+        return NewSeeder::CreateGames.call
+      end
+
+      "Done!"
     end
   end
 end
