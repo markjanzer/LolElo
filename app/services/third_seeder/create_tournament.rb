@@ -8,11 +8,12 @@ module ThirdSeeder
       new(*).call
     end
 
-    def call(tournament_id)
+    def call
       PandaScore::Tournament.find_or_initialize_by(panda_score_id: tournament_id)
         .update(data: fetch_tournament_data)
   
-      Seed::CreateSeriesJob.perform_async(tournament_id)
+      ::Seed::EnqueueTeamsCreationJob.perform_async(tournament_id)
+      ::Seed::EnqueueMatchesCreationJob.perform_async(tournament_id)
     end
   
     private

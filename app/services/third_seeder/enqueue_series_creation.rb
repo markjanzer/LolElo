@@ -9,16 +9,16 @@ module ThirdSeeder
     end
 
     def call
-      fetch_series(league_id)
-        # .filter { |serie| include_serie?(serie["name"]) }
-        .each do |serie|
-          Seed::CreateSerieJob.perform_async(serie["id"])
-        end
+      fetch_series.each do |serie|
+        ::Seed::CreateSerieJob.perform_async(serie["id"])
+      end
     end
 
     private
 
-    def fetch_series(league_id)
+    attr_reader :league_id
+
+    def fetch_series
       PandaScore.series(league_id: league_id)
     end
 

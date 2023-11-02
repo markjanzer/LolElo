@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_28_211619) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_02_204124) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -72,6 +72,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_28_211619) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["panda_score_id"], name: "index_panda_score_series_on_panda_score_id", unique: true
+  end
+
+  create_table "panda_score_teams", force: :cascade do |t|
+    t.integer "panda_score_id", null: false
+    t.jsonb "data", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["panda_score_id"], name: "index_panda_score_teams_on_panda_score_id", unique: true
   end
 
   create_table "panda_score_tournaments", force: :cascade do |t|

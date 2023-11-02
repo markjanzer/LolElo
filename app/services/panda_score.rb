@@ -19,6 +19,10 @@ class PandaScore
     get_data(path: LOL_PATH + 'tournaments', id: id)
   end
 
+  def self.team(id:)
+    get_data(path: LOL_PATH + 'teams', id: id)
+  end
+
   def self.match(id:)
     get_data(path: LOL_PATH + 'matches', id: id)
   end

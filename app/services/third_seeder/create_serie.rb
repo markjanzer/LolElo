@@ -12,7 +12,7 @@ module ThirdSeeder
       PandaScore::Serie.find_or_initialize_by(panda_score_id: serie_id)
         .update(data: fetch_serie_data)
 
-      Seed::EnqueueTournamentsCreationJob.perform_async(serie_id)
+      ::Seed::EnqueueTournamentsCreationJob.perform_async(serie_id)
     end
 
     private

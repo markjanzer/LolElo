@@ -9,15 +9,16 @@ module ThirdSeeder
     end
 
     def call
-      fetch_matches(tournament_id)
-        .each do |match|
-          Seed::CreateMatchJob.perform_async(match["id"])
-        end
+      fetch_matches.each do |match|
+        ::Seed::CreateMatchAndGamesJob.perform_async(match["id"])
+      end
     end
 
     private
 
-    def fetch_matches(tournament_id)
+    attr_reader :tournament_id
+
+    def fetch_matches
       PandaScore.matches(tournament_id: tournament_id)
     end
   end

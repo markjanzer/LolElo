@@ -8,11 +8,11 @@ module ThirdSeeder
       new(*).call
     end
 
-    def call(league_id)
+    def call
       PandaScore::League.find_or_initialize_by(panda_score_id: league_id)
         .update(data: fetch_league_data)
   
-      Seed::EnqueueSeriesCreationJob.perform_async(league_id)
+      ::Seed::EnqueueSeriesCreationJob.perform_async(league_id)
     end
   
     private
