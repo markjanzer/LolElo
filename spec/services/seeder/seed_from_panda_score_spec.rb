@@ -4,7 +4,8 @@
 require 'rails_helper'
 
 RSpec.describe Seeder::SeedFromPandaScore do
-  describe "#call" do
+  # This is deprecated and calls the actual API.
+  xdescribe "#call" do
     subject { Seeder::SeedFromPandaScore.new(leagues_seed_data).call }
 
     let(:leagues_seed_data) { [{ abbreviation: "nalcs", league_id: 1, time_zone: 'America/Los_Angeles' }] }
@@ -70,12 +71,12 @@ RSpec.describe Seeder::SeedFromPandaScore do
     }
 
     before do
-      allow(PandaScore).to receive(:league) { league_data }
-      allow(PandaScore).to receive(:series) { series_data }
-      allow(PandaScore).to receive(:tournaments) { tournaments_data }
-      allow(PandaScore).to receive(:teams) { teams_data }
-      allow(PandaScore).to receive(:matches) { matches_data }
-      allow(PandaScore).to receive(:games) { games_data }
+      allow(PandaScoreAPI).to receive(:league) { league_data }
+      allow(PandaScoreAPI).to receive(:series) { series_data }
+      allow(PandaScoreAPI).to receive(:tournaments) { tournaments_data }
+      allow(PandaScoreAPI).to receive(:teams) { teams_data }
+      allow(PandaScoreAPI).to receive(:matches) { matches_data }
+      allow(PandaScoreAPI).to receive(:games) { games_data }
 
       subject
     end

@@ -17,11 +17,11 @@ module NewSeeder
     private
 
     def fetch_matches(tournament_id)
-      PandaScore.matches(tournament_id: tournament_id)
+      PandaScoreAPI.matches(tournament_id: tournament_id)
     end
 
     def fetch_match_data(match_id)
-      PandaScore.match(id: match_id)
+      PandaScoreAPI.match(id: match_id)
     end
   end
 end

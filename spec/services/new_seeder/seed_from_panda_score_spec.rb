@@ -4,7 +4,8 @@
 require 'rails_helper'
 
 RSpec.describe NewSeeder::SeedFromPandaScore do
-  describe "#call" do
+  # This is deprecated and calls the actual API.
+  xdescribe "#call" do
     it "calls the create_leagues service for each league id" do
       NewSeeder::SeedFromPandaScore::LEAGUE_IDS.each do |league_id|
         expect(NewSeeder::CreateLeague).to receive(:new).with(league_id).and_call_original

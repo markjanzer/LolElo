@@ -18,7 +18,7 @@ module ThirdSeeder
     attr_reader :serie_id
 
     def fetch_tournaments
-      PandaScore.tournaments(serie_id: serie_id)
+      PandaScoreAPI.tournaments(serie_id: serie_id)
     end
   end
 end

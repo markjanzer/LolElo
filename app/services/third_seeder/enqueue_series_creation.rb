@@ -18,7 +18,7 @@ module ThirdSeeder
     attr_reader :league_id
 
     def fetch_series
-      PandaScore.series(league_id: league_id)
+      PandaScoreAPI.series(league_id: league_id)
     end
 
     # def include_serie?(name)

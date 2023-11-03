@@ -1,10 +1,10 @@
-class PandaScore
+class PandaScoreAPI
   class Request
 
     RESULTS_PER_PAGE = 100
     
     def initialize(path: '', params: {})
-      puts "PandaScore::Request path: #{path}, params: #{params}"
+      puts "PandaScoreAPI::Request path: #{path}, params: #{params}"
       @path = path
       @params = params
       @result = []

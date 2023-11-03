@@ -17,11 +17,11 @@ module NewSeeder
     private
 
     def fetch_games(match_id)
-      PandaScore.games(match_id: match_id)
+      PandaScoreAPI.games(match_id: match_id)
     end
 
     def fetch_game_data(game_id)
-      PandaScore.game(id: game_id)
+      PandaScoreAPI.game(id: game_id)
     end
   end
 end

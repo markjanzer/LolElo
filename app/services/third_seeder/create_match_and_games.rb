@@ -23,7 +23,7 @@ module ThirdSeeder
     attr_reader :match_id
 
     def fetch_match_data
-      PandaScore.match(id: match_id)
+      PandaScoreAPI.match(id: match_id)
     end
   end
 end

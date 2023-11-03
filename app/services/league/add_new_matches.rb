@@ -20,7 +20,7 @@ class League
 
     def new_matches_data_from_panda_score
       # Might need to deal with pagination here.
-      PandaScore.request(
+      PandaScoreAPI.request(
         path: 'matches',
         params: {
           "filter[league_id]": league.panda_score_id,

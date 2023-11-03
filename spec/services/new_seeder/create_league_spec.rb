@@ -8,7 +8,7 @@ RSpec.describe NewSeeder::CreateLeague do
     let(:response) { { "name"=>"LCS" } }
   
     before do
-      allow(PandaScore).to receive(:league).with(id: 4198).and_return(response)
+      allow(PandaScoreAPI).to receive(:league).with(id: 4198).and_return(response)
     end
 
     context "there is a existing league with the same panda_score_id" do

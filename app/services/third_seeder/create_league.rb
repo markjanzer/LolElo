@@ -20,7 +20,7 @@ module ThirdSeeder
     attr_reader :league_id
   
     def fetch_league_data
-      PandaScore.league(id: league_id)
+      PandaScoreAPI.league(id: league_id)
     end
   end
 end

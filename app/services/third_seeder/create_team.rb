@@ -9,6 +9,10 @@ module ThirdSeeder
     end
 
     def call
+      # Prevent duplicate requests for the same teams from different tournaments
+      # Might want to remove if we want to use these scripts to update
+      return if PandaScore::Team.exists?(panda_score_id: team_id)
+
       PandaScore::Team.find_or_initialize_by(panda_score_id: team_id)
         .update(data: fetch_team_data)
     end
@@ -18,7 +22,7 @@ module ThirdSeeder
     attr_reader :team_id
 
     def fetch_team_data
-      PandaScore.team(id: team_id)
+      PandaScoreAPI.team(id: team_id)
     end
   end
 end

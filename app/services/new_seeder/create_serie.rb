@@ -16,7 +16,7 @@ module NewSeeder
     attr_reader :id
 
     def serie_data
-      @series_data ||= PandaScore.serie(id: id)
+      @series_data ||= PandaScoreAPI.serie(id: id)
     end
   end
 end

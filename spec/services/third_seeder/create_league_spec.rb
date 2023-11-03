@@ -9,7 +9,7 @@ RSpec.describe ThirdSeeder::CreateLeague do
     let(:league_id) { 4198 }
   
     before do
-      allow(PandaScore).to receive(:league).with(id: league_id).and_return(response)
+      allow(PandaScoreAPI).to receive(:league).with(id: league_id).and_return(response)
     end
 
     context "there is a existing league with the same panda_score_id" do

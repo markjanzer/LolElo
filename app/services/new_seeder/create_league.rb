@@ -18,7 +18,7 @@ module NewSeeder
     attr_reader :panda_score_id
     
     memoize def panda_score_league_data
-      PandaScore.league(id: panda_score_id)
+      PandaScoreAPI.league(id: panda_score_id)
     end
   end
 end

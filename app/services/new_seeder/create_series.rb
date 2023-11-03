@@ -19,11 +19,11 @@ module NewSeeder
     private
 
     def fetch_series(league_id)
-      PandaScore.series(league_id: league_id)
+      PandaScoreAPI.series(league_id: league_id)
     end
 
     def fetch_serie_data(serie_id)
-      PandaScore.serie(id: serie_id)
+      PandaScoreAPI.serie(id: serie_id)
     end
 
     def include_serie?(name)

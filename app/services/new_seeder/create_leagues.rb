@@ -18,8 +18,10 @@ module NewSeeder
 
     private
 
+    attr_reader :league_ids
+
     def fetch_league_data(league_id)
-      PandaScore.league(id: league_id)
+      ::PandaScoreAPI.league(id: league_id)
     end
   end
 end

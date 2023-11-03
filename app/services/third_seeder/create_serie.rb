@@ -20,7 +20,7 @@ module ThirdSeeder
     attr_reader :serie_id
 
     def fetch_serie_data
-      PandaScore.serie(id: serie_id)
+      PandaScoreAPI.serie(id: serie_id)
     end
   end
 end

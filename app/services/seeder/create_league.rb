@@ -13,7 +13,7 @@ class Seeder
     attr_reader :league_seed_data
 
     def league_panda_score_data
-      @league_panda_score_data ||= PandaScore.league(id: league_seed_data[:league_id])
+      @league_panda_score_data ||= PandaScoreAPI.league(id: league_seed_data[:league_id])
     end
 
     def new_league

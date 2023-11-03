@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PandaScore
+class PandaScoreAPI
 
   # TODO Refactor these methods. Probably un-abstract then re-abstract everything again.
 
@@ -71,6 +71,6 @@ class PandaScore
   end
 
   def self.request(path: '', params: {})
-    PandaScore::Request.new(path: path, params: params).call
+    PandaScoreAPI::Request.new(path: path, params: params).call
   end
 end

@@ -15,7 +15,7 @@ class Seeder
     attr_reader :tournament
 
     def panda_score_matches_data
-      PandaScore.matches(tournament_id: tournament.panda_score_id)
+      PandaScoreAPI.matches(tournament_id: tournament.panda_score_id)
     end
 
     def matches_data

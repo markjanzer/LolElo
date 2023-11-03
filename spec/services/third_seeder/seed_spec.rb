@@ -8,8 +8,8 @@ RSpec.describe ThirdSeeder::Seed do
 
     # Ensure that we don't hit the API.
     before do 
-      request_obj_double = double("PandaScore::Request")
-      allow(PandaScore::Request).to receive(:new).and_return(request_obj_double)
+      request_obj_double = double("PandaScoreAPI::Request")
+      allow(PandaScoreAPI::Request).to receive(:new).and_return(request_obj_double)
     end
 
     let(:league_id) { 1 }
@@ -31,16 +31,16 @@ RSpec.describe ThirdSeeder::Seed do
 
     it "creates everything" do
       Sidekiq::Testing.inline! do
-        expect(PandaScore).to receive(:league).with(id: league_id).and_return({"id" => league_id})
-        expect(PandaScore).to receive(:serie).with(id: serie_id).and_return({"id" => serie_id})
-        expect(PandaScore).to receive(:tournament).with(id: tournament_id).and_return({"id" => tournament_id})
-        expect(PandaScore).to receive(:team).with(id: team_id).and_return({"id" => team_id})
-        expect(PandaScore).to receive(:match).with(id: match_id).and_return(match_data)
+        expect(PandaScoreAPI).to receive(:league).with(id: league_id).and_return({"id" => league_id})
+        expect(PandaScoreAPI).to receive(:serie).with(id: serie_id).and_return({"id" => serie_id})
+        expect(PandaScoreAPI).to receive(:tournament).with(id: tournament_id).and_return({"id" => tournament_id})
+        expect(PandaScoreAPI).to receive(:team).with(id: team_id).and_return({"id" => team_id})
+        expect(PandaScoreAPI).to receive(:match).with(id: match_id).and_return(match_data)
 
-        expect(PandaScore).to receive(:series).with(league_id: league_id).and_return([{"id" => serie_id}])
-        expect(PandaScore).to receive(:tournaments).with(serie_id: serie_id).and_return([{"id" => tournament_id}])
-        expect(PandaScore).to receive(:teams).with(tournament_id: tournament_id).and_return([{"id" => team_id}])
-        expect(PandaScore).to receive(:matches).with(tournament_id: tournament_id).and_return([match_data])
+        expect(PandaScoreAPI).to receive(:series).with(league_id: league_id).and_return([{"id" => serie_id}])
+        expect(PandaScoreAPI).to receive(:tournaments).with(serie_id: serie_id).and_return([{"id" => tournament_id}])
+        expect(PandaScoreAPI).to receive(:teams).with(tournament_id: tournament_id).and_return([{"id" => team_id}])
+        expect(PandaScoreAPI).to receive(:matches).with(tournament_id: tournament_id).and_return([match_data])
 
         described_class.new([league_id]).call
 

@@ -15,7 +15,7 @@ class Seeder
     attr_reader :serie
 
     def tournaments_data
-      @tournaments_data ||= PandaScore.tournaments(serie_id: serie.panda_score_id)
+      @tournaments_data ||= PandaScoreAPI.tournaments(serie_id: serie.panda_score_id)
     end
 
     def new_tournament(tournament_data)
