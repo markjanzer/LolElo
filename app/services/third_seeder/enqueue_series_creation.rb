@@ -9,9 +9,8 @@ module ThirdSeeder
     end
 
     def call
-      fetch_series.each do |serie|
-        ::Seed::CreateSerieJob.perform_async(serie["id"])
-      end
+      serie_ids = fetch_series.map { |serie| [serie["id"]] }
+      ::Seed::CreateSerieJob.perform_bulk(serie_ids)
     end
 
     private

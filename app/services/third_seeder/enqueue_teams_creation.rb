@@ -9,9 +9,8 @@ module ThirdSeeder
     end
 
     def call
-      fetch_teams.each do |team|
-        ::Seed::CreateTeamJob.perform_async(team["id"])
-      end
+      team_ids = fetch_teams.map { |team| [team["id"]] }
+      ::Seed::CreateTeamJob.perform_bulk(team_ids)
     end
 
     private
