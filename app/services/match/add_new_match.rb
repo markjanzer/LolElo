@@ -1,4 +1,7 @@
 class Match
+  
+  # I should see if I can get rid of this. I don't think that it works, and it's keeping the factories around
+  
   class AddNewMatch
     def initialize(match_data)
       @match_data = match_data

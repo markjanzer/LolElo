@@ -9,6 +9,8 @@ module PandaScoreAPISeeder
       if time_zone.nil?
         raise 'time_zone is required'
       end
+
+      panda_score_league = PandaScore::League.find_by(panda_score_id: panda_score_id)
   
       League.find_or_initialize_by(
         panda_score_id: panda_score_id,
@@ -20,13 +22,5 @@ module PandaScoreAPISeeder
     private
 
     attr_reader :panda_score_id, :time_zone
-
-    def panda_score_league
-      PandaScore::League.find_by(panda_score_id: panda_score_id)
-    end
-
-    def new_league
-      LeagueFactory.new(league_data: league_panda_score_data, time_zone: league_seed_data[:time_zone]).call
-    end
   end
 end

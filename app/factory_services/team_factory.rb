@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# I want to remove this but can't yet
+
 class TeamFactory
   def initialize(team_data:, serie:)
     @team_data = team_data
