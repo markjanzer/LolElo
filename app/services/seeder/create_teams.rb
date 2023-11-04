@@ -5,11 +5,17 @@ class Seeder
     end
 
     def call
-      teams_data.each do |team_data|
-        team = new_team(team_data)
-        unless tournament.teams.include?(team)
-          tournament.teams << team
-        end
+      team_panda_score_ids = tournament.data["teams"].map { |t| t["id"] }
+      panda_score_teams = PandaScore::Team.where(panda_score_id: team_panda_score_ids)
+
+      panda_score_teams.each do |ps_team|
+        team = Team.find_or_initialize_by(panda_score_id: ps_team.data["id"])
+        team.assign_attributes({
+          panda_score_id: team_data["id"],
+          name: team_data["name"],
+          acronym: team_data["acronym"],
+          color: unique_team_color,
+        })
       end
     end
 
@@ -17,22 +23,12 @@ class Seeder
 
     attr_reader :tournament
 
-    delegate :serie, to: :tournament
-
-    def teams_data
-      @teams_data ||= PandaScoreAPI.teams(tournament_id: tournament.panda_score_id)
+    def remaining_colors
+      Team::UNIQUE_COLORS - tournament.serie.teams.pluck(:color)
     end
-
-    def new_tournament(tournament_data)
-      TournamentFactory.new(tournament_data).call
-    end
-
+  
     def unique_team_color
       remaining_colors.sample
-    end
-
-    def new_team(team_data)
-      TeamFactory.new(team_data: team_data, serie: serie).call
     end
   end
 end

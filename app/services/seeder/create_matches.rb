@@ -5,8 +5,17 @@ class Seeder
     end
 
     def call
-      matches_data.each do |match_data|
-        tournament.matches << new_match(match_data)
+      match_ids = tournament.data["matches"].map { |m| m["id"] }
+      panda_score_matches = PandaScore::Match.where(panda_score_id: match_ids)
+
+      panda_score_matches.each do |ps_match|
+        match = Match.find_or_initialize_by(panda_score_id: ps_match.data["id"])
+        match.assign_attributes({
+          end_at: ps_match.data["end_at"],
+          opponent1: opponent1(ps_match),
+          opponent2: opponent2(ps_match)
+        })
+        tournament.matches << match
       end
     end
 
@@ -14,16 +23,12 @@ class Seeder
 
     attr_reader :tournament
 
-    def panda_score_matches_data
-      PandaScoreAPI.matches(tournament_id: tournament.panda_score_id)
+    def opponent1(ps_match)
+      Team.find_by(panda_score_id: ps_match.data["opponents"].first["opponent"]["id"])
     end
 
-    def matches_data
-      @matches_data ||= InvalidMatchesCorrector.new(matches_data: panda_score_matches_data).call
-    end
-
-    def new_match(match_data)
-      MatchFactory.new(match_data).call
+    def opponent2(ps_match)
+      Team.find_by(panda_score_id: ps_match.data["opponents"].second["opponent"]["id"])
     end
   end
 end

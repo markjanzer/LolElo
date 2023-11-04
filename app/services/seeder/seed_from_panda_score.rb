@@ -1,6 +1,12 @@
 class Seeder
   class SeedFromPandaScore
-    
+    LEAGUE_SEED_DATA =  [
+      { abbreviation: "lcs", league_id: 4198, time_zone: "America/Los_Angeles" },
+      { abbreviation: "lec", league_id: 4197, time_zone: "Europe/Berlin" },
+      { abbreviation: "lck", league_id: 293, time_zone: "Asia/Seoul" },
+      { abbreviation: "lpl", league_id: 294, time_zone: "Asia/Shanghai" }
+    ]
+
     def initialize(leagues_seed_data)
       @leagues_seed_data = leagues_seed_data
     end

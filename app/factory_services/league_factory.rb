@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Can deprecate
 class LeagueFactory
   def initialize(league_data:, time_zone:)
     @league_data = league_data

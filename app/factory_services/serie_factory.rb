@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# Probably can remove
+
 class SerieFactory
   def initialize(serie_data)
     @serie_data = serie_data
