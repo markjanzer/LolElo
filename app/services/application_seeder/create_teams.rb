@@ -1,4 +1,4 @@
-module PandaScoreAPISeeder
+module ApplicationSeeder
   class CreateTeams
     def initialize(tournament)
       @tournament = tournament

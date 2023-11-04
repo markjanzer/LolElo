@@ -1,4 +1,4 @@
-module ApplicationSeeder
+module PandaScoreAPISeeder
   class CreateMatchAndGames
     def initialize(match_id)
       @match_id = match_id

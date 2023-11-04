@@ -1,4 +1,4 @@
-module ApplicationSeeder
+module PandaScoreAPISeeder
   class CreateSerie
     def initialize(serie_id)
       @serie_id = serie_id

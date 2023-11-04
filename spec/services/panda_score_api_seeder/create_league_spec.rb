@@ -3,7 +3,7 @@
 # Needed for when I want to run individual specs...
 require 'rails_helper'
 
-RSpec.describe ApplicationSeeder::CreateLeague do
+RSpec.describe PandaScoreAPISeeder::CreateLeague do
   describe "#call" do
     let(:response) { { "name"=>"LCS" } }
     let(:league_id) { 4198 }

@@ -1,4 +1,4 @@
-module ApplicationSeeder
+module PandaScoreAPISeeder
   class CreateTeam
     def initialize(team_id)
       @team_id = team_id

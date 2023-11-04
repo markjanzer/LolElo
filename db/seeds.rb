@@ -2,7 +2,7 @@
 
 # This populates from the API into PandaScore objects
 # This will take several hours with sidekiq, ideally is only run once.
-# ApplicationSeeder::Seed.call
+# PandaScoreAPISeeder::Seed.call
 
 # This populates application objects from the PandaScore objects
 PandaScore::League.all.each do |league|

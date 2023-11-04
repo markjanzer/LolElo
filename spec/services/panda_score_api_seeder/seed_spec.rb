@@ -1,212 +1,55 @@
 # frozen_string_literal: true
 
-# Needed for when I want to run individual specs...
 require 'rails_helper'
+require 'sidekiq/testing'
 
 RSpec.describe PandaScoreAPISeeder::Seed do
-  # This is deprecated and calls the actual API.
-  xdescribe "#call" do
-    subject { PandaScoreAPISeeder::Seed.new(leagues_seed_data).call }
+  describe "#call" do
 
-    let(:leagues_seed_data) { [{ abbreviation: "nalcs", league_id: 1, time_zone: 'America/Los_Angeles' }] }
-    let(:league_data) { { "id" => 1, "name" => "First League" } }
-    let(:series_data) do 
-      [{ 
-        "id" => 1, 
-        "year" => 2019, 
-        "begin_at" => "2019-01-26T22:00:00Z",
-        "full_name" => "Spring 2019",
-      }] 
-    end
-    let(:tournaments_data) do
-      [{
-        "id" => 1, 
-        "name" => "Regular season",
-      }]
-    end
-    let(:teams_data) {
-      [
-        {
-          "id" => 1,
-          "name" => "Cloud9",
-          "acronym" => "C9"
-        },
-        {
-          "id" => 2,
-          "name" => "Golden Guardians",
-          "acronym" => "GG"
-        }
-      ]
-    }
-    let(:matches_data) {
-      [
-        {
-          "id" => 1,
-          "opponents" => match_opponents_data
-        }
-      ]
-    }
-    let(:match_opponents_data) { 
-      [
-        {
-          "opponent" => {
-            "id" => 1
-          }
-        },
-        {
-          "opponent" => {
-            "id" => 2
-          }
-        }
-      ]
-    }
-    let(:games_data) {
-      [{
-        "id" => 1,
-        "end_at" => "2019-02-26T22:00:00Z",
-        "winner" => {
-          "id" => 1
-        }
-      }]
-    }
-
-    before do
-      allow(PandaScoreAPI).to receive(:league) { league_data }
-      allow(PandaScoreAPI).to receive(:series) { series_data }
-      allow(PandaScoreAPI).to receive(:tournaments) { tournaments_data }
-      allow(PandaScoreAPI).to receive(:teams) { teams_data }
-      allow(PandaScoreAPI).to receive(:matches) { matches_data }
-      allow(PandaScoreAPI).to receive(:games) { games_data }
-
-      subject
+    # Ensure that we don't hit the API.
+    before do 
+      request_obj_double = double("PandaScoreAPI::Request")
+      allow(PandaScoreAPI::Request).to receive(:new).and_return(request_obj_double)
     end
 
-    context "when there is only one of each object" do
+    let(:league_id) { 1 }
+    let(:serie_id) { 2 } 
+    let(:tournament_id) { 3 }
+    let(:team_id) { 4 }
+    let(:match_id) { 5 }
 
-      it "creates one league" do
-        expect(League.count).to eq 1
-      end
-
-      it "creates one serie" do
-        expect(Serie.count).to eq 1
-      end
-
-      it "creates a series that belongs to the league" do
-        expect(Serie.last.league).to eq League.last
-      end
-
-      it "creates one tournament" do
-        expect(Tournament.count).to eq 1
-      end
-
-      it "creates a tournament that belong to the serie" do
-        expect(Tournament.last.serie).to eq Serie.last
-      end
-
-      it "creates two teams" do
-        expect(Team.count).to eq 2
-      end
-
-      it "creates two teams that belong to the tournament" do
-        expect(Tournament.last.teams.pluck(:id)).to eq [Team.first.id, Team.second.id]
-      end
-
-      it "creates one match" do
-        expect(Match.count).to eq 1
-      end
-
-      it "creates a match that belongs to the tournament" do
-        expect(Match.first.tournament).to eq Tournament.first
-      end
-
-      it "creates a match that has the two teams as opponents" do
-        opponent_ids = [Match.first.opponent1.id, Match.first.opponent2.id]
-        expect(opponent_ids).to eq [Team.first.id, Team.second.id]
-      end
-
-      it "creates one game" do
-        expect(Game.count).to eq 1
-      end
-
-      it "creates a game that belongs to the match" do
-        expect(Game.first.match).to eq Match.first
-      end
-
-      it "creates a game that has one of the teams as a winner" do
-        expect(Game.first.winner).to eq Team.first
-      end
-    end
-
-    context "when there series whose names doen't start with Spring or Summer" do
-
-      let(:series_data) { 
-        [
-          { 
-            "id" => 1, 
-            "year" => 2019, 
-            "begin_at" => "2019-01-26T22:00:00Z",
-            "full_name" => "Spring 2019",
-          },
+    let(:match_data) do
+      {
+        "id"=> match_id,
+        "games"=> [
           {
-            "id" => 2,
-            "year" => 2019,
-            "begin_at" => "2019-01-26T22:00:00Z",
-            "full_name" => "Academy Spring 2019",
+            "id"=> 6,
           }
         ] 
       }
-      
-      it "doesn't create series whose names don't start with Spring or Summer" do
-        expect(Serie.count).to eq 1
-        expect(Serie.first.full_name).to eq "Spring 2019"
-      end
     end
 
-    context "when there are as many teams in a tournament as there are unique colors" do
-      let(:teams_data) do
-        teams = []
-        Team::UNIQUE_COLORS.count.times do |i|
-          teams << {
-            "id" =>i,
-            "name" =>"team_name#{i}",
-            "acronym" =>"team_acronym#{i}"
-          }
-        end
-        teams
-      end
+    it "creates everything" do
+      Sidekiq::Testing.inline! do
+        expect(PandaScoreAPI).to receive(:league).with(id: league_id).and_return({"id" => league_id})
+        expect(PandaScoreAPI).to receive(:serie).with(id: serie_id).and_return({"id" => serie_id})
+        expect(PandaScoreAPI).to receive(:tournament).with(id: tournament_id).and_return({"id" => tournament_id})
+        expect(PandaScoreAPI).to receive(:team).with(id: team_id).and_return({"id" => team_id})
+        expect(PandaScoreAPI).to receive(:match).with(id: match_id).and_return(match_data)
 
-      it "gives each team a unique color" do
-        team_colors = Team.all.pluck(:color)
-        expect(Team.count).to eq Team::UNIQUE_COLORS.count
-        expect(Team.all.pluck(:color).uniq).to eq Team.all.pluck(:color)
-      end
-    end
+        expect(PandaScoreAPI).to receive(:series).with(league_id: league_id).and_return([{"id" => serie_id}])
+        expect(PandaScoreAPI).to receive(:tournaments).with(serie_id: serie_id).and_return([{"id" => tournament_id}])
+        expect(PandaScoreAPI).to receive(:teams).with(tournament_id: tournament_id).and_return([{"id" => team_id}])
+        expect(PandaScoreAPI).to receive(:matches).with(tournament_id: tournament_id).and_return([match_data])
 
-    context "when there are games that were forfeit" do
-      let(:games_data) {
-        [
-          {
-            "id" => 1,
-            "end_at" => "2019-02-26T22:00:00Z",
-            "forfeit" => false,
-            "winner" => {
-              "id" => 1
-            }
-          },
-          {
-            "id" => 2,
-            "end_at" => "2019-03-26T22:00:00Z",
-            "forfeit" => true,
-            "winner" => {
-              "id" => 1
-            }
-          },
-        ]
-      }
-      
-      it "does not create forfeit games" do
-        expect(Game.count).to eq 1
-        expect(Game.first.panda_score_id).to eq 1
+        described_class.new([league_id]).call
+
+        expect(PandaScore::League.count).to eq 1
+        expect(PandaScore::Serie.count).to eq 1
+        expect(PandaScore::Tournament.count).to eq 1
+        expect(PandaScore::Team.count).to eq 1
+        expect(PandaScore::Match.count).to eq 1
+        expect(PandaScore::Game.count).to eq 1
       end
     end
   end
