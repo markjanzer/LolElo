@@ -1,4 +1,4 @@
-class Seeder
+module PandaScoreAPISeeder
   class CreateTournaments
     def initialize(serie)
       @serie = serie

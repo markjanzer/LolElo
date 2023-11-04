@@ -1,5 +1,5 @@
-class Seeder
-  class SeedFromPandaScore
+module PandaScoreAPISeeder
+  class Seed
     LEAGUE_SEED_DATA =  [
       { abbreviation: "lcs", league_id: 4198, time_zone: "America/Los_Angeles" },
       { abbreviation: "lec", league_id: 4197, time_zone: "Europe/Berlin" },
@@ -27,7 +27,7 @@ class Seeder
     def create_leagues
       League.transaction do
         leagues_seed_data.each do |league_seed_data|
-          Seeder::CreateLeague.new(league_seed_data).call
+          PandaScoreAPISeeder::CreateLeague.new(league_seed_data).call
         end
       end
     end
@@ -35,7 +35,7 @@ class Seeder
     def create_all_series
       Serie.transaction do
         League.all.each do |league|
-          Seeder::CreateSeries.new(league).create_last
+          PandaScoreAPISeeder::CreateSeries.new(league).create_last
         end
       end
     end
@@ -43,7 +43,7 @@ class Seeder
     def create_all_tournaments
       Tournament.transaction do
         Serie.all.each do |serie|
-          Seeder::CreateTournaments.new(serie).call
+          PandaScoreAPISeeder::CreateTournaments.new(serie).call
         end
       end
     end
@@ -51,7 +51,7 @@ class Seeder
     def create_all_teams
       Team.transaction do
         Tournament.all.each do |tournament|
-          Seeder::CreateTeams.new(tournament).call
+          PandaScoreAPISeeder::CreateTeams.new(tournament).call
         end
       end
     end
@@ -59,7 +59,7 @@ class Seeder
     def create_all_matches
       Match.transaction do
         Tournament.all.each do |tournament|
-          Seeder::CreateMatches.new(tournament).call
+          PandaScoreAPISeeder::CreateMatches.new(tournament).call
         end
       end
     end
@@ -67,7 +67,7 @@ class Seeder
     def create_all_games
       Game.transaction do
         Match.all.each do |match|
-          Seeder::CreateGames.new(match).call
+          PandaScoreAPISeeder::CreateGames.new(match).call
         end
       end
     end

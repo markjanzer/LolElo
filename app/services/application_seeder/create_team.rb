@@ -1,4 +1,4 @@
-module ThirdSeeder
+module ApplicationSeeder
   class CreateTeam
     def initialize(team_id)
       @team_id = team_id

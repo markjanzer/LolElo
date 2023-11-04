@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'sidekiq/testing'
 
-RSpec.describe ThirdSeeder::Seed do
+RSpec.describe ApplicationSeeder::Seed do
   describe "#call" do
 
     # Ensure that we don't hit the API.

@@ -3,10 +3,10 @@
 # Needed for when I want to run individual specs...
 require 'rails_helper'
 
-RSpec.describe Seeder::SeedFromPandaScore do
+RSpec.describe PandaScoreAPISeeder::Seed do
   # This is deprecated and calls the actual API.
   xdescribe "#call" do
-    subject { Seeder::SeedFromPandaScore.new(leagues_seed_data).call }
+    subject { PandaScoreAPISeeder::Seed.new(leagues_seed_data).call }
 
     let(:leagues_seed_data) { [{ abbreviation: "nalcs", league_id: 1, time_zone: 'America/Los_Angeles' }] }
     let(:league_data) { { "id" => 1, "name" => "First League" } }

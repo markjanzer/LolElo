@@ -1,4 +1,4 @@
-module ThirdSeeder
+module ApplicationSeeder
   class Seed
     LEAGUE_IDS = [
       4198, # LCS 

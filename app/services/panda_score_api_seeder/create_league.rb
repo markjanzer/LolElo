@@ -1,4 +1,4 @@
-class Seeder
+module PandaScoreAPISeeder
   class CreateLeague
     def initialize(league_seed_data)
       @panda_score_id = league_seed_data[:league_id]

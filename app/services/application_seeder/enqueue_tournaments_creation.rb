@@ -1,4 +1,4 @@
-module ThirdSeeder
+module ApplicationSeeder
   class EnqueueTournamentsCreation
     def initialize(serie_id)
       @serie_id = serie_id

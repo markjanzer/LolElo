@@ -1,4 +1,4 @@
-module ThirdSeeder
+module ApplicationSeeder
   class CreateMatchAndGames
     def initialize(match_id)
       @match_id = match_id

@@ -1,4 +1,4 @@
-module ThirdSeeder
+module ApplicationSeeder
   class CreateLeague
     def initialize(league_id)
       @league_id = league_id
