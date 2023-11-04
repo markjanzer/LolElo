@@ -25,10 +25,11 @@ module ApplicationSeeder
     attr_reader :leagues_seed_data
 
     def create_leagues
-      League.transaction do
-        leagues_seed_data.each do |league_seed_data|
-          ApplicationSeeder::CreateLeague.new(league_seed_data).call
-        end
+      leagues_seed_data.each do |data|
+        ApplicationSeeder::CreateLeague.new(
+          panda_score_id: data[:league_id],
+          time_zone: data[:time_zone]
+        ).call
       end
     end
     
