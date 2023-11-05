@@ -34,42 +34,32 @@ module ApplicationSeeder
     end
     
     def create_all_series
-      Serie.transaction do
-        League.all.each do |league|
-          ApplicationSeeder::CreateSeries.new(league).create_last
-        end
+      League.all.each do |league|
+        ApplicationSeeder::CreateSeries.new(league.panda_score_id).call
       end
     end
     
     def create_all_tournaments
-      Tournament.transaction do
-        Serie.all.each do |serie|
-          ApplicationSeeder::CreateTournaments.new(serie).call
-        end
+      Serie.all.each do |serie|
+        ApplicationSeeder::CreateTournaments.new(serie).call
       end
     end
     
     def create_all_teams
-      Team.transaction do
-        Tournament.all.each do |tournament|
-          ApplicationSeeder::CreateTeams.new(tournament).call
-        end
+      Tournament.all.each do |tournament|
+        ApplicationSeeder::CreateTeams.new(tournament).call
       end
     end
     
     def create_all_matches
-      Match.transaction do
-        Tournament.all.each do |tournament|
-          ApplicationSeeder::CreateMatches.new(tournament).call
-        end
+      Tournament.all.each do |tournament|
+        ApplicationSeeder::CreateMatches.new(tournament).call
       end
     end
     
     def create_all_games
-      Game.transaction do
-        Match.all.each do |match|
-          ApplicationSeeder::CreateGames.new(match).call
-        end
+      Match.all.each do |match|
+        ApplicationSeeder::CreateGames.new(match).call
       end
     end
   end

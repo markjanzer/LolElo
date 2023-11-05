@@ -1,29 +1,23 @@
 module ApplicationSeeder
   class CreateSeries
-    def initialize(league)
-      @league = league
+    def initialize(panda_score_league_id)
+      @panda_score_league_id = panda_score_league_id
     end
 
     def call
-      league_series = PandaScore::Serie.where("data ->> 'league_id' = ?", "#{league.panda_score_id}}")
+      panda_score_league = PandaScore::League.find_by(panda_score_id: panda_score_league_id)
+      panda_score_series = panda_score_league.panda_score_series
 
-      valid_series = league_series.select { |serie| valid_serie?(serie) }
+      valid_series = panda_score_series.select { |serie| valid_serie?(serie) }
 
-      valid_series.each do |serie| 
-        new_serie = Serie.find_or_initialize_by(panda_score_id: serie.data['id'])
-        new_serie.assign_attributes({
-          year: serie.data["year"],
-          begin_at: serie.data["begin_at"],
-          full_name: serie.data["full_name"],
-        })
-        league.series << new_serie
-      end
+      valid_series.each(&:create_or_update_serie)
     end
 
     private
 
-    attr_reader :league
+    attr_reader :panda_score_league_id
 
+    # This is copies from Serie.rb, ideally that one goes away
     def valid_serie?(serie)
       # This is probably wrong, didn't LEC just have a winter split?
       serie.data['full_name'].split.first.match?('Spring|Summer')
