@@ -16,7 +16,6 @@ class PandaScore::Serie < ApplicationRecord
   private
 
   def league
-    puts data["league_id"]
     League.find_by(panda_score_id: data["league_id"])
   end
 end
