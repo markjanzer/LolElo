@@ -35,31 +35,51 @@ module ApplicationSeeder
     
     def create_all_series
       League.all.each do |league|
-        ApplicationSeeder::CreateSeries.new(league.panda_score_id).call
+        panda_score_league = league.panda_score_league
+        panda_score_series = panda_score_league.panda_score_series
+        panda_score_series.each do |ps_serie|
+          ApplicationSeeder::CreateOrUpdateSerie.new(ps_serie).call
+        end
       end
     end
     
     def create_all_tournaments
       Serie.all.each do |serie|
-        ApplicationSeeder::CreateTournaments.new(serie).call
+        panda_score_serie = serie.panda_score_serie
+        panda_score_tournaments = panda_score_serie.panda_score_tournaments
+        panda_score_tournaments.each do |ps_tournament|
+          ApplicationSeeder::CreateOrUpdateTournamnet.new(ps_tournament).call
+        end
       end
     end
     
     def create_all_teams
       Tournament.all.each do |tournament|
-        ApplicationSeeder::CreateTeams.new(tournament).call
+        panda_score_tournament = tournament.panda_score_tournament
+        panda_score_teams = panda_score_tournament.panda_score_teams
+        panda_score_teams.each do |ps_team|
+          ApplicationSeeder::CreateOrUpdateTeam.new(ps_team).call
+        end
       end
     end
     
     def create_all_matches
       Tournament.all.each do |tournament|
-        ApplicationSeeder::CreateMatches.new(tournament).call
+        panda_score_tournament = tournament.panda_score_tournament
+        panda_score_matches = panda_score_tournament.panda_score_matches
+        panda_score_matches.each do |ps_match|
+          ApplicationSeeder::CreateOrUpdateMatch.new(ps_match).call
+        endl
       end
     end
     
     def create_all_games
       Match.all.each do |match|
-        ApplicationSeeder::CreateGames.new(match).call
+        panda_score_match = match.panda_score_match
+        panda_score_games = panda_score_match.panda_score_games
+        panda_score_games.each do |ps_game|
+          ApplicationSeeder::CreateOrUpdateGame.new(match).call
+        end
       end
     end
   end
