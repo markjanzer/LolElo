@@ -26,7 +26,7 @@ module ApplicationSeeder
 
     def create_leagues
       leagues_seed_data.each do |data|
-        ApplicationSeeder::CreateLeague.new(
+        ApplicationSeeder::CreateOrUpdateLeague.new(
           panda_score_id: data[:league_id],
           time_zone: data[:time_zone]
         ).call

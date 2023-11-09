@@ -2,4 +2,8 @@
 
 class PandaScore::Serie < ApplicationRecord
   self.table_name = 'panda_score_series'
+
+  def league
+    League.find_by(panda_score_id: data['league_id'])
+  end
 end
