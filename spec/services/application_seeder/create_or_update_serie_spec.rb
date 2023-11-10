@@ -18,7 +18,7 @@ RSpec.describe ApplicationSeeder::CreateOrUpdateSerie do
       end
     end
 
-    context "whent the serie does exist" do
+    context "when the serie does exist" do
       it "does not create a new serie" do
         panda_score_serie = create(:panda_score_serie)
         league = create(:league)
@@ -33,7 +33,7 @@ RSpec.describe ApplicationSeeder::CreateOrUpdateSerie do
       end
     end
 
-    it "sets the series with correct attributes" do
+    it "sets the serie with correct attributes" do
       league = create(:league)
       time = Time.parse("2020-01-01")
       panda_score_serie = create(:panda_score_serie, data: {
