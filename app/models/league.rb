@@ -10,4 +10,8 @@ class League < ApplicationRecord
   has_many :games, through: :matches
 
   has_many :snapshots, through: :series
+
+  def panda_score_league
+    PandaScore::League.find_by(panda_score_id: panda_score_id)
+  end
 end

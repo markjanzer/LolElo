@@ -11,6 +11,10 @@ class Serie < ApplicationRecord
   def self.valid_name?(name)
     name.split.first.match?('Spring|Summer')
   end
+
+  def panda_score_serie
+    PandaScore::Serie.find_by(panda_score_id: panda_score_id)
+  end
 end
 
 # Serie.first.get_data(path: "/lol/series", params: {

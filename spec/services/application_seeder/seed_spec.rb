@@ -4,210 +4,130 @@
 require 'rails_helper'
 
 RSpec.describe ApplicationSeeder::Seed do
-  # This is deprecated and calls the actual API.
-  xdescribe "#call" do
-    subject { ApplicationSeeder::Seed.new(leagues_seed_data).call }
-
-    let(:leagues_seed_data) { [{ abbreviation: "nalcs", league_id: 1, time_zone: 'America/Los_Angeles' }] }
-    let(:league_data) { { "id" => 1, "name" => "First League" } }
-    let(:series_data) do 
-      [{ 
-        "id" => 1, 
-        "year" => 2019, 
-        "begin_at" => "2019-01-26T22:00:00Z",
-        "full_name" => "Spring 2019",
-      }] 
-    end
-    let(:tournaments_data) do
-      [{
-        "id" => 1, 
-        "name" => "Regular season",
-      }]
-    end
-    let(:teams_data) {
-      [
-        {
-          "id" => 1,
-          "name" => "Cloud9",
-          "acronym" => "C9"
-        },
-        {
-          "id" => 2,
-          "name" => "Golden Guardians",
-          "acronym" => "GG"
-        }
+  describe "#create_leagues" do
+    it "calls CreateOrUpdateLeague with the seed data" do
+      league_seed_data = [
+        { league_id: 1, time_zone: "America/Los_Angeles" },
       ]
-    }
-    let(:matches_data) {
-      [
-        {
-          "id" => 1,
-          "opponents" => match_opponents_data
-        }
-      ]
-    }
-    let(:match_opponents_data) { 
-      [
-        {
-          "opponent" => {
-            "id" => 1
-          }
-        },
-        {
-          "opponent" => {
-            "id" => 2
-          }
-        }
-      ]
-    }
-    let(:games_data) {
-      [{
-        "id" => 1,
-        "end_at" => "2019-02-26T22:00:00Z",
-        "winner" => {
-          "id" => 1
-        }
-      }]
-    }
 
-    before do
-      allow(PandaScoreAPI).to receive(:league) { league_data }
-      allow(PandaScoreAPI).to receive(:series) { series_data }
-      allow(PandaScoreAPI).to receive(:tournaments) { tournaments_data }
-      allow(PandaScoreAPI).to receive(:teams) { teams_data }
-      allow(PandaScoreAPI).to receive(:matches) { matches_data }
-      allow(PandaScoreAPI).to receive(:games) { games_data }
+      double = double("CreateOrUpdateLeague")
+      expect(ApplicationSeeder::CreateOrUpdateLeague).to receive(:new).with(
+        panda_score_id: 1,
+        time_zone: "America/Los_Angeles"
+      ).and_return(double)
 
-      subject
+      expect(double).to receive(:call)
+
+      described_class.new.send(:create_leagues, league_seed_data)
     end
+  end
 
-    context "when there is only one of each object" do
+  describe "#create_all_series" do
+    it "calls CreateOrUpdateSerie for all series belonging to the leagues" do
+      league = create(:league)
+      panda_score_league = create(:panda_score_league)
+      panda_score_series = create_list(:panda_score_serie, 2)
 
-      it "creates one league" do
-        expect(League.count).to eq 1
-      end
+      allow(league).to receive(:panda_score_league).and_return(panda_score_league)
+      allow(panda_score_league).to receive(:panda_score_series).and_return(panda_score_series)
 
-      it "creates one serie" do
-        expect(Serie.count).to eq 1
-      end
-
-      it "creates a series that belongs to the league" do
-        expect(Serie.last.league).to eq League.last
-      end
-
-      it "creates one tournament" do
-        expect(Tournament.count).to eq 1
-      end
-
-      it "creates a tournament that belong to the serie" do
-        expect(Tournament.last.serie).to eq Serie.last
-      end
-
-      it "creates two teams" do
-        expect(Team.count).to eq 2
-      end
-
-      it "creates two teams that belong to the tournament" do
-        expect(Tournament.last.teams.pluck(:id)).to eq [Team.first.id, Team.second.id]
-      end
-
-      it "creates one match" do
-        expect(Match.count).to eq 1
-      end
-
-      it "creates a match that belongs to the tournament" do
-        expect(Match.first.tournament).to eq Tournament.first
-      end
-
-      it "creates a match that has the two teams as opponents" do
-        opponent_ids = [Match.first.opponent1.id, Match.first.opponent2.id]
-        expect(opponent_ids).to eq [Team.first.id, Team.second.id]
-      end
-
-      it "creates one game" do
-        expect(Game.count).to eq 1
-      end
-
-      it "creates a game that belongs to the match" do
-        expect(Game.first.match).to eq Match.first
-      end
-
-      it "creates a game that has one of the teams as a winner" do
-        expect(Game.first.winner).to eq Team.first
-      end
-    end
-
-    context "when there series whose names doen't start with Spring or Summer" do
-
-      let(:series_data) { 
-        [
-          { 
-            "id" => 1, 
-            "year" => 2019, 
-            "begin_at" => "2019-01-26T22:00:00Z",
-            "full_name" => "Spring 2019",
-          },
-          {
-            "id" => 2,
-            "year" => 2019,
-            "begin_at" => "2019-01-26T22:00:00Z",
-            "full_name" => "Academy Spring 2019",
-          }
-        ] 
-      }
+      double = double("CreateOrUpdateSerie")
       
-      it "doesn't create series whose names don't start with Spring or Summer" do
-        expect(Serie.count).to eq 1
-        expect(Serie.first.full_name).to eq "Spring 2019"
-      end
+      expect(ApplicationSeeder::CreateOrUpdateSerie).to receive(:new).with(
+        panda_score_series[0]
+      ).and_return(double)
+
+      expect(ApplicationSeeder::CreateOrUpdateSerie).to receive(:new).with(
+        panda_score_series[1]
+      ).and_return(double)
+
+      expect(double).to receive(:call).twice
+
+      described_class.new.send(:create_all_series, [league])
     end
+  end
 
-    context "when there are as many teams in a tournament as there are unique colors" do
-      let(:teams_data) do
-        teams = []
-        Team::UNIQUE_COLORS.count.times do |i|
-          teams << {
-            "id" =>i,
-            "name" =>"team_name#{i}",
-            "acronym" =>"team_acronym#{i}"
-          }
-        end
-        teams
-      end
+  describe "#create_all_tournaments" do
+    it "calls CreateOrUpdateTournament for all tournaments belonging to the series" do
+      serie = create(:serie)
+      panda_score_serie = create(:panda_score_serie)
+      panda_score_tournaments = create_list(:panda_score_tournament, 1)
 
-      it "gives each team a unique color" do
-        team_colors = Team.all.pluck(:color)
-        expect(Team.count).to eq Team::UNIQUE_COLORS.count
-        expect(Team.all.pluck(:color).uniq).to eq Team.all.pluck(:color)
-      end
+      allow(serie).to receive(:panda_score_serie).and_return(panda_score_serie)
+      allow(panda_score_serie).to receive(:panda_score_tournaments).and_return(panda_score_tournaments)
+
+      double = double("CreateOrUpdateTournament")
+
+      expect(ApplicationSeeder::CreateOrUpdateTournament).to receive(:new).with(
+        panda_score_tournaments[0]
+      ).and_return(double)
+
+      expect(double).to receive(:call).once
+
+      described_class.new.send(:create_all_tournaments, [serie])
     end
+  end
 
-    context "when there are games that were forfeit" do
-      let(:games_data) {
-        [
-          {
-            "id" => 1,
-            "end_at" => "2019-02-26T22:00:00Z",
-            "forfeit" => false,
-            "winner" => {
-              "id" => 1
-            }
-          },
-          {
-            "id" => 2,
-            "end_at" => "2019-03-26T22:00:00Z",
-            "forfeit" => true,
-            "winner" => {
-              "id" => 1
-            }
-          },
-        ]
-      }
-      
-      it "does not create forfeit games" do
-        expect(Game.count).to eq 1
-        expect(Game.first.panda_score_id).to eq 1
-      end
+  describe "#create_all_teams" do
+    it "calls CreateOrUpdateTeam for all teams belonging to the tournaments" do
+      tournament = create(:tournament)
+      panda_score_tournament = create(:panda_score_tournament)
+      panda_score_teams = create_list(:panda_score_team, 1)
+
+      allow(tournament).to receive(:panda_score_tournament).and_return(panda_score_tournament)
+      allow(panda_score_tournament).to receive(:panda_score_teams).and_return(panda_score_teams)
+
+      double = double("CreateOrUpdateTeam")
+
+      expect(ApplicationSeeder::CreateOrUpdateTeam).to receive(:new).with(
+        panda_score_teams[0]
+      ).and_return(double)
+
+      expect(double).to receive(:call).once
+
+      described_class.new.send(:create_all_teams, [tournament])
+    end
+  end
+
+  describe "#create_all_matches" do
+    it "calls CreateOrUpdateMatch for all matches belonging to the tournaments" do
+      tournament = create(:tournament)
+      panda_score_tournament = create(:panda_score_tournament)
+      panda_score_matches = create_list(:panda_score_match, 1)
+
+      allow(tournament).to receive(:panda_score_tournament).and_return(panda_score_tournament)
+      allow(panda_score_tournament).to receive(:panda_score_matches).and_return(panda_score_matches)
+
+      double = double("CreateOrUpdateMatch")
+
+      expect(ApplicationSeeder::CreateOrUpdateMatch).to receive(:new).with(
+        panda_score_matches[0]
+      ).and_return(double)
+
+      expect(double).to receive(:call).once
+
+      described_class.new.send(:create_all_matches, [tournament])
+    end
+  end
+
+  describe "#create_all_games" do
+    it "calls CreateOrUpdateGame for all games belonging to the matches" do
+      match = create(:match)
+      panda_score_match = create(:panda_score_match)
+      panda_score_games = create_list(:panda_score_game, 1)
+
+      allow(match).to receive(:panda_score_match).and_return(panda_score_match)
+      allow(panda_score_match).to receive(:panda_score_games).and_return(panda_score_games)
+
+      double = double("CreateOrUpdateGame")
+
+      expect(ApplicationSeeder::CreateOrUpdateGame).to receive(:new).with(
+        panda_score_games[0]
+      ).and_return(double)
+
+      expect(double).to receive(:call).once
+
+      described_class.new.send(:create_all_games, [match])
     end
   end
 end

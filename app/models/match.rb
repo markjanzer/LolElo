@@ -9,4 +9,8 @@ class Match < ApplicationRecord
   def teams
     [opponent1, opponent2]
   end
+
+  def panda_score_match
+    PandaScore::Match.find_by(panda_score_id: panda_score_id)
+  end
 end

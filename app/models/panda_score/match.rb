@@ -15,6 +15,11 @@ class PandaScore::Match < ApplicationRecord
     Team.find_by(panda_score_id: opponent_id(1))
   end
 
+  def panda_score_games
+    game_ids = data["games"].map { |game| game["id"] }
+    PandaScore::Game.where(panda_score_id: game_ids)
+  end
+
   private
 
   def opponent_id(index)

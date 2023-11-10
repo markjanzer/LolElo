@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :panda_score_team, class: "PandaScore::Team" do
-    panda_score_id { 1 }
+    sequence(:panda_score_id) { |n| n }
     data { {} }
   end
 end

@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :tournament do
-    panda_score_id { 1 }
+    sequence(:panda_score_id) { |n| n }
     serie
   end
 end
