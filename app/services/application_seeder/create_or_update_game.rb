@@ -7,11 +7,11 @@ module ApplicationSeeder
     def call
       return if forfeit?
 
-      game = Game.find_or_initialize_by(panda_score_id: ps_game.data["id"])
-      game.update(
-        end_at: pand_score_game.data["end_at"],
-        winner: winner,
-        match: match
+      game = Game.find_or_initialize_by(panda_score_id: panda_score_game.panda_score_id)
+      game.update!(
+        end_at: panda_score_game.data["end_at"],
+        winner: panda_score_game.winner,
+        match: panda_score_game.match
       )
     end
 
@@ -21,14 +21,6 @@ module ApplicationSeeder
 
     def forfeit?
       panda_score_game.data["forfeit"]
-    end
-
-    def winner
-      Team.find_by(panda_score_id: panda_score_game.data["winner"]["id"])
-    end
-
-    def match
-      Match.find_by(panda_score_id: panda_score_game.data["match_id"])
     end
 
     # There is at least one game without an end at that timestamp that wasn"t forfeited.
