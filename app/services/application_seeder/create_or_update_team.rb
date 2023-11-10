@@ -1,32 +1,24 @@
 module ApplicationSeeder
   class CreateOrUpdateTeam
-    def initialize(panda_score_tournament)
-      @panda_score_tournament = panda_score_tournament
+    def initialize(panda_score_team)
+      @panda_score_team = panda_score_team
     end
 
     def call
-      team = Team.find_or_initialize_by(panda_score_id: panda_score_team.data["id"])
+      team = Team.find_or_initialize_by(panda_score_id: panda_score_team.panda_score_id)
       team.update(
-        panda_score_id: team_data["id"],
-        name: team_data["name"],
-        acronym: team_data["acronym"],
+        name: panda_score_team.data["name"],
+        acronym: panda_score_team.data["acronym"],
         color: unique_team_color
       )
     end
 
     private
 
-    attr_reader :tournament
-
-    def tournament
-      Tournament.find_by(panda_score_id: panda_score_team.data["tournament_id"])
-    end
-
-    def remaining_colors
-      Team::UNIQUE_COLORS - tournament.serie.teams.pluck(:color)
-    end
+    attr_reader :panda_score_team
   
     def unique_team_color
+      remaining_colors = Team::UNIQUE_COLORS - panda_score_team.tournament.serie.teams.pluck(:color)
       remaining_colors.sample
     end
   end
