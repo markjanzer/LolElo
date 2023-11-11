@@ -7,12 +7,8 @@ module ApplicationSeeder
       { abbreviation: "lpl", league_id: 294, time_zone: "Asia/Shanghai" }
     ]
 
-    def initialize(leagues_seed_data=LEAGUE_SEED_DATA)
-      @leagues_seed_data = leagues_seed_data
-    end
-
     def call
-      create_leagues(SEED_DATA)
+      create_leagues(LEAGUE_SEED_DATA)
       create_all_series(League.all)
       create_all_tournaments(Serie.all)
       create_all_teams(Tournament.all)

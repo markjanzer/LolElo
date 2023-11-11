@@ -4,6 +4,34 @@
 require 'rails_helper'
 
 RSpec.describe ApplicationSeeder::Seed do
+  describe "#call" do
+    it "calls all the create methods" do
+      instance = described_class.new
+
+      expect(instance).to receive(:create_leagues).with(described_class::LEAGUE_SEED_DATA).and_return(nil)
+      expect(instance).to receive(:create_all_series).and_return(nil)
+      expect(instance).to receive(:create_all_tournaments).and_return(nil)
+      expect(instance).to receive(:create_all_teams).and_return(nil)
+      expect(instance).to receive(:create_all_matches).and_return(nil)
+      expect(instance).to receive(:create_all_games).and_return(nil)
+
+      instance.call
+    end
+  end
+
+  describe "#reset" do
+    it "destroys all the models" do
+      expect(Game).to receive(:destroy_all)
+      expect(Match).to receive(:destroy_all)
+      expect(Team).to receive(:destroy_all)
+      expect(Tournament).to receive(:destroy_all)
+      expect(Serie).to receive(:destroy_all)
+      expect(League).to receive(:destroy_all)
+
+      described_class.new.reset
+    end
+  end
+
   describe "#create_leagues" do
     it "calls CreateOrUpdateLeague with the seed data" do
       league_seed_data = [
