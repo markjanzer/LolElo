@@ -17,6 +17,7 @@ module ApplicationSeeder
     end
 
     def reset
+      Snapshot.destroy_all
       Game.destroy_all
       Match.destroy_all
       Team.destroy_all
@@ -30,6 +31,7 @@ module ApplicationSeeder
     attr_reader :leagues_seed_data
 
     def create_leagues(seed_data)
+      puts seed_data
       seed_data.each do |data|
         ApplicationSeeder::CreateOrUpdateLeague.new(
           panda_score_id: data[:league_id],

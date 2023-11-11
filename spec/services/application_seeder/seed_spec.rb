@@ -21,6 +21,7 @@ RSpec.describe ApplicationSeeder::Seed do
 
   describe "#reset" do
     it "destroys all the models" do
+      expect(Snapshot).to receive(:destroy_all)
       expect(Game).to receive(:destroy_all)
       expect(Match).to receive(:destroy_all)
       expect(Team).to receive(:destroy_all)
