@@ -37,6 +37,21 @@ RSpec.describe ApplicationSeeder::CreateOrUpdateMatch do
       end
     end
 
+    context "when the match was forfeited" do
+      it "does not create a new match" do
+        panda_score_match = create(:panda_score_match, data: { "forfeit" => true })
+        tournament = create(:tournament)
+        allow(panda_score_match).to receive(:tournament).and_return(tournament)
+
+        team1 = create(:team)
+        team2 = create(:team)
+        allow(panda_score_match).to receive(:opponent1).and_return(team1)
+        allow(panda_score_match).to receive(:opponent2).and_return(team2)
+
+        expect { described_class.new(panda_score_match).call }.not_to change { Match.count }
+      end
+    end
+
     it "sets the match with correct attributes" do
       tournament = create(:tournament)
       panda_score_match = create(:panda_score_match, data: {

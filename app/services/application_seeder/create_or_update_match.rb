@@ -5,6 +5,8 @@ module ApplicationSeeder
     end
 
     def call
+      return if forfeit?
+      
       match = Match.find_or_initialize_by(panda_score_id: panda_score_match.panda_score_id)
       match.update({
         end_at: panda_score_match.data["end_at"],
@@ -17,5 +19,9 @@ module ApplicationSeeder
     private
 
     attr_reader :panda_score_match
+
+    def forfeit?
+      panda_score_match.data["forfeit"]
+    end
   end
 end
