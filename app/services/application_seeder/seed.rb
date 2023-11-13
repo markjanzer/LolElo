@@ -65,7 +65,7 @@ module ApplicationSeeder
         panda_score_tournament = tournament.panda_score_tournament
         panda_score_teams = panda_score_tournament.panda_score_teams
         panda_score_teams.each do |ps_team|
-          ApplicationSeeder::CreateOrUpdateTeam.new(ps_team).call
+          ApplicationSeeder::CreateOrUpdateTeam.new(ps_team: ps_team, tournament: tournament).call
         end
       end
     end

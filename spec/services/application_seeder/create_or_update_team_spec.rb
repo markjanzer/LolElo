@@ -11,7 +11,7 @@ RSpec.describe ApplicationSeeder::CreateOrUpdateTeam do
         tournament = create(:tournament)
         allow(panda_score_team).to receive(:tournament).and_return(tournament)
         
-        expect { described_class.new(panda_score_team).call }.to change { Team.count }.by(1)
+        expect { described_class.new(ps_team: panda_score_team, tournament:).call }.to change { Team.count }.by(1)
       end
     end
 
@@ -23,7 +23,7 @@ RSpec.describe ApplicationSeeder::CreateOrUpdateTeam do
 
         team = create(:team, panda_score_id: panda_score_team.panda_score_id)
 
-        expect { described_class.new(panda_score_team).call }.not_to change { Team.count }
+        expect { described_class.new(ps_team: panda_score_team, tournament:).call }.not_to change { Team.count }
       end
     end
 
@@ -35,7 +35,7 @@ RSpec.describe ApplicationSeeder::CreateOrUpdateTeam do
         "tournament_id" => tournament.panda_score_id
       })
 
-      instance = described_class.new(panda_score_team)
+      instance = described_class.new(ps_team: panda_score_team, tournament:)
 
       allow(instance).to receive(:unique_team_color).and_return("red")
 
@@ -49,6 +49,17 @@ RSpec.describe ApplicationSeeder::CreateOrUpdateTeam do
         acronym: panda_score_team.data["acronym"],
         color: "red"
       )
+    end
+
+    it "assigns the team to the tournament" do
+      panda_score_team = create(:panda_score_team)
+      tournament = create(:tournament)
+      allow(panda_score_team).to receive(:tournament).and_return(tournament)
+
+      team = create(:team, panda_score_id: panda_score_team.panda_score_id)
+
+      expect { described_class.new(ps_team: panda_score_team, tournament:).call }.to change { TeamsTournament.count }.by(1)
+      expect(team.reload.tournaments).to include(tournament)
     end
 
     it "does something when there are no valid colors left"
