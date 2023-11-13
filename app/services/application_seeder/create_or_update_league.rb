@@ -1,8 +1,8 @@
 module ApplicationSeeder
   class CreateOrUpdateLeague
-    def initialize(league_seed_data)
-      @panda_score_id = league_seed_data[:league_id]
-      @time_zone = league_seed_data[:time_zone]
+    def initialize(panda_score_id:, time_zone:)
+      @panda_score_id = panda_score_id
+      @time_zone = time_zone
     end
 
     def call
