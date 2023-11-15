@@ -9,6 +9,4 @@ PandaScore::League.all.each do |league|
 end
 
 # This creates snapshots from the application objects
-League.all.each do |league|
-  League::CreateSnapshots.new(league).call
-end
+Snapshot::Creator.call
