@@ -4,5 +4,6 @@ FactoryBot.define do
   factory :snapshot do
     team
     serie
+    elo { 1500 }
   end
 end

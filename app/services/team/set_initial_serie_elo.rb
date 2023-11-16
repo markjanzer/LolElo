@@ -6,6 +6,12 @@ class Team
     end
 
     def call
+      # If there is a snapshot for this team in the serie's season, do nothing
+      # If there is a snapshot for this team in the previous season, reset the elo
+      # If there is no snapshot for this team in either, then set a new elo
+
+
+
       # If the team has an elo from a previous serie this year, do nothing
       # league = serie.league
       # series_in_this_year = league.series.where(year: serie.year)
