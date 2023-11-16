@@ -46,6 +46,8 @@ group :development, :test do
   gem 'pry'
   gem "factory_bot_rails"
   gem "did_you_mean"
+
+  gem "byebug"
 end
 
 group :development do
