@@ -18,7 +18,7 @@ class Team
 
     private
 
-    attr_reader :team, :serie, :previous_serie
+    attr_reader :team, :serie
 
     delegate :league, to: :serie
 

@@ -15,7 +15,7 @@ class ChartData
   def call
     {
       data: elos_at_dates,
-      teams: team_json,
+      teams: teams_json,
       matches: match_data
     }
   end
@@ -26,7 +26,7 @@ class ChartData
     @tournaments ||= serie.tournaments.where.not(name: FILTERED_MATCH_NAMES)
   end
 
-  def team_json
+  def teams_json
     teams.map(&:as_json)
   end
 
@@ -53,7 +53,7 @@ class ChartData
     end
   end
 
-  # I should probably maket his more efficient
+  # I should probably make his more efficient
   def match_datum(match)
     opponent1 = teams.find { |t| t[:id] == match.opponent1_id }
     opponent2 = teams.find { |t| t[:id] == match.opponent2_id }
