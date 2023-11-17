@@ -3,11 +3,6 @@
 # require "./app/services/chart_data.rb"
 
 class ChartData
-  attr_accessor :serie
-
-  # Shouldn't we not be creating these matches?
-  FILTERED_MATCH_NAMES = ['Promotion', 'Promotion relegation'].freeze
-
   def initialize(serie)
     @serie = serie
   end
@@ -22,9 +17,9 @@ class ChartData
 
   private
 
-  def tournaments
-    @tournaments ||= serie.tournaments.where.not(name: FILTERED_MATCH_NAMES)
-  end
+  attr_reader :serie
+
+  delegate :tournaments, to: :serie
 
   def teams_json
     teams.map(&:as_json)

@@ -27,6 +27,19 @@ RSpec.describe ApplicationSeeder::CreateOrUpdateTournament do
       end
     end
 
+    context "when the tournament is for promotion or relegation" do
+      it "does not create the tournament" do
+        panda_score_tournament1 = create(:panda_score_tournament, data: { "name" => "Promotion" })
+        panda_score_tournament2 = create(:panda_score_tournament, data: { "name" => "Promotion-Relegation" })
+        serie = create(:serie)
+        allow(panda_score_tournament1).to receive(:serie).and_return(serie)
+        allow(panda_score_tournament2).to receive(:serie).and_return(serie)
+
+        expect { described_class.new(panda_score_tournament1).call }.not_to change { Tournament.count }
+        expect { described_class.new(panda_score_tournament2).call }.not_to change { Tournament.count }
+      end
+    end
+
     it "sets the tournament with correct attributes" do
       serie = create(:serie)
       panda_score_tournament = create(:panda_score_tournament, data: {
