@@ -1,0 +1,9 @@
+<h1>Series</h1>
+<% @leagues.each do |league| %>
+  <h2><%= league.name %></h2>
+  <ul>
+    <% league.series.each do |serie| %>
+      <li><%= link_to serie.full_name, series_path(serie) %></li>
+    <% end %>
+  </ul>
+<% end %>

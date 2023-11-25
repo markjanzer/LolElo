@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
 class SeriesController < ApplicationController
+  def index
+    @leagues = League.all.includes(:series)
+  end
+  
   def show
-    @league = League.find(params[:league_id])
-    @serie = @league.series.find(params[:id])
+    @serie = Serie.find(params[:id])
     @chart_data = ChartData.new(@serie).call
   end
 end
