@@ -41,3 +41,6 @@ yarn-debug.log*
 
 # Ignore test spec state
 spec/spec_log.txt
+
+/app/assets/builds/*
+!/app/assets/builds/.keep

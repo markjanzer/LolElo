@@ -60,3 +60,4 @@ group :development do
   # For better debugging
   gem 'awesome_print'
 end
+gem "tailwindcss-rails", "~> 2.0"

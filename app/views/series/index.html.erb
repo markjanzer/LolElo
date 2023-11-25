@@ -1,6 +1,8 @@
-<h1>Series</h1>
+<h1 class="text-4xl">
+  Series
+</h1>
 <% @leagues.each do |league| %>
-  <h2><%= league.name %></h2>
+  <h2 class="text-2xl"><%= league.name %></h2>
   <ul>
     <% league.series.each do |serie| %>
       <li><%= link_to serie.full_name, series_path(serie) %></li>
