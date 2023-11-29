@@ -13,6 +13,14 @@ module.exports = {
         sans: ['Lato', ...defaultTheme.fontFamily.sans],
       },
     },
+    extend: {
+      colors: {
+        'core-purple-07': "hsl(276, 100%, 7%)",
+        'core-purple-10': "hsl(276, 100%, 10%)",
+        'core-organge-90': "hsl(35, 100%, 90%)",
+        'core-green-41': "hsl(155, 100%, 41%)",
+      }
+    }
   },
   plugins: [
     require('@tailwindcss/forms'),
