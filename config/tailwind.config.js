@@ -15,8 +15,8 @@ module.exports = {
     },
     extend: {
       colors: {
+        'core-purple-05': "hsl(276, 100%, 5%)",
         'core-purple-07': "hsl(276, 100%, 7%)",
-        'core-purple-10': "hsl(276, 100%, 10%)",
         'core-organge-90': "hsl(35, 100%, 90%)",
         'core-green-41': "hsl(155, 100%, 41%)",
       }

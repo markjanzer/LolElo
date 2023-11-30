@@ -128,18 +128,21 @@ export const Chart = ({ chartData }) => {
     );
 
     return (
-      <>
-        <h2>{selectedDate}</h2>
+      <div class={styles.teamElosList}>
+        <h2 class={styles.selectedDate}>{selectedDate}</h2>
         <ul>
           {sortedFormattedDateData.map((datum) => {
             return (
-              <li key={datum.acronym}>
+              <li 
+                key={datum.acronym}
+                className={styles.teamListItem}
+              >
                 {datum.acronym}: {datum.elo}
               </li>
             );
           })}
         </ul>
-      </>
+      </div>
     );
   }
 

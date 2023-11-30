@@ -12,8 +12,7 @@
 
 .match {
   display: flex;
-  border: 1px solid black;
-  background-color: white;
+  background-color: hsl(276, 100%, 7%);
   margin: 0.5rem;
   border-radius: 4px;
 }
@@ -49,4 +48,17 @@
 .gameResult {
   font-size: 1.5rem;
   margin: 1rem 0.5rem;
+}
+
+.teamElosList {
+  margin: 0 1rem;
+}
+
+.selectedDate {
+  font-size: 1.5rem;
+  margin: 1rem 0.5rem;
+}
+
+.teamListItem {
+  margin: 0.5rem;
 }
