@@ -5,23 +5,6 @@ require 'rails_helper'
 require 'benchmark'
 
 RSpec.describe ChartData do
-  def setup
-    serie = create(:serie, begin_at: DateTime.parse("2020-01-01"), full_name: "Serie Name")
-    tournament = create(:tournament, serie: serie)
-    team1 = create(:team)
-    team2 = create(:team)
-    create(:teams_tournament, team: team1, tournament: tournament)
-    create(:teams_tournament, team: team2, tournament: tournament)
-    match = create(:match, tournament: tournament, opponent1: team1, opponent2: team2, end_at: DateTime.parse("2020-01-01") + 2.hours)
-    game = create(:game, match: match, winner: team1, end_at: DateTime.parse("2020-01-01") + 2.hours)
-    create(:snapshot, team: team1, elo: 1000, datetime: serie.begin_at)
-    create(:snapshot, team: team2, elo: 1000, datetime: serie.begin_at)
-    create(:snapshot, team: team1, elo: 1100, datetime: game.end_at)
-    create(:snapshot, team: team2, elo: 900, datetime: game.end_at)
-
-    return { serie:, tournament:, team1:, team2:, match:, game: }
-  end
-  
   describe "#call" do
     it "integrates methods into the response object correctly" do
       serie = create(:serie)
@@ -48,10 +31,10 @@ RSpec.describe ChartData do
       create(:teams_tournament, team: team2, tournament:)
       match = create(:match, tournament: tournament, opponent1: team1, opponent2: team2, end_at: DateTime.parse("2020-01-01") + 2.hours)
       game = create(:game, match: match, winner: team1, end_at: DateTime.parse("2020-01-01") + 2.hours)
-      create(:snapshot, team: team1, elo: 1000, datetime: serie.begin_at)
-      create(:snapshot, team: team2, elo: 1000, datetime: serie.begin_at)
-      create(:snapshot, team: team1, elo: 1100, datetime: game.end_at)
-      create(:snapshot, team: team2, elo: 900, datetime: game.end_at)
+      create(:snapshot, team: team1, elo: 1000, serie: serie, game: nil, datetime: serie.begin_at)
+      create(:snapshot, team: team2, elo: 1000, serie: serie, game: nil, datetime: serie.begin_at)
+      create(:snapshot, team: team1, elo: 1100, serie: serie, game: game, datetime: game.end_at)
+      create(:snapshot, team: team2, elo: 900, serie: serie, game: game, datetime: game.end_at)
 
       result = described_class.new(serie).call
 
