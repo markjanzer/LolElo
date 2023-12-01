@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# require "./app/services/chart_data.rb"
-
 class ChartData
   def initialize(serie)
     @serie = serie
@@ -25,10 +23,6 @@ class ChartData
     teams.map(&:as_json)
   end
 
-  def unique_dates
-    past_matches.sort_by(&:end_at).map { |m| m.end_at.to_date }.uniq
-  end
-
   def format_date(date)
     date.strftime('%b %-d')
   end
@@ -40,6 +34,7 @@ class ChartData
   def past_matches
     # Match.where(tournament: tournaments).where("end_at < ?", Time.now)
     Match.where(tournament: tournaments).select { |match| match.games.present? }
+    # serie.matches.with_games
   end
 
   def match_data
@@ -109,5 +104,9 @@ class ChartData
     end
 
     result
+  end
+
+  def unique_dates
+    past_matches.sort_by(&:end_at).map { |m| m.end_at.to_date }.uniq
   end
 end

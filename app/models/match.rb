@@ -6,6 +6,11 @@ class Match < ApplicationRecord
   belongs_to :opponent2, class_name: 'Team'
   has_many :games
 
+  # validiation that end_at is not nil
+  validates :end_at, presence: true
+
+  # scope :with_games, -> { joins(:games).distinct }
+
   def teams
     [opponent1, opponent2]
   end

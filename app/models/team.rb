@@ -8,6 +8,8 @@ class Team < ApplicationRecord
   has_many :teams_tournaments
   has_many :tournaments, through: :teams_tournaments
 
+  validates :acronym, presence: true
+
   # has_many :series_teams
   # has_many :series, :through => :series_teams, :source => :serie
   # has_many :games, foreign_keys: [:opponent1_id, :opponent2_id]
@@ -19,14 +21,30 @@ class Team < ApplicationRecord
   end
 
   def elo_at(datetime)
+    if snapshots.where('datetime <= ?', datetime).empty?
+      raise "No snapshot for team (id: #{id}) exists before or at #{datetime}"
+    end
+    
     snapshots.where('datetime <= ?', datetime).order(:datetime).last.elo
   end
 
   def elo_after(datetime)
+    if snapshots.where('datetime >= ?', datetime).empty?
+      raise "No snapshot for team (id: #{id}) exists after or at #{datetime}"
+    end
+
     snapshots.where('datetime >= ?', datetime).order(:datetime).first.elo
   end
 
   def elo_before(datetime)
+    if datetime.nil?
+      raise "datetime is required"
+    end
+    
+    if snapshots.where('datetime < ?', datetime).empty?
+      raise "No snapshot for team (id: #{id}) exists before or at #{datetime}"
+    end
+
     snapshots.where('datetime < ?', datetime).order(:datetime).last.elo
   end
 
