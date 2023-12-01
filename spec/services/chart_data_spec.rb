@@ -27,14 +27,14 @@ RSpec.describe ChartData do
       instance = described_class.new("fake_serie")
       allow(instance).to receive(:elos_at_dates).and_return("elos_at_dates")
       allow(instance).to receive(:teams_json).and_return("teams_json")
-      allow(instance).to receive(:match_data).and_return("match_data")
+      allow(instance).to receive(:matches_data).and_return("matches_data")
 
       result = instance.call
 
       expect(result).to eq({
         data: "elos_at_dates",
         teams: "teams_json",
-        matches: "match_data"
+        matches: "matches_data"
       })
     end
 
@@ -63,7 +63,7 @@ RSpec.describe ChartData do
 
       elos_at_dates = result[:data]
       teams_json = result[:teams]
-      match_data = result[:matches]
+      matches_data = result[:matches]
 
       expect(elos_at_dates).to eq([
         {:name=>"Start of #{serie.full_name}", "T1"=>1000, "T2"=>1000}, 
@@ -73,7 +73,7 @@ RSpec.describe ChartData do
         team1.as_json,
         team2.as_json
       ])
-      expect(match_data).to eq([
+      expect(matches_data).to eq([
         {
           :date=>"Jan 1", 
           :opponent1=>team1, 
@@ -100,7 +100,7 @@ RSpec.describe ChartData do
     it "does the thing"
   end
 
-  describe "#match_data" do
+  describe "#matches_data" do
     it "does te thing"
   end
 end

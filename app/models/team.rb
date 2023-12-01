@@ -20,39 +20,16 @@ class Team < ApplicationRecord
     last_snapshot.elo
   end
 
-  def elo_at(datetime)
-    # Not a big fan of at.
-    snapshots_at = snapshots.where('datetime <= ?', datetime)
-
-    if snapshots_at.empty?
-      raise "No snapshot for team (id: #{id}) exists before or at #{datetime}"
-    end
-    
-    snapshots_at.order(datetime: :desc).limit(1).first.elo
+  def elo_at(datetime, preloaded_snapshots=nil)
+    _elo_at(datetime, :at, preloaded_snapshots)
   end
 
-  def elo_after(datetime)
-    snapshots_after = snapshots.where('datetime >= ?', datetime)
-    
-    if snapshots_after.empty?
-      raise "No snapshot for team (id: #{id}) exists after or at #{datetime}"
-    end
-
-    snapshots_after.order(datetime: :asc).limit(1).first.elo
+  def elo_before(datetime, preloaded_snapshots=nil)
+    _elo_at(datetime, :before, preloaded_snapshots)
   end
 
-  def elo_before(datetime)
-    if datetime.nil?
-      raise "datetime is required"
-    end
-
-    snapshots_before = snapshots.where('datetime < ?', datetime)
-    
-    if snapshots_before.empty?
-      raise "No snapshot for team (id: #{id}) exists before or at #{datetime}"
-    end
-
-    snapshots_before.order(datetime: :desc).limit(1).first.elo
+  def elo_after(datetime, preloaded_snapshots=nil)
+    _elo_at(datetime, :after, preloaded_snapshots)
   end
 
   def matches
@@ -60,6 +37,31 @@ class Team < ApplicationRecord
   end
 
   private
+  
+  def _elo_at(datetime, comparison, snapshots=nil)
+    raise "datetime is required" if datetime.nil?
+
+    comparison_sql, direction_sql = case comparison
+      when :at
+        ["datetime <= ?", :desc]
+      when :before
+        ["datetime < ?", :desc]
+      when :after
+        ["datetime >= ?", :asc]
+      else
+        raise "comparison must be one of :at, :before, :after"
+      end
+    
+    closest_snapshot = snapshots
+      .where(comparison_sql, datetime)
+      .order(datetime: direction_sql)
+      .limit(1)
+      .first
+    
+    raise "No snapshot for team (id: #{id}) exists #{comparison.to_s} #{datetime}" if closest_snapshot.nil?
+
+    closest_snapshot.elo
+  end
 
   def last_snapshot
     snapshots.order(datetime: :asc).last
