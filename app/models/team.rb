@@ -21,31 +21,38 @@ class Team < ApplicationRecord
   end
 
   def elo_at(datetime)
-    if snapshots.where('datetime <= ?', datetime).empty?
+    # Not a big fan of at.
+    snapshots_at = snapshots.where('datetime <= ?', datetime)
+
+    if snapshots_at.empty?
       raise "No snapshot for team (id: #{id}) exists before or at #{datetime}"
     end
     
-    snapshots.where('datetime <= ?', datetime).order(datetime: :desc).limit(1).first.elo
+    snapshots_at.order(datetime: :desc).limit(1).first.elo
   end
 
   def elo_after(datetime)
-    if snapshots.where('datetime >= ?', datetime).empty?
+    snapshots_after = snapshots.where('datetime >= ?', datetime)
+    
+    if snapshots_after.empty?
       raise "No snapshot for team (id: #{id}) exists after or at #{datetime}"
     end
 
-    snapshots.where('datetime >= ?', datetime).order(datetime: :asc).limit(1).first.elo
+    snapshots_after.order(datetime: :asc).limit(1).first.elo
   end
 
   def elo_before(datetime)
     if datetime.nil?
       raise "datetime is required"
     end
+
+    snapshots_before = snapshots.where('datetime < ?', datetime)
     
-    if snapshots.where('datetime < ?', datetime).empty?
+    if snapshots_before.empty?
       raise "No snapshot for team (id: #{id}) exists before or at #{datetime}"
     end
 
-    snapshots.where('datetime < ?', datetime).order(datetime: :desc).limit(1).first.elo
+    snapshots_before.order(datetime: :desc).limit(1).first.elo
   end
 
   def matches
