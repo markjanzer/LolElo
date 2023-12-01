@@ -2,6 +2,7 @@
 
 # Needed for when I want to run individual specs...
 require 'rails_helper'
+require 'benchmark'
 
 RSpec.describe ChartData do
   def setup
@@ -52,7 +53,13 @@ RSpec.describe ChartData do
       create(:snapshot, team: team2, elo: 900, datetime: game.end_at)
 
       result = described_class.new(serie).call
-      pp result
+
+      # puts "user      system       total        real"
+      # puts Benchmark.measure {
+      #   1000.times do
+      #     described_class.new(serie).call
+      #   end
+      # }
 
       elos_at_dates = result[:data]
       teams_json = result[:teams]
@@ -63,8 +70,8 @@ RSpec.describe ChartData do
         {:name=>"Jan 1", "T1"=>1100, "T2"=>900}
       ])
       expect(teams_json).to eq([
-        team1.attributes.slice("id", "name", "acronym", "panda_score_id", "color"),
-        team2.attributes.slice("id", "name", "acronym", "panda_score_id", "color")
+        team1.as_json,
+        team2.as_json
       ])
       expect(match_data).to eq([
         {

@@ -25,7 +25,7 @@ class Team < ApplicationRecord
       raise "No snapshot for team (id: #{id}) exists before or at #{datetime}"
     end
     
-    snapshots.where('datetime <= ?', datetime).order(:datetime).last.elo
+    snapshots.where('datetime <= ?', datetime).order(datetime: :desc).limit(1).first.elo
   end
 
   def elo_after(datetime)
@@ -33,7 +33,7 @@ class Team < ApplicationRecord
       raise "No snapshot for team (id: #{id}) exists after or at #{datetime}"
     end
 
-    snapshots.where('datetime >= ?', datetime).order(:datetime).first.elo
+    snapshots.where('datetime >= ?', datetime).order(datetime: :asc).limit(1).first.elo
   end
 
   def elo_before(datetime)
@@ -45,7 +45,7 @@ class Team < ApplicationRecord
       raise "No snapshot for team (id: #{id}) exists before or at #{datetime}"
     end
 
-    snapshots.where('datetime < ?', datetime).order(:datetime).last.elo
+    snapshots.where('datetime < ?', datetime).order(datetime: :desc).limit(1).first.elo
   end
 
   def matches
@@ -55,6 +55,6 @@ class Team < ApplicationRecord
   private
 
   def last_snapshot
-    snapshots.order(:datetime).last
+    snapshots.order(datetime: :asc).last
   end
 end

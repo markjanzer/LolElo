@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# takes .53 seconds to run
 class ChartData
   def initialize(serie)
     @serie = serie
@@ -28,57 +29,17 @@ class ChartData
   end
 
   def teams
-    tournaments.flat_map(&:teams).uniq
+    serie.teams
   end
 
-  def past_matches
-    # Match.where(tournament: tournaments).where("end_at < ?", Time.now)
-    Match.where(tournament: tournaments).select { |match| match.games.present? }
-    # serie.matches.with_games
+  def ordered_past_matches
+    serie.matches.with_games.order(end_at: :asc)
   end
 
   def match_data
-    past_matches.sort_by(&:end_at).map do |match|
-      match_datum(match)
+    ordered_past_matches.includes(:games, :opponent1, :opponent2).map do |match|
+      MatchData.new(match).call
     end
-  end
-
-  # I should probably make his more efficient
-  def match_datum(match)
-    opponent1 = teams.find { |t| t[:id] == match.opponent1_id }
-    opponent2 = teams.find { |t| t[:id] == match.opponent2_id }
-
-    opponent1_initial_elo = match.opponent1.elo_before(match.games.first.end_at)
-    opponent2_initial_elo = match.opponent2.elo_before(match.games.first.end_at)
-
-    opponent1_final_elo = match.opponent1.elo_after(match.games.last.end_at)
-    opponent2_final_elo = match.opponent2.elo_after(match.games.last.end_at)
-
-    opponent1_elo_change = opponent1_final_elo - opponent1_initial_elo
-    opponent2_elo_change = opponent2_final_elo - opponent2_initial_elo
-
-    opponent1_score = match.games.where(winner: opponent1).count
-    opponent2_score = match.games.where(winner: opponent2).count
-
-    victor = nil
-    if opponent1_score > opponent2_score
-      victor = opponent1
-    elsif opponent2_score > opponent1_score
-      victor = opponent2
-    end
-
-    match_hash = {
-      date: format_date(match.end_at),
-      opponent1: opponent1,
-      opponent2: opponent2,
-      opponent1_elo: opponent1_initial_elo,
-      opponent2_elo: opponent2_initial_elo,
-      opponent1_elo_change: opponent1_elo_change,
-      opponent2_elo_change: opponent2_elo_change,
-      opponent1_score: opponent1_score,
-      opponent2_score: opponent2_score,
-      victor: victor
-    }
   end
 
   def elos_at_dates
@@ -107,6 +68,56 @@ class ChartData
   end
 
   def unique_dates
-    past_matches.sort_by(&:end_at).map { |m| m.end_at.to_date }.uniq
+    ordered_past_matches.pluck(:end_at).map(&:to_date).uniq
+  end
+
+  class MatchData
+    def initialize(match)
+      @match = match
+      @games = match.games.order(end_at: :asc)
+      @opponent1 = match.opponent1
+      @opponent2 = match.opponent2
+    end
+
+    def call
+      first_game_end_at = games.first.end_at
+      last_game_end_at = games.last.end_at
+
+      opponent1_initial_elo = opponent1.elo_before(first_game_end_at)
+      opponent2_initial_elo = opponent2.elo_before(first_game_end_at)
+  
+      opponent1_final_elo = opponent1.elo_after(last_game_end_at)
+      opponent2_final_elo = opponent2.elo_after(last_game_end_at)
+  
+      opponent1_elo_change = opponent1_final_elo - opponent1_initial_elo
+      opponent2_elo_change = opponent2_final_elo - opponent2_initial_elo
+  
+      opponent1_score = games.where(winner: opponent1).count
+      opponent2_score = games.where(winner: opponent2).count
+
+      victor = opponent1_score > opponent2_score ? opponent1 : opponent2
+  
+      {
+        date: format_date(match.end_at),
+        opponent1: opponent1,
+        opponent2: opponent2,
+        opponent1_elo: opponent1_initial_elo,
+        opponent2_elo: opponent2_initial_elo,
+        opponent1_elo_change: opponent1_elo_change,
+        opponent2_elo_change: opponent2_elo_change,
+        opponent1_score: opponent1_score,
+        opponent2_score: opponent2_score,
+        victor: victor
+      }
+    end
+
+    private
+
+    attr_reader :match, :games, :opponent1, :opponent2
+
+
+    def format_date(date)
+      date.strftime('%b %-d')
+    end
   end
 end
