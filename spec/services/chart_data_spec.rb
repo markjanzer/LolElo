@@ -24,7 +24,8 @@ RSpec.describe ChartData do
   
   describe "#call" do
     it "integrates methods into the response object correctly" do
-      instance = described_class.new("fake_serie")
+      serie = create(:serie)
+      instance = described_class.new(serie)
       allow(instance).to receive(:elos_at_dates).and_return("elos_at_dates")
       allow(instance).to receive(:teams_json).and_return("teams_json")
       allow(instance).to receive(:matches_data).and_return("matches_data")

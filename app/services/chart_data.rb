@@ -4,10 +4,7 @@ class ChartData
   def initialize(serie)
     @serie = serie
 
-    @snapshots = serie.snapshots
-    serie.teams.each do |team|
-      @snapshots << team.snapshots.where("datetime < ?", serie.begin_at).order(datetime: :desc).first
-    end
+    @snapshots = serie.snapshots | serie.initial_snapshots
   end
 
   def call
@@ -20,7 +17,7 @@ class ChartData
 
   private
 
-  attr_reader :serie
+  attr_reader :serie, :snapshots
 
   delegate :tournaments, to: :serie
 
@@ -55,14 +52,17 @@ class ChartData
 
     teams.each do |team|
       start[team.acronym] = team.elo_at(serie.begin_at)
+      # start[team.acronym] = elo_at(team: team, datetime: serie.begin_at)
     end
 
     result << start
 
     unique_dates.each do |date|
       date_data = { name: format_date(date) }
-
+      
       teams.each do |team|
+        # puts "team: #{team.acronym}, date: #{date}"
+        # date_data[team.acronym] = elo_at(team: team, datetime: date.end_of_day)
         date_data[team.acronym] = team.elo_at(date.end_of_day)
       end
       result << date_data
@@ -108,5 +108,65 @@ class ChartData
       opponent2_score: opponent2_score,
       victor: victor
     }
+  end
+
+  def elo_at(team:, datetime:)
+    result = _elo_at(snapshots: @snapshots, team: team, datetime: datetime, comparison: :at)
+    if result != team.elo_at(datetime)
+      puts "team: #{team.acronym}, datetime: #{datetime}"
+      puts "result: #{result}"
+      puts "team.elo_at(datetime): #{team.elo_at(datetime)}"
+      raise
+    end
+    result
+  end
+  
+  def elo_before(team:, datetime:)
+    result = _elo_at(snapshots: @snapshots, team: team, datetime: datetime, comparison: :before)
+    if result != team.elo_before(datetime)
+      puts "team: #{team.acronym}, datetime: #{datetime}"
+      puts "result: #{result}"
+      puts "team.elo_before(datetime): #{team.elo_before(datetime)}"
+      raise
+    end
+    result
+  end
+  
+  def elo_after(team:, datetime:)
+    result = _elo_at(snapshots: @snapshots, team: team, datetime: datetime, comparison: :after)
+    if result != team.elo_after(datetime)
+      puts "team: #{team.acronym}, datetime: #{datetime}"
+      puts "result: #{result}"
+      puts "team.elo_after(datetime): #{team.elo_after(datetime)}"
+      raise
+    end
+    result
+  end
+
+  def _elo_at(snapshots:, team:, datetime:, comparison:)
+    raise "datetime is required" if datetime.nil?
+
+    comparison_proc, index = case comparison
+      when :at
+        [->(snapshot) { snapshot.datetime <= datetime }, -1]
+      when :before
+        [->(snapshot) { snapshot.datetime < datetime }, -1]
+      when :after
+        [->(snapshot) { snapshot.datetime >= datetime }, 0]
+      else
+        raise "comparison must be one of :at, :before, :after"
+      end
+
+    # if team.acronym = "T2"
+    #   snapshots.select { |snapshot| snapshot.team == team }.inspect
+    #   # puts snapshots.select { |snapshot| snapshot.team == team && comparison_proc.call(snapshot) }.sort_by(&:datetime).inspect
+    # end
+    
+    closest_snapshot = snapshots.select { |snapshot| snapshot.team == team && comparison_proc.call(snapshot) }
+      .sort_by(&:datetime)[index]
+    
+    raise "No snapshot for team (id: #{team.id}) exists #{comparison.to_s} #{datetime}" if closest_snapshot.nil?
+
+    closest_snapshot.elo
   end
 end

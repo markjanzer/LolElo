@@ -20,16 +20,16 @@ class Team < ApplicationRecord
     last_snapshot.elo
   end
 
-  def elo_at(datetime, preloaded_snapshots=nil)
-    _elo_at(datetime, :at, preloaded_snapshots)
+  def elo_at(datetime)
+    _elo_at(datetime, :at)
   end
 
-  def elo_before(datetime, preloaded_snapshots=nil)
-    _elo_at(datetime, :before, preloaded_snapshots)
+  def elo_before(datetime)
+    _elo_at(datetime, :before)
   end
 
-  def elo_after(datetime, preloaded_snapshots=nil)
-    _elo_at(datetime, :after, preloaded_snapshots)
+  def elo_after(datetime)
+    _elo_at(datetime, :after)
   end
 
   def matches
@@ -38,7 +38,7 @@ class Team < ApplicationRecord
 
   private
   
-  def _elo_at(datetime, comparison, snapshots=nil)
+  def _elo_at(datetime, comparison)
     raise "datetime is required" if datetime.nil?
 
     comparison_sql, direction_sql = case comparison
