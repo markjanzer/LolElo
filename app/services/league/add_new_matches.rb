@@ -1,3 +1,4 @@
+# Pretty sure this is deprecated
 class League
   class AddNewMatches
     def initialize(league)
