@@ -66,4 +66,6 @@ RSpec.configure do |config|
 
   # Include syntax from FactoryBot
   config.include FactoryBot::Syntax::Methods
+
+  config.filter_run_when_matching :focus
 end

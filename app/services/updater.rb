@@ -7,8 +7,17 @@
 
 class Updater
   def call
-    create_new_series
-    create_new_tournaments
+    League.all.each do |league|
+      create_new_series(league)
+    end
+
+    PandaScore::Serie.all.each do |serie|
+      next if serie["end_at"].present?
+      create_new_tournaments(serie)
+
+      # Update serie to check if complete
+    end
+
     create_new_matches
     create_new_games
     update_games
@@ -18,44 +27,35 @@ class Updater
 
   # For each League, check if there is a new series, if there is create it 
   # There is an edge case here where we might need to populate this separately if the serie is already completed.
-  def create_new_series
-    League.all.each do |league|
-      fetched_series = PandaScoreAPI.series(league_id: league.panda_score_id)
+  def create_new_series(league)
+    fetched_series = PandaScoreAPI.series(league_id: league.panda_score_id)
 
-      existing_serie_ids = PandaScore::Serie.pluck(:panda_score_id)
-      fetched_series.each do |serie|
-        next if existing_serie_ids.include?(serie["id"])
+    existing_serie_ids = PandaScore::Serie.pluck(:panda_score_id)
+    fetched_series.each do |serie|
+      next if existing_serie_ids.include?(serie["id"])
 
-        PandaScore::Serie
-          .find_or_initialize_by(panda_score_id: serie["id"])
-          .update(data: serie)
-      end
+      PandaScore::Serie
+        .find_or_initialize_by(panda_score_id: serie["id"])
+        .update(data: serie)
     end
   end
 
   # For each series that is not complete, create any new tournaments
-  # Also update the serie if there are any changes
-  def create_new_tournaments
-    PandaScore::Serie.all.each do |serie|
-      next if serie["end_at"].present?
+  def create_new_tournaments(ps_serie)
+    existing_tournament_ids = ps_serie.panda_score_tournaments.pluck(:panda_score_id)
+    fetched_tournaments = PandaScoreAPI.tournaments(serie_id: ps_serie.panda_score_id)
 
-      fetched_tournaments = PandaScoreAPI.tournaments(serie_id: serie.panda_score_id)
-      existing_tournament_ids = serie.panda_score_tournaments.pluck(:panda_score_id)
+    fetched_tournaments.each do |tournament|
+      next if existing_tournament_ids.include?(tournament["id"])
 
-      fetched_tournaments.each do |tournament|
-        next if existing_tournament_ids.include?(tournament["id"])
+      ps_tournament = PandaScore::Tournament
+        .find_or_initialize_by(panda_score_id: tournament["id"])
+        .tap { |t| t.update(data: tournament) }
 
-        # Need to create teams
-        tournament = PandaScore::Tournament
-          .find_or_initialize_by(panda_score_id: tournament["id"])
-          .update(data: tournament)
-        
-        tournament.teams.each do |team|
-          PandaScoreAPISeeder::CreateTeam.call(team["id"])
-        end
+      ps_tournament.data["teams"].each do |team|
+        # If the team doesn't exist, make an API request to create it
+        PandaScoreAPISeeder::CreateTeam.call(team["id"])
       end
-
-      serie.update(data: serie)
     end
   end
 

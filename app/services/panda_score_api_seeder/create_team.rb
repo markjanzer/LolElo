@@ -1,4 +1,5 @@
 module PandaScoreAPISeeder
+  # Todo: change to UpsertTeam
   class CreateTeam
     def initialize(team_id)
       @team_id = team_id
