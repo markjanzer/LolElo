@@ -48,6 +48,7 @@ group :development, :test do
   gem "did_you_mean"
 
   gem "byebug"
+  gem "webmock"
 end
 
 group :development do

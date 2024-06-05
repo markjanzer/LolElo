@@ -19,7 +19,6 @@ class PandaScoreAPI
       
       if json_response.is_a?(Hash)
         if json_response.keys.include?("error")
-          # binding.pry
           raise error_string(json_response)
         else
           return json_response
@@ -56,6 +55,5 @@ class PandaScoreAPI
     def error_string(response)
       "#{response['error']}: #{response['message']}"
     end
-
   end
 end
