@@ -3,6 +3,8 @@
 FactoryBot.define do
   factory :panda_score_match, class: "PandaScore::Match" do
     sequence(:panda_score_id) { |n| n }
-    data { {} }
+    data { {
+      "games": []
+    } }
   end
 end
