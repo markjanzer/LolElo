@@ -13,11 +13,7 @@ class Updater
 
     PandaScore::Serie.incomplete.each do |ps_serie|
       ps_serie.create_tournaments
-
-      # Update serie to check if complete
-      # This logic was taken from 
-      # /Users/markjanzer/dev/LolElo/app/services/panda_score_api_seeder/create_serie.rb
-      ps_serie.update(PandaScoreAPI.serie(id: ps_serie.panda_score_id))
+      ps_serie.update_from_api
     end
 
     PandaScore::Tournament.all.each do |ps_tournament|

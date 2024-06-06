@@ -23,4 +23,9 @@ class PandaScore::Serie < ApplicationRecord
       ps_tournament.create_teams
     end
   end
+
+  def update_from_api
+    api_data = PandaScoreAPI.serie(id: panda_score_id)
+    update(data: api_data)
+  end
 end
