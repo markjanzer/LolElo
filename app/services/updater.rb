@@ -21,31 +21,15 @@ class Updater
       ps_tournament.update_from_api
     end
 
-    PandaScore::Match.all.each do |ps_match|
-      next if ps_match.data["end_at"].present?
-
-      create_new_games(ps_match)
-      ps_match.update(PandaScoreAPI.match(id: ps_match.panda_score_id))
-    end
+    PandaScore::Match.incomplete.each do |ps_match|
+      ps_match.create_games
+      ps_match.update_from_api
+    end 
 
     PandaScore::Game.all.each do |ps_game|
       next if ps_game.data["end_at"].present?
 
       ps_game.update(PandaScoreAPI.game(id: ps_game.panda_score_id))
-    end
-  end
-
-  private
-
-  # For each match that isn’t complete, check if there are any new games
-  def create_new_games(ps_match)
-    existing_game_ids = ps_match.panda_score_games.pluck(:panda_score_id)
-    fetched_games = PandaScoreAPI.games(match_id: ps_match.panda_score_id)
-    
-    fetched_games.each do |game|
-      next if existing_game_ids.include?(game["id"])
-
-      PandaScore::Game.new(panda_score_id: game["id"], data: game).save!
     end
   end
 end
