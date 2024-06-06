@@ -41,7 +41,7 @@ RSpec.describe PandaScore::Tournament do
     end
   end
 
-  describe "#create_new_matches" do
+  describe "#create_matches" do
     context "matches already exist" do
       it "does not create a match" do
         ps_tournament = create(:panda_score_tournament)
@@ -51,7 +51,7 @@ RSpec.describe PandaScore::Tournament do
         })
 
         allow(PandaScoreAPI).to receive(:matches).with(tournament_id: ps_tournament.panda_score_id).and_return([ps_match.data])
-        expect { ps_tournament.create_new_matches }.not_to change { PandaScore::Match.count }
+        expect { ps_tournament.create_matches }.not_to change { PandaScore::Match.count }
       end
     end
 
@@ -62,7 +62,7 @@ RSpec.describe PandaScore::Tournament do
       }
 
       allow(PandaScoreAPI).to receive(:matches).with(tournament_id: ps_tournament.panda_score_id).and_return([new_match_data])
-      expect { ps_tournament.create_new_matches }.to change { PandaScore::Match.count }.by 1
+      expect { ps_tournament.create_matches }.to change { PandaScore::Match.count }.by 1
     end
   end
 end

@@ -25,7 +25,7 @@ class PandaScore::Tournament < ApplicationRecord
     end
   end
 
-  def create_new_matches
+  def create_matches
     existing_match_ids = panda_score_matches.pluck(:panda_score_id)
     fetched_matches = PandaScoreAPI.matches(tournament_id: panda_score_id)
 
