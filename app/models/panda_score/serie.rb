@@ -13,7 +13,7 @@ class PandaScore::Serie < ApplicationRecord
     PandaScore::Tournament.where("data ->> 'serie_id' = ?", panda_score_id.to_s)
   end
 
-  def create_new_tournaments
+  def create_tournaments
     existing_tournament_ids = panda_score_tournaments.pluck(:panda_score_id)
     fetched_tournaments = PandaScoreAPI.tournaments(serie_id: panda_score_id)
 

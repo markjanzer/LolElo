@@ -45,7 +45,7 @@ RSpec.describe PandaScore::Tournament do
     context "matches already exist" do
       it "does not create a match" do
         ps_tournament = create(:panda_score_tournament)
-        ps_match = create(:panda_score_match, data: {
+        ps_match = create(:panda_score_match, panda_score_id: 1, data: {
           "id"=>1,
           "tournament_id"=>ps_tournament.panda_score_id
         })
