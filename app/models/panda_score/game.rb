@@ -10,4 +10,9 @@ class PandaScore::Game < ApplicationRecord
   def match
     Match.find_by(panda_score_id: data["match_id"])
   end
+
+  def update_from_api
+    api_data = PandaScoreAPI.game(id: panda_score_id)
+    update(data: api_data)
+  end
 end

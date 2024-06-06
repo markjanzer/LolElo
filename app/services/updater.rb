@@ -6,9 +6,14 @@
 # Also how will this work if the API gets too many calls?
 
 class Updater
+  def self.call
+    new.call
+  end
+
   def call
-    League.all.each do |league|
-      league.create_series
+    PandaScore::League.all.each do |ps_league|
+      ps_league.create_series
+      ps_league.update_from_api
     end
 
     PandaScore::Serie.incomplete.each do |ps_serie|
@@ -22,14 +27,8 @@ class Updater
     end
 
     PandaScore::Match.incomplete.each do |ps_match|
-      ps_match.create_games
+      ps_match.create_and_update_games
       ps_match.update_from_api
-    end 
-
-    PandaScore::Game.all.each do |ps_game|
-      next if ps_game.data["end_at"].present?
-
-      ps_game.update(PandaScoreAPI.game(id: ps_game.panda_score_id))
     end
   end
 end
