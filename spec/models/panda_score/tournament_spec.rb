@@ -15,35 +15,54 @@ RSpec.describe PandaScore::Tournament do
   describe "#create_teams" do
     context "the tournament's teams already exist" do
       it "does not create a team" do
-        ps_serie = create(:panda_score_serie)
-        ps_team = create(:panda_score_team, panda_score_id: 2)
-        new_tournament_data = {
-          "id"=>100,
+        ps_team = create(:panda_score_team)
+        ps_tournament = create(:panda_score_tournament, data: {
           "teams"=>[
             {
               "id"=>ps_team.panda_score_id,
               "name"=>"C9"
             }
           ]
-        }
-        allow(PandaScoreAPI).to receive(:tournaments).with(serie_id: ps_serie.panda_score_id).and_return([new_tournament_data])
-        expect { described_class.new.send(:create_new_tournaments, ps_serie) }.not_to change { PandaScore::Team.count }
+        })
+        expect { ps_tournament.create_teams }.not_to change { PandaScore::Team.count }
       end
     end
 
     it "creates a team" do
-      ps_serie = create(:panda_score_serie)
       team_data = {
-        "id"=>2,
+        "id"=>1,
         "name"=>"C9"
       }
-      new_tournament_data = {
-        "id"=>100,
+      ps_tournament = create(:panda_score_tournament, data: {
         "teams"=>[team_data]
+      })
+      allow(PandaScoreAPI).to receive(:team).with(id: team_data["id"]).and_return team_data
+      expect { ps_tournament.create_teams }.to change { PandaScore::Team.count }.by 1
+    end
+  end
+
+  describe "#create_new_matches" do
+    context "matches already exist" do
+      it "does not create a match" do
+        ps_tournament = create(:panda_score_tournament)
+        ps_match = create(:panda_score_match, data: {
+          "id"=>1,
+          "tournament_id"=>ps_tournament.panda_score_id
+        })
+
+        allow(PandaScoreAPI).to receive(:matches).with(tournament_id: ps_tournament.panda_score_id).and_return([ps_match.data])
+        expect { ps_tournament.create_new_matches }.not_to change { PandaScore::Match.count }
+      end
+    end
+
+    it "creates matches" do
+      ps_tournament = create(:panda_score_tournament)
+      new_match_data = {
+        "id"=>10
       }
-      allow(PandaScoreAPI).to receive(:tournaments).with(serie_id: ps_serie.panda_score_id).and_return([new_tournament_data])
-      allow(PandaScoreAPI).to receive(:team).with(id: team_data["id"]).and_return(team_data)
-      expect { described_class.new.send(:create_new_tournaments, ps_serie) }.to change { PandaScore::Team.count }.by 1
+
+      allow(PandaScoreAPI).to receive(:matches).with(tournament_id: ps_tournament.panda_score_id).and_return([new_match_data])
+      expect { ps_tournament.create_new_matches }.to change { PandaScore::Match.count }.by 1
     end
   end
 end

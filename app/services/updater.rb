@@ -8,7 +8,7 @@
 class Updater
   def call
     League.all.each do |league|
-      league.create_new_series
+      league.create_series
     end
 
     PandaScore::Serie.incomplete.each do |ps_serie|
@@ -16,9 +16,10 @@ class Updater
       ps_serie.update_from_api
     end
 
-    PandaScore::Tournament.all.each do |ps_tournament|
-      next if ps_tournament.data["end_at"].present?
-
+    PandaScore::Tournament.incomplete.each do |ps_tournament|
+      ps_tournament.create_matches
+      ps_tournament.update_from_api
+      
       create_new_matches(ps_tournament)
       ps_tournament.update(PandaScoreAPI.tournament(id: ps_tournament.panda_score_id))
     end
@@ -38,18 +39,6 @@ class Updater
   end
 
   private
-
-  # For each tournament that is not complete, check if there are any new matches
-  def create_new_matches(ps_tournament)
-    existing_match_ids = ps_tournament.panda_score_matches.pluck(:panda_score_id)
-    fetched_matches = PandaScoreAPI.matches(tournament_id: ps_tournament.panda_score_id)
-
-    fetched_matches.each do |match|
-      next if existing_match_ids.include?(match["id"])
-
-      PandaScore::Match.new(panda_score_id: match["id"], data: match).save!
-    end
-  end
 
   # For each match that isn’t complete, check if there are any new games
   def create_new_games(ps_match)

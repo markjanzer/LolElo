@@ -12,18 +12,18 @@ RSpec.describe PandaScore::League do
     end
   end
 
-  describe "#create_new_series" do
+  describe "#create_series" do
     it "creates new series for the league" do
       panda_score_league = create(:panda_score_league, panda_score_id: 1)
       allow(PandaScoreAPI).to receive(:series).with(league_id: 1).and_return([{ "id" => 2 }])
-      expect { panda_score_league.create_new_series }.to change { PandaScore::Serie.count }.by(1)
+      expect { panda_score_league.create_series }.to change { PandaScore::Serie.count }.by(1)
     end
 
     it "does not create a series that already exists" do
       panda_score_league = create(:panda_score_league, panda_score_id: 1)
       create(:panda_score_serie, panda_score_id: 2, data: { "id" => 2, "league_id" => 1 })
       allow(PandaScoreAPI).to receive(:series).with(league_id: 1).and_return([{ "id" => 2 }])
-      expect { panda_score_league.create_new_series }.not_to change { PandaScore::Serie.count }
+      expect { panda_score_league.create_series }.not_to change { PandaScore::Serie.count }
     end
   end
 end

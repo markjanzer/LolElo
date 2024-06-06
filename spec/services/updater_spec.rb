@@ -24,32 +24,6 @@ RSpec.describe Updater do
     it "does nothing if the game is complete"
   end
 
-  describe "#create_new_matches" do
-    context "matches already exist" do
-      it "does not create a match" do
-        ps_tournament = create(:panda_score_tournament)
-        ps_match = create(:panda_score_match)
-        new_match_data = {
-          "id"=>ps_match.panda_score_id
-        }
-        ps_tournament.data["matches"] = [new_match_data]
-  
-        allow(PandaScoreAPI).to receive(:matches).with(tournament_id: ps_tournament.panda_score_id).and_return([new_match_data])
-        expect { described_class.new.send(:create_new_matches, ps_tournament) }.not_to change { PandaScore::Match.count }
-      end
-    end
-
-    it "creates matches" do
-      ps_tournament = create(:panda_score_tournament)
-      new_match_data = {
-        "id"=>10
-      }
-
-      allow(PandaScoreAPI).to receive(:matches).with(tournament_id: ps_tournament.panda_score_id).and_return([new_match_data])
-      expect { described_class.new.send(:create_new_matches, ps_tournament) }.to change { PandaScore::Match.count }.by 1
-    end
-  end
-
   describe "#create_new_games" do
     context "games already exist" do
       it "does not create a game" do
