@@ -19,9 +19,6 @@ class Updater
     PandaScore::Tournament.incomplete.each do |ps_tournament|
       ps_tournament.create_matches
       ps_tournament.update_from_api
-      
-      create_new_matches(ps_tournament)
-      ps_tournament.update(PandaScoreAPI.tournament(id: ps_tournament.panda_score_id))
     end
 
     PandaScore::Match.all.each do |ps_match|

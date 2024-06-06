@@ -34,4 +34,9 @@ class PandaScore::Tournament < ApplicationRecord
       PandaScore::Match.create!(panda_score_id: match["id"], data: match)
     end
   end
+
+  def update_from_api
+    api_data = PandaScoreAPI.tournament(id: panda_score_id)
+    update(data: api_data)
+  end
 end
