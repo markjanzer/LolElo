@@ -13,7 +13,13 @@ class PandaScore::Tournament < ApplicationRecord
   end
 
   def panda_score_matches
-    match_ids = data["matches"].map { |match| match["id"] }
-    PandaScore::Match.where(panda_score_id: match_ids)
+    PandaScore::Match.where("data --> 'tournament_id' = ?", panda_score_id.to_s)
+  end
+
+  def create_teams
+    data["teams"].each do |team|
+      # If the team doesn't exist, make an API request to create it
+      PandaScoreAPISeeder::CreateTeam.call(team["id"])
+    end
   end
 end
