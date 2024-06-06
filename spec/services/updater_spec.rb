@@ -4,13 +4,6 @@ require 'rails_helper'
 
 RSpec.describe Updater do
   describe "#call" do
-    it "calls create_new_series with each league" do
-      league = create(:league)
-      instance = described_class.new
-      expect(instance).to receive(:create_new_series).with(league)
-      instance.call
-    end
-
     # This is a little tricky because it continues to run the code
     # Which attempts to access the API, and I don't want to spec everything out
     # This might be a little easier when I move logic around.
@@ -29,25 +22,6 @@ RSpec.describe Updater do
 
     it "updates each non-complete game"
     it "does nothing if the game is complete"
-  end
-
-  describe "#create_new_series" do
-    context "the serie does not exist" do
-      it "creates a new serie" do
-        league = create(:league)
-        allow(PandaScoreAPI).to receive(:series).with(league_id: league.panda_score_id).and_return([{ "id" => 1 }])
-        expect { described_class.new.send(:create_new_series, league) }.to change { PandaScore::Serie.count }.by(1)
-      end
-    end
-
-    context "the serie exists" do 
-      it "does nothing" do
-        league = create(:league)
-        create(:panda_score_serie, panda_score_id: 1)
-        allow(PandaScoreAPI).to receive(:series).with(league_id: league.panda_score_id).and_return([{ "id" => 1 }])
-        expect { described_class.new.send(:create_new_series, league) }.not_to change { PandaScore::Serie.count }
-      end
-    end
   end
 
   describe "#create_new_tournaments" do

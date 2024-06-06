@@ -8,7 +8,7 @@
 class Updater
   def call
     League.all.each do |league|
-      create_new_series(league)
+      league.create_new_series
     end
 
     PandaScore::Serie.all.each do |ps_serie|
