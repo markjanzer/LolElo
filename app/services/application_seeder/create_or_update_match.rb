@@ -6,6 +6,7 @@ module ApplicationSeeder
 
     def call
       return if forfeit?
+      return if panda_score_match.data["end_at"].nil?
       
       match = Match.find_or_initialize_by(panda_score_id: panda_score_match.panda_score_id)
       match.update({
