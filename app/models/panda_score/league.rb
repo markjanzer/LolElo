@@ -15,4 +15,8 @@ class PandaScore::League < ApplicationRecord
       PandaScore::Serie.create!(panda_score_id: serie["id"], data: serie)
     end
   end
+
+  def update_from_api
+    update!(data: PandaScoreAPI.league(id: panda_score_id))
+  end
 end

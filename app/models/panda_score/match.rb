@@ -21,7 +21,7 @@ class PandaScore::Match < ApplicationRecord
     PandaScore::Game.where("data ->> 'match_id' = ?", panda_score_id.to_s)
   end
 
-  def create_and_update_games
+  def create_or_update_games
     PandaScoreAPI.games(match_id: panda_score_id).each do |game|
       PandaScore::Game.find_or_initialize_by(panda_score_id: game["id"])
         .update!(data: game)

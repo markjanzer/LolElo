@@ -12,7 +12,7 @@ RSpec.describe PandaScore::Match do
     end
   end
 
-  describe "#create_and_update_games" do
+  describe "#create_or_update_games" do
     it "creates games" do
       ps_match = create(:panda_score_match)
       new_game_data = {
@@ -20,7 +20,7 @@ RSpec.describe PandaScore::Match do
       }
       
       allow(PandaScoreAPI).to receive(:games).with(match_id: ps_match.panda_score_id).and_return([new_game_data])
-      expect { ps_match.create_and_update_games }.to change { PandaScore::Game.count }.by 1
+      expect { ps_match.create_or_update_games }.to change { PandaScore::Game.count }.by 1
     end
 
     it "updates existing games" do
@@ -36,7 +36,7 @@ RSpec.describe PandaScore::Match do
       }
 
       allow(PandaScoreAPI).to receive(:games).with(match_id: ps_match.panda_score_id).and_return([new_game_data])
-      expect { ps_match.create_and_update_games }.not_to change { PandaScore::Game.count }
+      expect { ps_match.create_or_update_games }.not_to change { PandaScore::Game.count }
       expect(ps_game.reload.data["new_data"]).to eq("new")
     end
   end

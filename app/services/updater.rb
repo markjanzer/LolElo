@@ -27,7 +27,7 @@ class Updater
     end
 
     PandaScore::Match.incomplete.each do |ps_match|
-      ps_match.create_and_update_games
+      ps_match.create_or_update_games
       ps_match.update_from_api
     end
   end
