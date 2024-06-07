@@ -19,7 +19,7 @@ RSpec.describe ApplicationSeeder::CreateOrUpdateTeam do
         panda_score_team = create(:panda_score_team, data: { "acronym" => "C9" })
         tournament = create(:tournament)
 
-        team = create(:team, panda_score_id: panda_score_team.panda_score_id)
+        _team = create(:team, panda_score_id: panda_score_team.panda_score_id)
 
         expect { described_class.new(ps_team: panda_score_team, tournament:).call }.not_to change { Team.count }
       end

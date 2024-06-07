@@ -109,7 +109,8 @@ RSpec.describe ApplicationSeeder::Seed do
       double = double("CreateOrUpdateTeam")
 
       expect(ApplicationSeeder::CreateOrUpdateTeam).to receive(:new).with(
-        panda_score_teams[0]
+        ps_team: panda_score_teams[0],
+        tournament: tournament
       ).and_return(double)
 
       expect(double).to receive(:call).once

@@ -7,14 +7,14 @@ RSpec.describe Game::CreateSnapshots do
   describe "#call" do
     subject { Game::CreateSnapshots.new(game).call }
 
-    let!(:serie) { create(:serie, begin_at: "2020-01-01", tournaments: [tournament] )}
+    let!(:serie) { create(:serie, begin_at: "2020-01-01", year: 2020, tournaments: [tournament] )}
     let(:tournament) { create(:tournament, matches: [match]) }
     let!(:match) { create(:match, opponent1: winning_team, opponent2: losing_team, games: [game]) }
     let(:game) { create(:game, winner: winning_team, end_at: "2020-02-01") }
-    let(:winning_team) { create(:team, name: "winning_team", snapshots: [winning_team_snapshot]) }
-    let(:losing_team) { create(:team, name: "losing_team", snapshots: [losing_team_snapshot]) }
-    let(:winning_team_snapshot) { create(:snapshot, elo: 1500, datetime: "2020-01-01") }
-    let(:losing_team_snapshot) { create(:snapshot, elo: 1500, datetime: "2020-01-01") }
+    let(:winning_team) { create(:team, name: "winning_team") }
+    let(:losing_team) { create(:team, name: "losing_team") }
+    let!(:winning_team_snapshot) { create(:snapshot, elo: 1500, serie: serie, team: winning_team, datetime: "2020-01-01") }
+    let!(:losing_team_snapshot) { create(:snapshot, elo: 1500, serie: serie, team: losing_team, datetime: "2020-01-01") }
 
     context "teams do not have existing elos from this year" do
       let(:winning_team) { create(:team, name: "winning_team", snapshots: []) }
