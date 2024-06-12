@@ -4,6 +4,11 @@ class PandaScore::Match < ApplicationRecord
   self.table_name = 'panda_score_matches'
 
   scope :incomplete, -> { where("data ->> 'end_at' IS NULL") }
+  scope :started, -> { where("
+    data ->> 'status' = 'running' 
+    OR data ->> 'status' = 'not_started' 
+      AND (data ->> 'scheduled_at')::timestamp <= ?", Time.now)
+  }
 
   def tournament
     Tournament.find_by(panda_score_id: data["tournament_id"])
