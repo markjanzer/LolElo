@@ -17,18 +17,17 @@ class Updater
         ps_league.update_from_api
       end
 
-      PandaScore::Serie.incomplete.each do |ps_serie|
+      unfinished_series.each do |ps_serie|
         ps_serie.create_tournaments
         ps_serie.update_from_api
       end
 
-      # Tournaments set their end_at in the future, so incomplete doesn't work
-      PandaScore::Tournament.incomplete.each do |ps_tournament|
+      unfinished_tournaments.each do |ps_tournament|
         ps_tournament.create_matches
         ps_tournament.update_from_api
       end
 
-      PandaScore::Match.incomplete.started.each do |ps_match|
+      unfinished_matches.each do |ps_match|
         ps_match.create_or_update_games
         ps_match.update_from_api
       end
@@ -37,5 +36,23 @@ class Updater
       
       puts "before end"
     end
+  end
+
+  def unfinished_series
+    PandaScore::Serie
+      .where("(data ->> 'end_at')::timestamp >= NOW()")
+  end
+
+  def unfinished_tournaments
+    PandaScore::Tournament
+      .where("(data ->> 'end_at')::timestamp >= NOW()")
+  end
+
+  def unfinished_matches
+    PandaScore::Match
+      .where("data ->> 'end_at' IS NULL")
+      .where("data ->> 'status' = 'running' 
+        OR data ->> 'status' = 'not_started' 
+        AND (data ->> 'scheduled_at')::timestamp <= NOW()")
   end
 end

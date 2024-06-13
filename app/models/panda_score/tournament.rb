@@ -3,7 +3,7 @@
 class PandaScore::Tournament < ApplicationRecord
   self.table_name = 'panda_score_tournaments'
 
-  scope :incomplete, -> { where("data ->> 'end_at' IS NULL") }
+  scope :incomplete, -> { where("(data ->> 'end_at') <= NOW()") }
 
   def serie
     Serie.find_by(panda_score_id: data['serie_id'])
@@ -38,5 +38,18 @@ class PandaScore::Tournament < ApplicationRecord
   def update_from_api
     api_data = PandaScoreAPI.tournament(id: panda_score_id)
     update(data: api_data)
+  end
+
+  # Method to display the first level of the data attribute
+  def shallow_data
+    data.keys.each_with_object({}) do |key, hash|
+      if data[key].is_a?(Hash)
+        hash[key] = "Hash"
+      elsif data[key].is_a?(Array)
+        hash[key] = "Array"
+      else
+        hash[key] = data[key]
+      end
+    end
   end
 end
