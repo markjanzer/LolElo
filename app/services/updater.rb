@@ -25,23 +25,23 @@ class Updater
   def call
     PandaScore::League.transaction do
       PandaScore::League.all.each do |ps_league|
-        ps_league.create_series
         ps_league.update_from_api
+        ps_league.create_series
       end
 
       unfinished_series.each do |ps_serie|
-        ps_serie.create_tournaments
         ps_serie.update_from_api
+        ps_serie.create_tournaments
       end
 
       unfinished_tournaments.each do |ps_tournament|
-        ps_tournament.create_matches
         ps_tournament.update_from_api
+        ps_tournament.create_matches
       end
 
       unfinished_matches.each do |ps_match|
-        ps_match.create_or_update_games
         ps_match.update_from_api
+        ps_match.create_or_update_games
       end
 
       UpdateTracker.record_update

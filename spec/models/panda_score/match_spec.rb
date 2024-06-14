@@ -12,6 +12,7 @@ RSpec.describe PandaScore::Match do
     end
   end
 
+  # This might break now
   describe "#create_or_update_games" do
     it "creates games" do
       ps_match = create(:panda_score_match)

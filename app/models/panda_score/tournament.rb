@@ -20,8 +20,7 @@ class PandaScore::Tournament < ApplicationRecord
 
   def create_teams
     data["teams"].each do |team|
-      # If the team doesn't exist, make an API request to create it
-      PandaScoreAPISeeder::CreateTeam.call(team["id"])
+      PandaScore::Team.create_from_id(team["id"])
     end
   end
 
