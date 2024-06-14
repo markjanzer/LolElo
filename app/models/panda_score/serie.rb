@@ -24,6 +24,12 @@ class PandaScore::Serie < ApplicationRecord
     end
   end
 
+  def create_or_update_from_api(serie_ps_id)
+    PandaScore::Serie
+      .find_or_initialize_by(panda_score_id: serie_id)
+      .update_from_api
+  end
+
   def update_from_api
     api_data = PandaScoreAPI.serie(id: panda_score_id)
     update(data: api_data)

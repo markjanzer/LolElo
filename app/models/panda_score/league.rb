@@ -16,6 +16,12 @@ class PandaScore::League < ApplicationRecord
     end
   end
 
+  def create_or_update_from_api(league_ps_id)
+    PandaScore::League
+      .find_or_initialize_by(panda_score_id: league_ps_id)
+      .update_from_api
+  end
+
   def update_from_api
     update!(data: PandaScoreAPI.league(id: panda_score_id))
   end
