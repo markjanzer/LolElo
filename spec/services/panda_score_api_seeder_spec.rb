@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'sidekiq/testing'
 
-RSpec.describe PandaScoreAPISeeder::Seed do
+RSpec.describe PandaScoreAPISeeder do
   describe "#call" do
 
     # Ensure that we don't hit the API.

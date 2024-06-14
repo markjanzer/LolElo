@@ -5,6 +5,11 @@ class PandaScore::Tournament < ApplicationRecord
 
   scope :incomplete, -> { where("(data ->> 'end_at') <= NOW()") }
 
+  def self.create_or_update_from_api(tournament_id)
+    find_or_initialize_by(panda_score_id: tournament_id)
+      .update_from_api
+  end
+
   def serie
     Serie.find_by(panda_score_id: data['serie_id'])
   end
@@ -32,12 +37,6 @@ class PandaScore::Tournament < ApplicationRecord
       next if existing_match_ids.include?(match["id"])
       PandaScore::Match.create!(panda_score_id: match["id"], data: match)
     end
-  end
-
-  def create_or_update_from_api(tournament_ps_id)
-    PandaScore::Tournament
-      .find_or_initialize_by(panda_score_id: tournament_id)
-      .update_from_api
   end
 
   def update_from_api

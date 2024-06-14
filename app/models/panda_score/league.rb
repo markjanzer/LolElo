@@ -3,6 +3,11 @@
 class PandaScore::League < ApplicationRecord
   self.table_name = 'panda_score_leagues'
 
+  def self.create_or_update_from_api(league_ps_id)
+    find_or_initialize_by(panda_score_id: league_ps_id)
+      .update_from_api
+  end
+
   def panda_score_series
     PandaScore::Serie.where("data ->> 'league_id' = ?", panda_score_id.to_s)
   end
@@ -14,12 +19,6 @@ class PandaScore::League < ApplicationRecord
       next if existing_series_ids.include?(serie["id"])
       PandaScore::Serie.create!(panda_score_id: serie["id"], data: serie)
     end
-  end
-
-  def create_or_update_from_api(league_ps_id)
-    PandaScore::League
-      .find_or_initialize_by(panda_score_id: league_ps_id)
-      .update_from_api
   end
 
   def update_from_api

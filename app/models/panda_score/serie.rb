@@ -5,6 +5,11 @@ class PandaScore::Serie < ApplicationRecord
 
   scope :incomplete, -> { where("data ->> 'end_at' IS NULL") }
 
+  def self.create_or_update_from_api(serie_id)
+    find_or_initialize_by(panda_score_id: serie_id)
+      .update_from_api
+  end
+
   def league
     League.find_by(panda_score_id: data['league_id'])
   end
@@ -22,12 +27,6 @@ class PandaScore::Serie < ApplicationRecord
       ps_tournament = PandaScore::Tournament.create!(panda_score_id: tournament["id"], data: tournament)
       ps_tournament.create_teams
     end
-  end
-
-  def create_or_update_from_api(serie_ps_id)
-    PandaScore::Serie
-      .find_or_initialize_by(panda_score_id: serie_id)
-      .update_from_api
   end
 
   def update_from_api
