@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_06_13_222822) do
+ActiveRecord::Schema[7.0].define(version: 2024_06_14_195709) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -19,6 +19,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_13_222822) do
     t.bigint "winner_id"
     t.integer "panda_score_id"
     t.datetime "end_at", precision: nil
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["match_id"], name: "index_games_on_match_id"
     t.index ["panda_score_id"], name: "index_games_on_panda_score_id"
     t.index ["winner_id"], name: "index_games_on_winner_id"
@@ -28,6 +30,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_13_222822) do
     t.string "name"
     t.integer "panda_score_id"
     t.string "time_zone"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["panda_score_id"], name: "index_leagues_on_panda_score_id"
   end
 
@@ -37,6 +41,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_13_222822) do
     t.bigint "opponent2_id"
     t.integer "panda_score_id"
     t.bigint "tournament_id"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["opponent1_id"], name: "index_matches_on_opponent1_id"
     t.index ["opponent2_id"], name: "index_matches_on_opponent2_id"
     t.index ["tournament_id"], name: "index_matches_on_tournament_id"
@@ -96,6 +102,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_13_222822) do
     t.string "full_name"
     t.integer "year"
     t.bigint "league_id"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["league_id"], name: "index_series_on_league_id"
   end
 
@@ -106,6 +114,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_13_222822) do
     t.integer "elo"
     t.bigint "serie_id"
     t.boolean "elo_reset", default: false, null: false
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["game_id"], name: "index_snapshots_on_game_id"
     t.index ["serie_id"], name: "index_snapshots_on_serie_id"
     t.index ["team_id"], name: "index_snapshots_on_team_id"
@@ -116,12 +126,16 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_13_222822) do
     t.string "acronym"
     t.integer "panda_score_id"
     t.string "color"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["panda_score_id"], name: "index_teams_on_panda_score_id"
   end
 
   create_table "teams_tournaments", force: :cascade do |t|
     t.bigint "team_id"
     t.bigint "tournament_id"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["team_id", "tournament_id"], name: "index_teams_tournaments_on_team_id_and_tournament_id", unique: true
     t.index ["tournament_id"], name: "index_teams_tournaments_on_tournament_id"
   end
@@ -130,6 +144,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_13_222822) do
     t.integer "panda_score_id"
     t.string "name"
     t.bigint "serie_id"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["serie_id"], name: "index_tournaments_on_serie_id"
   end
 
