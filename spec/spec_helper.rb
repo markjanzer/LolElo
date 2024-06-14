@@ -100,8 +100,4 @@ RSpec.configure do |config|
     stub_request(:any, /api.pandascore.co/).
       to_raise("You're attempting to access api.pandascore.co in a test!")
   end
-
-  # config.before(:each) do |example|
-  #   puts "Running: #{example.metadata[:file_path]}:#{example.metadata[:line_number]} - #{example.full_description}"
-  # end
 end
