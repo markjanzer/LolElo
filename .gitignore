@@ -44,3 +44,6 @@ spec/spec_log.txt
 
 /app/assets/builds/*
 !/app/assets/builds/.keep
+
+# Ignore database backups
+/db/backups/*

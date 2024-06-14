@@ -7,6 +7,10 @@ class PandaScore::Game < ApplicationRecord
     Team.find_by(panda_score_id: data["winner"]["id"])
   end
 
+  def panda_score_match
+    PandaScore::Match.find_by(panda_score_id: data["match_id"])
+  end
+
   def match
     Match.find_by(panda_score_id: data["match_id"])
   end

@@ -6,8 +6,20 @@
 # Also how will this work if the API gets too many calls?
 
 class Updater
+  BUFFER = 1.hour
+
+  def initialize(time_to_update_from)
+    @time_to_update_from = time_to_update_from || self.class.time_to_compare_against
+  end
+
+  attr_reader :time_to_update_from
+
   def self.call
-    new.call
+    new(time_to_compare_against).call
+  end
+
+  def self.time_to_compare_against
+    UpdateTracker.last_run_time - BUFFER
   end
 
   def call
@@ -32,27 +44,26 @@ class Updater
         ps_match.update_from_api
       end
 
-      byebug
-      
-      puts "before end"
+      UpdateTracker.record_update
     end
   end
 
   def unfinished_series
     PandaScore::Serie
-      .where("(data ->> 'end_at')::timestamp >= NOW()")
+      .where("(data ->> 'end_at')::timestamp >= ?", time_to_update_from)
   end
 
   def unfinished_tournaments
     PandaScore::Tournament
-      .where("(data ->> 'end_at')::timestamp >= NOW()")
+      .where("(data ->> 'end_at')::timestamp >= ?", time_to_update_from)
   end
 
   def unfinished_matches
     PandaScore::Match
       .where("data ->> 'end_at' IS NULL")
       .where("data ->> 'status' = 'running' 
-        OR data ->> 'status' = 'not_started' 
-        AND (data ->> 'scheduled_at')::timestamp <= NOW()")
+        OR data ->> 'status' = 'not_started'
+        AND (data ->> 'scheduled_at')::timestamp < NOW()
+        AND (data ->> 'scheduled_at')::timestamp >= ?", time_to_update_from)
   end
 end

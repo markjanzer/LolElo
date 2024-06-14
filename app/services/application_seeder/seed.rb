@@ -14,6 +14,7 @@ module ApplicationSeeder
       create_all_teams(Tournament.all)
       create_all_matches(Tournament.all)
       create_all_games(Match.all)
+      UpdateTracker.record_update
     end
 
     def reset
@@ -24,6 +25,7 @@ module ApplicationSeeder
       Tournament.destroy_all
       Serie.destroy_all
       League.destroy_all
+      UpdateTracker.destroy_all
     end
 
     private
