@@ -5,13 +5,6 @@ require 'sidekiq/testing'
 
 RSpec.describe PandaScoreAPISeeder do
   describe "#call" do
-
-    # Ensure that we don't hit the API.
-    before do 
-      request_obj_double = double("PandaScoreAPI::Request")
-      allow(PandaScoreAPI::Request).to receive(:new).and_return(request_obj_double)
-    end
-
     let(:league_id) { 1 }
     let(:serie_id) { 2 } 
     let(:tournament_id) { 3 }
