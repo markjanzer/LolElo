@@ -4,23 +4,74 @@ require 'rails_helper'
 
 RSpec.describe Updater do
   describe "#call" do
-    # This is a little tricky because it continues to run the code
-    # Which attempts to access the API, and I don't want to spec everything out
-    # This might be a little easier when I move logic around.
-    it "calls create_new_tournaments with each ps_serie that hasn't finished"
+    it "creates new series for a league" do
+      league_id = 1
+      serie_id = 2
+      tournament_id = 3
+      team_ids = [4, 5]
+      match_id = 6
+      game_id = 7
+      
+      create(:panda_score_league, id: 1)
+      league_data = {
+        "id" => league_id
+      }
+      allow(PandaScoreAPI).to receive(:league).with(id: league_id).and_return(league_data)
 
-    it "updates the ps_serie"
-    it "does not do anything if the serie is complete"
-    
-    it "calls create_new_matches with each non-complete tournament"
-    it "update each non-complete tournament"
-    it "does nothing if the tournament is complete"
+      serie_data = {
+        "id" => serie_id,
+        "end_at" => 1.day.from_now.iso8601,
+        "tournaments" => [{ 
+          "id" => tournament_id,
+        }]
+      }
+      allow(PandaScoreAPI).to receive(:series).with(league_id: league_id).and_return([serie_data])
+      allow(PandaScoreAPI).to receive(:serie).with(id: 2).and_return(serie_data)
 
-    it "calls create_new_games for each non-complete match"
-    it "updates each non-complete match"
-    it "does nothing if the match is complete"
+      teams_data = [
+        { "id" => team_ids[0] },
+        { "id" => team_ids[1] }
+      ]
+      tournament_data = {
+        "id" => tournament_id,
+        "end_at" => 1.day.from_now.iso8601,
+        "teams" => teams_data
+      }
+      allow(PandaScoreAPI).to receive(:tournaments).with(serie_id: serie_id).and_return([tournament_data])
+      allow(PandaScoreAPI).to receive(:tournament).with(id: tournament_id).and_return(tournament_data)
+      allow(PandaScoreAPI).to receive(:team).with(id: team_ids[0]).and_return(teams_data[0])
+      allow(PandaScoreAPI).to receive(:team).with(id: team_ids[1]).and_return(teams_data[1])
 
-    it "updates each non-complete game"
-    it "does nothing if the game is complete"
+      match_data = { 
+        "id" => match_id,
+        "end_at" => nil,
+        "status" => "running",
+        "games" => [
+          { "id" => game_id } 
+        ]
+      }
+      allow(PandaScoreAPI).to receive(:matches).with(tournament_id: tournament_id).and_return([match_data])
+      allow(PandaScoreAPI).to receive(:match).with(id: match_id).and_return(match_data)
+      
+      expect(PandaScore::Serie.count).to eq(0)
+      expect(PandaScore::Tournament.count).to eq(0)
+      expect(PandaScore::Team.count).to eq(0)
+      expect(PandaScore::Match.count).to eq(0)
+      expect(PandaScore::Game.count).to eq(0)
+      expect(UpdateTracker.count).to eq(0)
+
+      Updater.new.call
+
+      expect(PandaScore::League.first.data).to eq(league_data)
+      expect(PandaScore::Serie.count).to eq(1)
+      expect(PandaScore::Serie.first.data).to eq(serie_data)
+      expect(PandaScore::Tournament.count).to eq(1)
+      expect(PandaScore::Tournament.first.data).to eq(tournament_data)
+      expect(PandaScore::Team.count).to eq(2)
+      expect(PandaScore::Match.count).to eq(1)
+      expect(PandaScore::Match.first.data).to eq(match_data)
+      expect(PandaScore::Game.count).to eq(1)
+      expect(UpdateTracker.count).to eq(1)
+    end
   end
 end

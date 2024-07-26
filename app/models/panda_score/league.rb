@@ -15,8 +15,8 @@ class PandaScore::League < ApplicationRecord
   def create_series
     fetched_series = PandaScoreAPI.series(league_id: panda_score_id)
     existing_series_ids = panda_score_series.pluck(:panda_score_id)
-    fetched_series.each do |serie|
-      next if existing_series_ids.include?(serie["id"])
+    new_series = fetched_series.reject { |serie| existing_series_ids.include?(serie["id"]) }
+    new_series.each do |serie|
       PandaScore::Serie.create!(panda_score_id: serie["id"], data: serie)
     end
   end

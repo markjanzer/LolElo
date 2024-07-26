@@ -8,7 +8,7 @@
 class Updater
   BUFFER = 1.hour
 
-  def initialize(time_to_update_from)
+  def initialize(time_to_update_from=nil)
     @time_to_update_from = time_to_update_from || self.class.time_to_compare_against
   end
 
