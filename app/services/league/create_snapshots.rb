@@ -8,12 +8,14 @@ class League
 
     def call
       raise "league not defined" unless league
-      return "No snapshots to create" unless first_game_without_snapshots
+      return "No snapshots to create" unless create_snapshots_from
 
-      league.snapshots.where("datetime >= ?", create_snapshots_from).destroy_all
+      Snapshot.transaction do
+        league.snapshots.where("datetime >= ?", create_snapshots_from).destroy_all
 
-      league.reload.games.where("games.end_at >= ?", create_snapshots_from).order(end_at: :asc).each do |game|
-        Game::CreateSnapshots.new(game).call
+        league.reload.games.where("games.end_at >= ?", create_snapshots_from).order(end_at: :asc).each do |game|
+          Game::CreateSnapshots.new(game).call
+        end
       end
     end
 
@@ -21,13 +23,25 @@ class League
 
     attr_reader :league
 
-    def first_game_without_snapshots
-      # SLQ REFACTOR
-      league.games.order(end_at: :asc).find { |g| g.snapshots.count < 2 }
-    end
-
     def create_snapshots_from
-      first_game_without_snapshots.end_at
+      first_game_without_snapshots = ActiveRecord::Base.connection.execute(
+        <<-SQL
+          SELECT games.end_at
+          FROM games
+          JOIN matches ON games.match_id = matches.id
+          JOIN tournaments ON matches.tournament_id = tournaments.id
+          JOIN series ON tournaments.serie_id = series.id
+          JOIN leagues ON series.league_id = leagues.id
+          LEFT JOIN snapshots ON snapshots.game_id = games.id
+          WHERE leagues.id = #{ActiveRecord::Base.sanitize_sql(league.id)}
+          GROUP BY games.id
+          HAVING COUNT(snapshots.id) < 2
+          ORDER BY games.end_at ASC
+          LIMIT 1
+        SQL
+      )
+
+      first_game_without_snapshots.first&.[]('end_at')
     end
   end
 end
