@@ -44,6 +44,15 @@ class PandaScore::Tournament < ApplicationRecord
     update(data: api_data)
   end
 
+  def upsert_model
+    Tournament
+      .find_or_initialize_by(panda_score_id: panda_score_id)
+      .update!(
+        name: data['name'],
+        serie: serie
+      )
+  end
+
   # Method to display the first level of the data attribute
   def shallow_data
     data.keys.each_with_object({}) do |key, hash|

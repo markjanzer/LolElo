@@ -26,11 +26,11 @@ class PandaScore::League < ApplicationRecord
   end
 
   def upsert_model
-    if League.exists?(panda_score_id: panda_score_id)
-      update_mdoel
-    else
-      create_model
-    end
+    League.find_or_initialize_by(panda_score_id: panda_score_id)
+      .update!(
+        name: data["name"],
+        time_zone: time_zone
+      )
   end
   
   # I have definitely done this before, I should try to find it.

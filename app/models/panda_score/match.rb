@@ -40,6 +40,19 @@ class PandaScore::Match < ApplicationRecord
     update(data: api_data)
   end
 
+  def upsert_model
+    return if data["forfeit"]
+    return if data["end_at"].nil?
+    
+    match = Match.find_or_initialize_by(panda_score_id: panda_score_id)
+    match.update!({
+      end_at: data["end_at"],
+      opponent1: opponent1,
+      opponent2: opponent2,
+      tournament: tournament
+    })
+  end
+
   private
 
   def opponent_id(index)

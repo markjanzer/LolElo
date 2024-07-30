@@ -33,4 +33,14 @@ class PandaScore::Serie < ApplicationRecord
     api_data = PandaScoreAPI.serie(id: panda_score_id)
     update(data: api_data)
   end
+
+  def upsert_model
+    Serie.find_or_initialize_by(panda_score_id: panda_score_id)
+      .update!(
+        year: data["year"],
+        begin_at: data["begin_at"],
+        full_name: data["full_name"],
+        league: league
+      )
+  end
 end

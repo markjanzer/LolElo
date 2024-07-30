@@ -7,13 +7,7 @@ module ApplicationSeeder
     def call
       return unless valid_serie?
 
-      new_serie = Serie.find_or_initialize_by(panda_score_id: panda_score_serie.panda_score_id)
-      new_serie.update!(
-        year: panda_score_serie.data["year"],
-        begin_at: panda_score_serie.data["begin_at"],
-        full_name: panda_score_serie.data["full_name"],
-        league: panda_score_serie.league
-      )
+      panda_score_serie.upsert_model
     end
 
     
