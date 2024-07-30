@@ -45,7 +45,6 @@ It finds the first game without an elo and removes/recalculates elos after that 
       end
     end
 
-    
     context "when there are two games without snapshots" do
       let(:s1_t1_matches) { create_list(:match, 1, opponent1: team1, opponent2: team2, games: s1_t1_m1_games) }
       let(:s1_t1_m1_games) { [s1_t1_m1_game2, s1_t1_m1_game1] }
