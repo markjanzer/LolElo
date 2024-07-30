@@ -69,5 +69,20 @@ RSpec.describe ModelUpdater do
       expect(game.end_at).to eq("2020-01-01")
       expect(game.winner).to eq(team1)
     end
+
+    it "does not update models that have not been updated since the last run" do
+      create(:update_tracker, completed_at: 2.days.ago)
+      create(:update_tracker, completed_at: 1.hour.ago)
+
+      league_id = 1
+      create(:league, panda_score_id: league_id)
+      create(:panda_score_serie, updated_at: 3.days.ago, data: {
+        league_id: league_id
+      })
+
+      expect(Serie.count).to eq(0)
+      ModelUpdater.call
+      expect(Serie.count).to eq(0)
+    end
   end
 end
