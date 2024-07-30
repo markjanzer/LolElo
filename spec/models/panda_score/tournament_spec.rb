@@ -12,7 +12,7 @@ RSpec.describe PandaScore::Tournament do
     end
   end
 
-  describe "#create_teams" do
+  describe "#create_panda_score_teams" do
     context "the tournament's teams already exist" do
       it "does not create a team" do
         ps_team = create(:panda_score_team)
@@ -24,7 +24,7 @@ RSpec.describe PandaScore::Tournament do
             }
           ]
         })
-        expect { ps_tournament.create_teams }.not_to change { PandaScore::Team.count }
+        expect { ps_tournament.create_panda_score_teams }.not_to change { PandaScore::Team.count }
       end
     end
 
@@ -37,7 +37,7 @@ RSpec.describe PandaScore::Tournament do
         "teams"=>[team_data]
       })
       allow(PandaScoreAPI).to receive(:team).with(id: team_data["id"]).and_return team_data
-      expect { ps_tournament.create_teams }.to change { PandaScore::Team.count }.by 1
+      expect { ps_tournament.create_panda_score_teams }.to change { PandaScore::Team.count }.by 1
     end
   end
 

@@ -35,14 +35,14 @@ RSpec.describe PandaScore::Serie do
       expect { ps_serie.create_tournaments }.to change { PandaScore::Tournament.count }.by 1
     end
 
-    it "calls create_teams on the new tournament" do
+    it "calls create_panda_score_teams on the new tournament" do
       ps_serie = create(:panda_score_serie)
       new_tournament_data = {
         "id"=>1,
         "teams"=>[{ "id"=>2 }]
       }
       allow(PandaScoreAPI).to receive(:tournaments).with(serie_id: ps_serie.panda_score_id).and_return([new_tournament_data])
-      expect_any_instance_of(PandaScore::Tournament).to receive(:create_teams)
+      expect_any_instance_of(PandaScore::Tournament).to receive(:create_panda_score_teams)
       ps_serie.create_tournaments
     end
   end

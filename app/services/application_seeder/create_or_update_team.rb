@@ -26,21 +26,5 @@ module ApplicationSeeder
     private
 
     attr_reader :ps_team, :tournament
-  
-    def remaining_colors
-      (Team::UNIQUE_COLORS - taken_colors)
-    end
-    
-    def unique_team_color
-      if remaining_colors.empty?
-        return Team::UNIQUE_COLORS.sample
-      end
-      
-      remaining_colors.sample
-    end
-
-    def taken_colors
-      tournament.serie.teams.pluck(:color)
-    end
   end
 end

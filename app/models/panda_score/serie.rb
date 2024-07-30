@@ -25,7 +25,7 @@ class PandaScore::Serie < ApplicationRecord
     fetched_tournaments.each do |tournament|
       next if existing_tournament_ids.include?(tournament["id"])
       ps_tournament = PandaScore::Tournament.create!(panda_score_id: tournament["id"], data: tournament)
-      ps_tournament.create_teams
+      ps_tournament.create_panda_score_teams
     end
   end
 
