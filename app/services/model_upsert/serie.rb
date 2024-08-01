@@ -1,5 +1,5 @@
-module ApplicationSeeder
-  class CreateOrUpdateSerie
+module ModelUpsert
+  class Serie
     def initialize(panda_score_serie)
       @panda_score_serie = panda_score_serie
     end
@@ -7,7 +7,7 @@ module ApplicationSeeder
     def call
       return unless valid_serie?
 
-      Serie.find_or_initialize_by(panda_score_id: panda_score_serie.panda_score_id)
+      ::Serie.find_or_initialize_by(panda_score_id: panda_score_serie.panda_score_id)
         .update!(
           year: panda_score_serie.data["year"],
           begin_at: panda_score_serie.data["begin_at"],

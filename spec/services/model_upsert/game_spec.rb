@@ -3,7 +3,7 @@
 # Needed for when I want to run individual specs...
 require 'rails_helper'
 
-RSpec.describe ApplicationSeeder::CreateOrUpdateGame do
+RSpec.describe ModelUpsert::Game do
   describe "#call" do
     context "when the game does not exist" do
       it "creates a game" do

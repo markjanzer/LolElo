@@ -3,7 +3,7 @@
 # Needed for when I want to run individual specs...
 require 'rails_helper'
 
-RSpec.describe ApplicationSeeder::CreateOrUpdateTeam do
+RSpec.describe ModelUpsert::Team do
   describe "#call" do
     context "when the team does not exist" do
       it "creates a team" do

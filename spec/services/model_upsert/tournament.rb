@@ -3,7 +3,7 @@
 # Needed for when I want to run individual specs...
 require 'rails_helper'
 
-RSpec.describe ApplicationSeeder::CreateOrUpdateTournament do
+RSpec.describe ModelUpsert::Tournament do
   describe "#call" do
     context "when the tournament does not exist" do
       it "creates a tournament" do

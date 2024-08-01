@@ -1,5 +1,5 @@
-module ApplicationSeeder
-  class CreateOrUpdateGame
+module ModelUpsert
+  class Game
     def initialize(panda_score_game)
       @panda_score_game = panda_score_game
     end
@@ -15,7 +15,7 @@ module ApplicationSeeder
 
       attributes = transform_data(attributes)
 
-      Game.find_or_initialize_by(panda_score_id: panda_score_game.panda_score_id)
+      ::Game.find_or_initialize_by(panda_score_id: panda_score_game.panda_score_id)
         .update!(attributes)      
     end
     

@@ -1,5 +1,5 @@
-module ApplicationSeeder
-  class CreateOrUpdateTournament
+module ModelUpsert
+  class Tournament
     def initialize(panda_score_tournament)
       @panda_score_tournament = panda_score_tournament
     end
@@ -7,7 +7,7 @@ module ApplicationSeeder
     def call
       return if reject?
 
-      Tournament
+      ::Tournament
         .find_or_initialize_by(panda_score_id: panda_score_tournament.panda_score_id)
         .update!(
           name: panda_score_tournament.data['name'],

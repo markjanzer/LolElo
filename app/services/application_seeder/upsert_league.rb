@@ -1,5 +1,7 @@
+# I think it's a little odd that this doesn't take a panda_score_league
+# This is in this file partly because of that and partly because it also takes a time zone
 module ApplicationSeeder
-  class CreateOrUpdateLeague
+  class UpsertLeague
     def initialize(panda_score_id:, time_zone:)
       @panda_score_id = panda_score_id
       @time_zone = time_zone
