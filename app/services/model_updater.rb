@@ -1,11 +1,20 @@
 class ModelUpdater
   def self.call
-    models = [PandaScore::Serie, PandaScore::Tournament, PandaScore::Match, PandaScore::Game]
+    
+    PandaScore::Serie.where("updated_at > ?", UpdateTracker.second_to_last_run_time).each do |ps_serie|
+      ApplicationSeeder::CreateOrUpdateSerie.new(ps_serie).call
+    end
 
-    models.each do |model|
-      model.where("updated_at > ?", UpdateTracker.second_to_last_run_time).each do |ps_model|
-        ps_model.upsert_model
-      end
+    PandaScore::Tournament.where("updated_at > ?", UpdateTracker.second_to_last_run_time).each do |ps_tournament|
+      ApplicationSeeder::CreateOrUpdateTournament.new(ps_tournament).call
+    end
+
+    PandaScore::Match.where("updated_at > ?", UpdateTracker.second_to_last_run_time).each do |ps_match|
+      ApplicationSeeder::CreateOrUpdateMatch.new(ps_match).call
+    end
+
+    PandaScore::Game.where("updated_at > ?", UpdateTracker.second_to_last_run_time).each do |ps_game|
+      ApplicationSeeder::CreateOrUpdateGame.new(ps_game).call
     end
   end
 end

@@ -24,14 +24,6 @@ class PandaScore::League < ApplicationRecord
   def update_from_api
     update!(data: PandaScoreAPI.league(id: panda_score_id))
   end
-
-  def upsert_model
-    League.find_or_initialize_by(panda_score_id: panda_score_id)
-      .update!(
-        name: data["name"],
-        time_zone: time_zone
-      )
-  end
   
   # I have definitely done this before, I should try to find it.
   def create_model
