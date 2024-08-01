@@ -15,13 +15,8 @@ module ApplicationSeeder
 
       attributes = transform_data(attributes)
 
-      game = Game.find_or_initialize_by(panda_score_id: panda_score_game.panda_score_id)
-      game.update!(attributes)      
-
-      # I don't think serie transformations should be in here
-      if serie_begins_after_game?(game)
-        set_serie_begin_at_before_game_end_at(game)
-      end
+      Game.find_or_initialize_by(panda_score_id: panda_score_game.panda_score_id)
+        .update!(attributes)      
     end
     
     private
@@ -44,18 +39,6 @@ module ApplicationSeeder
 
       attributes[:end_at] = DateTime.parse(data["begin_at"]) + data["length"].seconds
       attributes
-    end
-
-    def serie
-      panda_score_game.match.tournament.serie
-    end
-
-    def serie_begins_after_game?(game)
-      serie.begin_at && game.end_at < serie.begin_at
-    end
-
-    def set_serie_begin_at_before_game_end_at(game)
-      serie.update!(begin_at: DateTime.parse(game.end_at) - 1.minute)
     end
   end
 end
