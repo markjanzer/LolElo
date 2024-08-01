@@ -10,6 +10,10 @@ class PandaScore::Tournament < ApplicationRecord
       .update_from_api
   end
 
+  def tournament
+    Tournament.find_by(panda_score_id: panda_score_id)
+  end
+
   def serie
     Serie.find_by(panda_score_id: data['serie_id'])
   end

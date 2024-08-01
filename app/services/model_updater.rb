@@ -7,6 +7,11 @@ class ModelUpdater
 
     PandaScore::Tournament.where("updated_at > ?", UpdateTracker.second_to_last_run_time).each do |ps_tournament|
       ApplicationSeeder::CreateOrUpdateTournament.new(ps_tournament).call
+
+      tournament = ps_tournament.tournament
+      ps_tournament.panda_score_teams.each do |ps_team|
+        ApplicationSeeder::CreateOrUpdateTeam.new(ps_team: ps_team, tournament: tournament).call
+      end
     end
 
     PandaScore::Match.where("updated_at > ?", UpdateTracker.second_to_last_run_time).each do |ps_match|

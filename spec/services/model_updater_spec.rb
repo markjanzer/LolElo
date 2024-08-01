@@ -8,8 +8,7 @@ RSpec.describe ModelUpdater do
       create(:update_tracker, completed_at: 2.days.ago)
       create(:update_tracker, completed_at: 1.hour.ago)
 
-      league_id, serie_id, tournament_id, match_id = 1, 2, 3, 4
-      team1, team2 = create(:team), create(:team)
+      league_id, serie_id, tournament_id, match_id, team1_id, team2_id = 1, 2, 3, 4, 5, 6
 
       league = create(:league, panda_score_id: league_id)
       
@@ -17,29 +16,40 @@ RSpec.describe ModelUpdater do
         league_id: league_id,
         year: 2020,
         begin_at: "2020-01-01",
-        # Needs name spring to not be filtered out
         full_name: "Spring Split",
       })
       create(:panda_score_tournament, updated_at: 1.day.ago, panda_score_id: tournament_id, data: {
         serie_id: serie_id,
         name: "Tournament",
+        teams: [
+          { id: team1_id },
+          { id: team2_id }
+        ]
+      })
+      create(:panda_score_team, panda_score_id: team1_id, data: {
+        acronym: "C9"
+      })
+      create(:panda_score_team, panda_score_id: team2_id, data: {
+        acronym: "T1"
       })
       create(:panda_score_match, updated_at: 1.day.ago, panda_score_id: match_id, data: {
         tournament_id: tournament_id,
         end_at: "2020-01-01",
         opponents: [
-          { opponent: { id: team1.panda_score_id } },
-          { opponent: { id: team2.panda_score_id } }
+          { opponent: { id: team1_id } },
+          { opponent: { id: team2_id } }
         ]
       })
       create(:panda_score_game, updated_at: 1.day.ago, data: {
         match_id: match_id,
         end_at: "2020-01-01",
-        winner: { id: team1.panda_score_id }
+        winner: { id: team1_id }
       })
 
       expect(Serie.count).to eq(0)
       expect(Tournament.count).to eq(0)
+      expect(Team.count).to eq(0)
+      expect(TeamsTournament.count).to eq(0)
       expect(Match.count).to eq(0)
       expect(Game.count).to eq(0)
 
@@ -56,6 +66,11 @@ RSpec.describe ModelUpdater do
       tournament = Tournament.first
       expect(tournament.name).to eq("Tournament")
       expect(tournament.serie).to eq(serie)
+      
+      expect(Team.count).to eq(2)
+      team1 = Team.find_by(panda_score_id: team1_id)
+      team2 = Team.find_by(panda_score_id: team2_id)
+      expect(TeamsTournament.count).to eq(2)
 
       expect(Match.count).to eq(1)
       match = Match.first
