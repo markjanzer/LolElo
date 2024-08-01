@@ -34,7 +34,7 @@ module ApplicationSeeder
 
     def create_leagues(seed_data)
       seed_data.each do |data|
-        ApplicationSeeder::CreateOrUpdateLeague.new(
+        ApplicationSeeder::UpsertLeague.new(
           panda_score_id: data[:league_id],
           time_zone: data[:time_zone]
         ).call
@@ -46,7 +46,7 @@ module ApplicationSeeder
         panda_score_league = league.panda_score_league
         panda_score_series = panda_score_league.panda_score_series
         panda_score_series.each do |ps_serie|
-          ApplicationSeeder::CreateOrUpdateSerie.new(ps_serie).call
+          ModelUpsert::Serie.new(ps_serie).call
         end
       end
     end
@@ -56,7 +56,7 @@ module ApplicationSeeder
         panda_score_serie = serie.panda_score_serie
         panda_score_tournaments = panda_score_serie.panda_score_tournaments
         panda_score_tournaments.each do |ps_tournament|
-          ApplicationSeeder::CreateOrUpdateTournament.new(ps_tournament).call
+          ModelUpsert::Tournament.new(ps_tournament).call
         end
       end
     end
@@ -67,7 +67,7 @@ module ApplicationSeeder
         panda_score_tournament = tournament.panda_score_tournament
         panda_score_teams = panda_score_tournament.panda_score_teams
         panda_score_teams.each do |ps_team|
-          ApplicationSeeder::CreateOrUpdateTeam.new(ps_team: ps_team, tournament: tournament).call
+          ModelUpsert::Team.new(ps_team: ps_team, tournament: tournament).call
         end
       end
     end
@@ -77,7 +77,7 @@ module ApplicationSeeder
         panda_score_tournament = tournament.panda_score_tournament
         panda_score_matches = panda_score_tournament.panda_score_matches
         panda_score_matches.each do |ps_match|
-          ApplicationSeeder::CreateOrUpdateMatch.new(ps_match).call
+          ModelUpsert::Match.new(ps_match).call
         end
       end
     end
@@ -87,7 +87,7 @@ module ApplicationSeeder
         panda_score_match = match.panda_score_match
         panda_score_games = panda_score_match.panda_score_games
         panda_score_games.each do |ps_game|
-          ApplicationSeeder::CreateOrUpdateGame.new(ps_game).call
+          ModelUpsert::Game.new(ps_game).call
         end
       end
     end

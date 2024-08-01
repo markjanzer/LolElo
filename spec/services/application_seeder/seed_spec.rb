@@ -34,13 +34,13 @@ RSpec.describe ApplicationSeeder::Seed do
   end
 
   describe "#create_leagues" do
-    it "calls CreateOrUpdateLeague with the seed data" do
+    it "calls UpsertLeague with the seed data" do
       league_seed_data = [
         { league_id: 1, time_zone: "America/Los_Angeles" },
       ]
 
-      double = double("CreateOrUpdateLeague")
-      expect(ApplicationSeeder::CreateOrUpdateLeague).to receive(:new).with(
+      double = double("UpsertLeague")
+      expect(ApplicationSeeder::UpsertLeague).to receive(:new).with(
         panda_score_id: 1,
         time_zone: "America/Los_Angeles"
       ).and_return(double)
@@ -52,7 +52,7 @@ RSpec.describe ApplicationSeeder::Seed do
   end
 
   describe "#create_all_series" do
-    it "calls CreateOrUpdateSerie for all series belonging to the leagues" do
+    it "calls Serie for all series belonging to the leagues" do
       league = create(:league)
       panda_score_league = create(:panda_score_league)
       panda_score_series = create_list(:panda_score_serie, 2)
@@ -60,13 +60,13 @@ RSpec.describe ApplicationSeeder::Seed do
       allow(league).to receive(:panda_score_league).and_return(panda_score_league)
       allow(panda_score_league).to receive(:panda_score_series).and_return(panda_score_series)
 
-      double = double("CreateOrUpdateSerie")
+      double = double("Serie")
       
-      expect(ApplicationSeeder::CreateOrUpdateSerie).to receive(:new).with(
+      expect(ModelUpsert::Serie).to receive(:new).with(
         panda_score_series[0]
       ).and_return(double)
 
-      expect(ApplicationSeeder::CreateOrUpdateSerie).to receive(:new).with(
+      expect(ModelUpsert::Serie).to receive(:new).with(
         panda_score_series[1]
       ).and_return(double)
 
@@ -77,7 +77,7 @@ RSpec.describe ApplicationSeeder::Seed do
   end
 
   describe "#create_all_tournaments" do
-    it "calls CreateOrUpdateTournament for all tournaments belonging to the series" do
+    it "calls ModelUpsert::Tournament for all tournaments belonging to the series" do
       serie = create(:serie)
       panda_score_serie = create(:panda_score_serie)
       panda_score_tournaments = create_list(:panda_score_tournament, 1)
@@ -85,9 +85,9 @@ RSpec.describe ApplicationSeeder::Seed do
       allow(serie).to receive(:panda_score_serie).and_return(panda_score_serie)
       allow(panda_score_serie).to receive(:panda_score_tournaments).and_return(panda_score_tournaments)
 
-      double = double("CreateOrUpdateTournament")
+      double = double("Tournament")
 
-      expect(ApplicationSeeder::CreateOrUpdateTournament).to receive(:new).with(
+      expect(ModelUpsert::Tournament).to receive(:new).with(
         panda_score_tournaments[0]
       ).and_return(double)
 
@@ -98,7 +98,7 @@ RSpec.describe ApplicationSeeder::Seed do
   end
 
   describe "#create_all_teams" do
-    it "calls CreateOrUpdateTeam for all teams belonging to the tournaments" do
+    it "calls ModelUpsert::Team for all teams belonging to the tournaments" do
       tournament = create(:tournament)
       panda_score_tournament = create(:panda_score_tournament)
       panda_score_teams = create_list(:panda_score_team, 1)
@@ -106,9 +106,9 @@ RSpec.describe ApplicationSeeder::Seed do
       allow(tournament).to receive(:panda_score_tournament).and_return(panda_score_tournament)
       allow(panda_score_tournament).to receive(:panda_score_teams).and_return(panda_score_teams)
 
-      double = double("CreateOrUpdateTeam")
+      double = double("Team")
 
-      expect(ApplicationSeeder::CreateOrUpdateTeam).to receive(:new).with(
+      expect(ModelUpsert::Team).to receive(:new).with(
         ps_team: panda_score_teams[0],
         tournament: tournament
       ).and_return(double)
@@ -120,7 +120,7 @@ RSpec.describe ApplicationSeeder::Seed do
   end
 
   describe "#create_all_matches" do
-    it "calls CreateOrUpdateMatch for all matches belonging to the tournaments" do
+    it "calls ModelUpsert::Match for all matches belonging to the tournaments" do
       tournament = create(:tournament)
       panda_score_tournament = create(:panda_score_tournament)
       panda_score_matches = create_list(:panda_score_match, 1)
@@ -128,9 +128,9 @@ RSpec.describe ApplicationSeeder::Seed do
       allow(tournament).to receive(:panda_score_tournament).and_return(panda_score_tournament)
       allow(panda_score_tournament).to receive(:panda_score_matches).and_return(panda_score_matches)
 
-      double = double("CreateOrUpdateMatch")
+      double = double("Match")
 
-      expect(ApplicationSeeder::CreateOrUpdateMatch).to receive(:new).with(
+      expect(ModelUpsert::Match).to receive(:new).with(
         panda_score_matches[0]
       ).and_return(double)
 
@@ -141,7 +141,7 @@ RSpec.describe ApplicationSeeder::Seed do
   end
 
   describe "#create_all_games" do
-    it "calls CreateOrUpdateGame for all games belonging to the matches" do
+    it "calls ModelUpsert::Game for all games belonging to the matches" do
       match = create(:match)
       panda_score_match = create(:panda_score_match)
       panda_score_games = create_list(:panda_score_game, 1)
@@ -149,9 +149,9 @@ RSpec.describe ApplicationSeeder::Seed do
       allow(match).to receive(:panda_score_match).and_return(panda_score_match)
       allow(panda_score_match).to receive(:panda_score_games).and_return(panda_score_games)
 
-      double = double("CreateOrUpdateGame")
+      double = double("Game")
 
-      expect(ApplicationSeeder::CreateOrUpdateGame).to receive(:new).with(
+      expect(ModelUpsert::Game).to receive(:new).with(
         panda_score_games[0]
       ).and_return(double)
 

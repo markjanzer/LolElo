@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe ApplicationSeeder::CreateOrUpdateMatch do
+RSpec.describe ModelUpsert::Match do
   describe "#call" do
     context "when the match does not exist" do
       it "creates a match" do

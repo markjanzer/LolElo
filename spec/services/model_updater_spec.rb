@@ -16,7 +16,7 @@ RSpec.describe ModelUpdater do
         league_id: league_id,
         year: 2020,
         begin_at: "2020-01-01",
-        full_name: "2020 Season",
+        full_name: "Spring Split",
       })
       create(:panda_score_tournament, updated_at: 1.day.ago, panda_score_id: tournament_id, data: {
         serie_id: serie_id,
@@ -60,7 +60,7 @@ RSpec.describe ModelUpdater do
       expect(serie.year).to eq(2020)
       expect(serie.league).to eq(league)
       expect(serie.begin_at).to eq("2020-01-01")
-      expect(serie.full_name).to eq("2020 Season")
+      expect(serie.full_name).to eq("Spring Split")
 
       expect(Tournament.count).to eq(1)
       tournament = Tournament.first

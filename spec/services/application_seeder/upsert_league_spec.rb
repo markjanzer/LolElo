@@ -3,7 +3,7 @@
 # Needed for when I want to run individual specs...
 require 'rails_helper'
 
-RSpec.describe ApplicationSeeder::CreateOrUpdateLeague do
+RSpec.describe ApplicationSeeder::UpsertLeague do
   describe "#call" do
     context "when the panda_score_league does not exist" do
       it "raises an error" do

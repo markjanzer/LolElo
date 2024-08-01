@@ -3,7 +3,7 @@
 # Needed for when I want to run individual specs...
 require 'rails_helper'
 
-RSpec.describe ApplicationSeeder::CreateOrUpdateSerie do
+RSpec.describe ModelUpsert::Serie do
   describe "#call" do
     context "when the serie does not exist" do
       it "creates a serie" do

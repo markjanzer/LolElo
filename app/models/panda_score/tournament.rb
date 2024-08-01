@@ -10,6 +10,10 @@ class PandaScore::Tournament < ApplicationRecord
       .update_from_api
   end
 
+  def tournament
+    Tournament.find_by(panda_score_id: panda_score_id)
+  end
+
   def serie
     Serie.find_by(panda_score_id: data['serie_id'])
   end
@@ -42,29 +46,6 @@ class PandaScore::Tournament < ApplicationRecord
   def update_from_api
     api_data = PandaScoreAPI.tournament(id: panda_score_id)
     update(data: api_data)
-  end
-
-  def tournament
-    Tournament.find_by(panda_score_id: panda_score_id)
-  end
-
-  def upsert_model
-    tournament = Tournament.find_or_initialize_by(panda_score_id: panda_score_id)
-    tournament.update!(
-      name: data['name'],
-      serie: serie
-    )
-    
-    panda_score_teams.each do |ps_team|
-      ps_team.upsert_model(tournament)
-    end
-
-    panda_score_teams.each do |ps_team|
-      team = ps_team.team
-      if TeamsTournament.where(team: team, tournament: tournament).empty?
-        TeamsTournament.create(team: team, tournament: tournament)
-      end
-    end
   end
 
   # Method to display the first level of the data attribute
