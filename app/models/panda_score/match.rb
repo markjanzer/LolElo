@@ -26,7 +26,7 @@ class PandaScore::Match < ApplicationRecord
     PandaScore::Game.where("data ->> 'match_id' = ?", panda_score_id.to_s)
   end
 
-  # Creates/Updates games from local game data
+  # Creates/Updates games from #data["games"]
   def create_or_update_games
     data["games"].each do |game|
       PandaScore::Game

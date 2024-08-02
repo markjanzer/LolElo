@@ -62,7 +62,6 @@ module ApplicationSeeder
     end
     
     def create_all_teams(tournaments)
-      # Do I want to do some diffing so that this isn't called multiple times for the same team?
       tournaments.each do |tournament|
         panda_score_tournament = tournament.panda_score_tournament
         panda_score_teams = panda_score_tournament.panda_score_teams
