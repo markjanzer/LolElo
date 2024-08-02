@@ -1,3 +1,4 @@
+# This should probably be a module
 class EloCalculator
   class GameResults
     def initialize(winner_elo:, loser_elo:)

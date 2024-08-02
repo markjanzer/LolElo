@@ -1,7 +1,6 @@
 # frozen_string_literal: true
-
-class League
-  class CreateSnapshots
+module EloSnapshots
+  class LeagueProcessor
     def initialize(league)
       @league = league
     end
@@ -14,7 +13,7 @@ class League
         league.snapshots.where("datetime >= ?", create_snapshots_from).destroy_all
 
         league.reload.games.where("games.end_at >= ?", create_snapshots_from).order(end_at: :asc).each do |game|
-          Game::CreateSnapshots.new(game).call
+          EloSnapshots::GameProcessor.new(game).call
         end
       end
     end

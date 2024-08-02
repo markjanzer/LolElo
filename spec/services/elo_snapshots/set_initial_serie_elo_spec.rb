@@ -3,7 +3,7 @@
 # Needed for when I want to run individual specs...
 require 'rails_helper'
 
-RSpec.describe Team::SetInitialSerieElo do
+RSpec.describe EloSnapshots::SerieTeamInitializer do
   describe "#call" do
 
     def setup

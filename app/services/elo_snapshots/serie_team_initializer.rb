@@ -1,5 +1,5 @@
-class Team
-  class SetInitialSerieElo
+module EloSnapshots
+  class SerieTeamInitializer
     def initialize(team:, serie:)
       @serie = serie
       @team = team

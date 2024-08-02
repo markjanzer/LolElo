@@ -1,4 +1,4 @@
-class Snapshot
+class EloSnapshots
   class Creator
     def self.call
       new.call
@@ -6,7 +6,7 @@ class Snapshot
     
     def call
       League.all.each do |league|
-        League::CreateSnapshots.new(league).call
+        EloSnapshots::LeagueProcessor.new(league).call
       end
     end
   end

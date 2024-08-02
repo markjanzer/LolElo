@@ -3,9 +3,9 @@
 # Needed for when I want to run individual specs...
 require 'rails_helper'
 
-RSpec.describe League::CreateSnapshots do
+RSpec.describe EloSnapshots::LeagueProcessor do
   describe "#call" do
-    subject { League::CreateSnapshots.new(league).call }
+    subject { EloSnapshots::LeagueProcessor.new(league).call }
 
     let(:league) { create(:league, series: series) }
     let(:series) { [serie1] }

@@ -3,9 +3,9 @@
 # Needed for when I want to run individual specs...
 require 'rails_helper'
 
-RSpec.describe Game::CreateSnapshots do
+RSpec.describe EloSnapshots::GameProcessor do
   describe "#call" do
-    subject { Game::CreateSnapshots.new(game).call }
+    subject { EloSnapshots::GameProcessor.new(game).call }
 
     let!(:serie) { create(:serie, begin_at: "2020-01-01", year: 2020, tournaments: [tournament] )}
     let(:tournament) { create(:tournament, matches: [match]) }
