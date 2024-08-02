@@ -7,11 +7,6 @@ class Serie < ApplicationRecord
   has_many :matches, through: :tournaments
   has_many :snapshots
 
-  # I want to remove this from here but tests break atm
-  def self.valid_name?(name)
-    name.split.first.match?('Spring|Summer')
-  end
-
   def panda_score_serie
     PandaScore::Serie.find_by(panda_score_id: panda_score_id)
   end

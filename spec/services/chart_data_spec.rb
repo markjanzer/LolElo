@@ -73,18 +73,4 @@ RSpec.describe ChartData do
       ])
     end
   end
-
-  describe "#elos_at_dates" do
-    it "does the thing"
-    it "takes serie's timezone into account"
-  end
-
-
-  describe "#teams_json" do
-    it "does the thing"
-  end
-
-  describe "#matches_data" do
-    it "does te thing"
-  end
 end

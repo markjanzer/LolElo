@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Updater do
   describe "#call" do
-    it "creates new series for a league" do
+    it "creates new objects" do
       league_id = 1
       serie_id = 2
       tournament_id = 3
@@ -12,7 +12,7 @@ RSpec.describe Updater do
       match_id = 6
       game_id = 7
       
-      create(:panda_score_league, id: 1)
+      create(:panda_score_league, panda_score_id: 1)
       league_data = {
         "id" => league_id
       }

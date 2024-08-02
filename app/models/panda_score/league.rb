@@ -24,9 +24,4 @@ class PandaScore::League < ApplicationRecord
   def update_from_api
     update!(data: PandaScoreAPI.league(id: panda_score_id))
   end
-  
-  # I have definitely done this before, I should try to find it.
-  def create_model
-    League.create!(panda_score_id: panda_score_id, name: data.dig('name'))
-  end
 end

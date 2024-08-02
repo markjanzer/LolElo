@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Not used right now, might use in near future
 class InvalidMatchesCorrector
   def initialize(matches_data:, correct_matches_data: data_from_json_file)
     @matches_data = matches_data
