@@ -1,4 +1,4 @@
-class EloSnapshots
+module EloSnapshots
   class Creator
     def self.call
       new.call
