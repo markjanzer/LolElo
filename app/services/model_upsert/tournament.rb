@@ -1,5 +1,9 @@
 module ModelUpsert
   class Tournament
+    def self.call(panda_score_tournament)
+      new(panda_score_tournament).call
+    end
+    
     def initialize(panda_score_tournament)
       @panda_score_tournament = panda_score_tournament
     end

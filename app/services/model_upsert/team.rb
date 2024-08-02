@@ -1,5 +1,9 @@
 module ModelUpsert
   class Team
+    def self.call(ps_team:, tournament:)
+      new(ps_team: ps_team, tournament: tournament).call
+    end
+
     def initialize(ps_team:, tournament:)
       @ps_team = ps_team
       @tournament = tournament

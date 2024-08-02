@@ -1,5 +1,9 @@
 module ModelUpsert
   class Serie
+    def self.call(panda_score_serie)
+      new(panda_score_serie).call
+    end
+
     def initialize(panda_score_serie)
       @panda_score_serie = panda_score_serie
     end

@@ -2,12 +2,7 @@
 # This is in this file partly because of that and partly because it also takes a time zone
 module ApplicationSeeder
   class UpsertLeague
-    def initialize(panda_score_id:, time_zone:)
-      @panda_score_id = panda_score_id
-      @time_zone = time_zone
-    end
-
-    def call
+    def self.call(panda_score_id:, time_zone:)
       raise 'time_zone is required' if time_zone.nil?
 
       panda_score_league = PandaScore::League.find_by(panda_score_id: panda_score_id)
@@ -18,13 +13,9 @@ module ApplicationSeeder
 
       League.find_or_initialize_by(panda_score_id: panda_score_id)
         .update!(
-          name: data["name"],
+          name: panda_score_league.data["name"],
           time_zone: time_zone
         )
     end
-
-    private
-
-    attr_reader :panda_score_id, :time_zone
   end
 end

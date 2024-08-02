@@ -11,7 +11,7 @@ RSpec.describe ModelUpsert::Tournament do
         serie = create(:serie)
         allow(panda_score_tournament).to receive(:serie).and_return(serie)
         
-        expect { described_class.new(panda_score_tournament).call }.to change { Tournament.count }.by(1)
+        expect { described_class.call(panda_score_tournament) }.to change { Tournament.count }.by(1)
       end
     end
 
@@ -21,9 +21,9 @@ RSpec.describe ModelUpsert::Tournament do
         serie = create(:serie)
         allow(panda_score_tournament).to receive(:serie).and_return(serie)
 
-        tournament = create(:tournament, panda_score_id: panda_score_tournament.panda_score_id)
+        create(:tournament, panda_score_id: panda_score_tournament.panda_score_id)
 
-        expect { described_class.new(panda_score_tournament).call }.not_to change { Tournament.count }
+        expect { described_class.call(panda_score_tournament) }.not_to change { Tournament.count }
       end
     end
 
@@ -47,7 +47,7 @@ RSpec.describe ModelUpsert::Tournament do
         "serie_id" => serie.panda_score_id
       })
 
-      described_class.new(panda_score_tournament).call
+      described_class.call(panda_score_tournament)
       
       tournament = Tournament.last
 

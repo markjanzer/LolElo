@@ -34,10 +34,10 @@ module ApplicationSeeder
 
     def create_leagues(seed_data)
       seed_data.each do |data|
-        ApplicationSeeder::UpsertLeague.new(
+        ApplicationSeeder::UpsertLeague.call(
           panda_score_id: data[:league_id],
           time_zone: data[:time_zone]
-        ).call
+        )
       end
     end
     
@@ -46,7 +46,7 @@ module ApplicationSeeder
         panda_score_league = league.panda_score_league
         panda_score_series = panda_score_league.panda_score_series
         panda_score_series.each do |ps_serie|
-          ModelUpsert::Serie.new(ps_serie).call
+          ModelUpsert::Serie.call(ps_serie)
         end
       end
     end
@@ -56,7 +56,7 @@ module ApplicationSeeder
         panda_score_serie = serie.panda_score_serie
         panda_score_tournaments = panda_score_serie.panda_score_tournaments
         panda_score_tournaments.each do |ps_tournament|
-          ModelUpsert::Tournament.new(ps_tournament).call
+          ModelUpsert::Tournament.call(ps_tournament)
         end
       end
     end
@@ -67,7 +67,7 @@ module ApplicationSeeder
         panda_score_tournament = tournament.panda_score_tournament
         panda_score_teams = panda_score_tournament.panda_score_teams
         panda_score_teams.each do |ps_team|
-          ModelUpsert::Team.new(ps_team: ps_team, tournament: tournament).call
+          ModelUpsert::Team.call(ps_team: ps_team, tournament: tournament)
         end
       end
     end
@@ -77,7 +77,7 @@ module ApplicationSeeder
         panda_score_tournament = tournament.panda_score_tournament
         panda_score_matches = panda_score_tournament.panda_score_matches
         panda_score_matches.each do |ps_match|
-          ModelUpsert::Match.new(ps_match).call
+          ModelUpsert::Match.call(ps_match)
         end
       end
     end
@@ -87,7 +87,7 @@ module ApplicationSeeder
         panda_score_match = match.panda_score_match
         panda_score_games = panda_score_match.panda_score_games
         panda_score_games.each do |ps_game|
-          ModelUpsert::Game.new(ps_game).call
+          ModelUpsert::Game.call(ps_game)
         end
       end
     end

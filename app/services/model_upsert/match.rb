@@ -1,5 +1,9 @@
 module ModelUpsert
   class Match
+    def self.call(panda_score_match)
+      new(panda_score_match).call
+    end
+    
     def initialize(panda_score_match)
       @panda_score_match = panda_score_match
     end

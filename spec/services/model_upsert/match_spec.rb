@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe ModelUpsert::Match do
-  describe "#call" do
+  describe ".call" do
     context "when the match does not exist" do
       it "creates a match" do
         panda_score_match = create(:panda_score_match, data: { "end_at" => Time.now })
@@ -15,7 +15,7 @@ RSpec.describe ModelUpsert::Match do
         allow(panda_score_match).to receive(:opponent1).and_return(team1)
         allow(panda_score_match).to receive(:opponent2).and_return(team2)
         
-        expect { described_class.new(panda_score_match).call }.to change { Match.count }.by(1)
+        expect { described_class.call(panda_score_match) }.to change { Match.count }.by(1)
       end
     end
 
@@ -32,7 +32,7 @@ RSpec.describe ModelUpsert::Match do
 
         create(:match, panda_score_id: panda_score_match.panda_score_id)
 
-        expect { described_class.new(panda_score_match).call }.not_to change { Match.count }
+        expect { described_class.call(panda_score_match) }.not_to change { Match.count }
       end
     end
 
@@ -47,7 +47,7 @@ RSpec.describe ModelUpsert::Match do
         allow(panda_score_match).to receive(:opponent1).and_return(team1)
         allow(panda_score_match).to receive(:opponent2).and_return(team2)
 
-        expect { described_class.new(panda_score_match).call }.not_to change { Match.count }
+        expect { described_class.call(panda_score_match) }.not_to change { Match.count }
       end
     end
 
@@ -62,7 +62,7 @@ RSpec.describe ModelUpsert::Match do
         allow(panda_score_match).to receive(:opponent1).and_return(team1)
         allow(panda_score_match).to receive(:opponent2).and_return(team2)
         
-        expect { described_class.new(panda_score_match).call }.not_to change { Match.count }
+        expect { described_class.call(panda_score_match) }.not_to change { Match.count }
       end
     end
 
@@ -79,7 +79,7 @@ RSpec.describe ModelUpsert::Match do
       allow(panda_score_match).to receive(:opponent1).and_return(team1)
       allow(panda_score_match).to receive(:opponent2).and_return(team2)
 
-      described_class.new(panda_score_match).call
+      described_class.call(panda_score_match)
       
       match = Match.last
 

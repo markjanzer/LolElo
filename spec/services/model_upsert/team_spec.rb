@@ -10,7 +10,7 @@ RSpec.describe ModelUpsert::Team do
         panda_score_team = create(:panda_score_team, data: { "acronym" => "C9" })
         tournament = create(:tournament)
         
-        expect { described_class.new(ps_team: panda_score_team, tournament:).call }.to change { Team.count }.by(1)
+        expect { described_class.call(ps_team: panda_score_team, tournament:) }.to change { Team.count }.by(1)
       end
     end
 
@@ -19,9 +19,9 @@ RSpec.describe ModelUpsert::Team do
         panda_score_team = create(:panda_score_team, data: { "acronym" => "C9" })
         tournament = create(:tournament)
 
-        _team = create(:team, panda_score_id: panda_score_team.panda_score_id)
+        create(:team, panda_score_id: panda_score_team.panda_score_id)
 
-        expect { described_class.new(ps_team: panda_score_team, tournament:).call }.not_to change { Team.count }
+        expect { described_class.call(ps_team: panda_score_team, tournament:) }.not_to change { Team.count }
       end
 
       it "does not change the team's color" do
@@ -30,7 +30,7 @@ RSpec.describe ModelUpsert::Team do
 
         team = create(:team, panda_score_id: panda_score_team.panda_score_id, color: "red")
 
-        expect { described_class.new(ps_team: panda_score_team, tournament:).call }.not_to change { team.reload.color }
+        expect { described_class.call(ps_team: panda_score_team, tournament:) }.not_to change { team.reload.color }
       end
     end
 
@@ -42,20 +42,15 @@ RSpec.describe ModelUpsert::Team do
         "tournament_id" => tournament.panda_score_id
       })
 
-      instance = described_class.new(ps_team: panda_score_team, tournament:)
-
-      allow(instance).to receive(:unique_team_color).and_return("red")
-
-      instance.call
-      
-      team = Team.last
+      described_class.call(ps_team: panda_score_team, tournament:)
+      team = Team.find_by(panda_score_id: panda_score_team.panda_score_id)
 
       expect(team).to have_attributes(
         panda_score_id: panda_score_team.panda_score_id,
         name: panda_score_team.data["name"],
         acronym: panda_score_team.data["acronym"],
-        color: "red"
       )
+      expect(Team::UNIQUE_COLORS).to include(team.color)
     end
 
     it "assigns the team to the tournament" do
@@ -64,14 +59,14 @@ RSpec.describe ModelUpsert::Team do
 
       team = create(:team, panda_score_id: panda_score_team.panda_score_id)
 
-      expect { described_class.new(ps_team: panda_score_team, tournament:).call }.to change { TeamsTournament.count }.by(1)
+      expect { described_class.call(ps_team: panda_score_team, tournament:) }.to change { TeamsTournament.count }.by(1)
       expect(team.reload.tournaments).to include(tournament)
     end
 
     it "assigns a unique team color as long as there are unique colors available" do
       tournament = create(:tournament)
       Team::UNIQUE_COLORS.length.times do 
-        described_class.new(ps_team: create(:panda_score_team , data: { "acronym" => "C9" }), tournament: tournament).call
+        described_class.call(ps_team: create(:panda_score_team , data: { "acronym" => "C9" }), tournament: tournament)
       end
 
       expect(tournament.teams.pluck(:color)).to match_array(Team::UNIQUE_COLORS)
@@ -81,15 +76,11 @@ RSpec.describe ModelUpsert::Team do
       it "chooses a random color" do
         tournament = create(:tournament)
         Team::UNIQUE_COLORS.length.times do 
-          described_class.new(ps_team: create(:panda_score_team, data: { "acronym" => "C9" }), tournament: tournament).call
+          described_class.call(ps_team: create(:panda_score_team, data: { "acronym" => "C9" }), tournament: tournament)
         end
 
         panda_score_team = create(:panda_score_team, data: { "acronym" => "CLG" })
-        last_instance = described_class.new(ps_team: panda_score_team, tournament: tournament)
-
-        expect(last_instance.send(:remaining_colors)).to be_empty
-
-        last_instance.call
+        described_class.call(ps_team: panda_score_team, tournament: tournament)
         last_team = Team.find_by(panda_score_id: panda_score_team.panda_score_id)
 
         expect(Team::UNIQUE_COLORS).to include(last_team.color)

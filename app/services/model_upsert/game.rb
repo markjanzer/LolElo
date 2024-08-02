@@ -1,5 +1,9 @@
 module ModelUpsert
   class Game
+    def self.call(panda_score_game)
+      new(panda_score_game).call
+    end
+    
     def initialize(panda_score_game)
       @panda_score_game = panda_score_game
     end
@@ -35,7 +39,7 @@ module ModelUpsert
     def transform_data(attributes)
       return attributes if attributes[:end_at].present?
 
-      raise if data["begin_at"].nil? || data["length"].nil?
+      raise "no end_at, begin_at, or length" if data["begin_at"].nil? || data["length"].nil?
 
       attributes[:end_at] = DateTime.parse(data["begin_at"]) + data["length"].seconds
       attributes
