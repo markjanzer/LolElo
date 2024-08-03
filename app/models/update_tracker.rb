@@ -1,13 +1,25 @@
 class UpdateTracker < ApplicationRecord
-  def self.record_update
-    create(completed_at: Time.current)
+  enum update_type: { api: "api", model: "model" }, _prefix: true
+  
+  def self.record_api_update
+    create(completed_at: Time.current, update_type: :api)
   end
 
-  def self.last_run_time
-    order(completed_at: :desc).first&.completed_at || Time.at(0)
+  def self.record_model_update
+    create(completed_at: Time.current, update_type: :model)
   end
 
-  def self.second_to_last_run_time
-    order(completed_at: :desc).second&.completed_at || Time.at(0)
+  def self.last_api_update
+    where(update_type: :api)
+      .where.not(completed_at: nil)
+      .order(completed_at: :desc)
+      .first&.completed_at || Time.at(0)
+  end
+
+  def self.last_model_update
+    where(update_type: :model)
+      .where.not(completed_at: nil)
+      .order(completed_at: :desc)
+      .first&.completed_at || Time.at(0)
   end
 end

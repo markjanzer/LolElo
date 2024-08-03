@@ -19,15 +19,14 @@ module ModelUpsert
           league: panda_score_serie.league
         )
     end
-
     
     private
     
     attr_reader :panda_score_serie
 
-    # This is copies from Serie.rb, ideally that one goes away
+    # This is probably wrong, didn't LEC just have a winter split?
     def valid_serie?
-      # This is probably wrong, didn't LEC just have a winter split?
+      raise "no full_name" unless panda_score_serie.data['full_name'].present?
       panda_score_serie.data['full_name'].split.first.match?('Spring|Summer')
     end
   end

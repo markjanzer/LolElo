@@ -19,7 +19,7 @@ class Updater
   end
 
   def self.time_to_compare_against
-    UpdateTracker.last_run_time - BUFFER
+    UpdateTracker.last_api_update - BUFFER
   end
 
   def call
@@ -44,7 +44,7 @@ class Updater
         ps_match.create_or_update_games
       end
 
-      UpdateTracker.record_update
+      UpdateTracker.record_api_update
     end
   end
 

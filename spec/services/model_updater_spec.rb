@@ -87,18 +87,23 @@ RSpec.describe ModelUpdater do
     end
 
     it "does not update models that have not been updated since the last run" do
-      create(:update_tracker, completed_at: 2.days.ago)
-      create(:update_tracker, completed_at: 1.hour.ago)
+      create(:update_tracker, update_type: :model, completed_at: 2.days.ago)
 
       league_id = 1
       create(:league, panda_score_id: league_id)
       create(:panda_score_serie, updated_at: 3.days.ago, data: {
+        full_name: "Spring Split",
         league_id: league_id
       })
 
       expect(Serie.count).to eq(0)
       ModelUpdater.call
       expect(Serie.count).to eq(0)
+    end
+
+    it "creates a new UpdateTracker record" do
+      expect { ModelUpdater.call }.to change { UpdateTracker.count }.by(1)
+      expect(UpdateTracker.last.update_type).to eq("model")
     end
   end
 end
