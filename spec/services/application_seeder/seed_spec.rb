@@ -39,8 +39,10 @@ RSpec.describe ApplicationSeeder::Seed do
         { league_id: 1, time_zone: "America/Los_Angeles" },
       ]
 
-      expect(ApplicationSeeder::UpsertLeague).to receive(:call).with(
-        panda_score_id: 1,
+      ps_league = create(:panda_score_league, panda_score_id: 1)
+
+      expect(ModelUpsert::League).to receive(:call).with(
+        panda_score_league: ps_league,
         time_zone: "America/Los_Angeles"
       )
 

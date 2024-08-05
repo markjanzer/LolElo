@@ -154,6 +154,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_02_235647) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "update_type", default: "api", null: false
+    t.datetime "model_update_completed_at"
     t.index ["update_type"], name: "index_update_trackers_on_update_type"
   end
 

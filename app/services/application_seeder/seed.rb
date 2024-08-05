@@ -14,7 +14,7 @@ module ApplicationSeeder
       create_all_teams(Tournament.all)
       create_all_matches(Tournament.all)
       create_all_games(Match.all)
-      UpdateTracker.record_update
+      UpdateTracker.record_model_update
     end
 
     def reset
@@ -34,8 +34,9 @@ module ApplicationSeeder
 
     def create_leagues(seed_data)
       seed_data.each do |data|
-        ApplicationSeeder::UpsertLeague.call(
-          panda_score_id: data[:league_id],
+        ps_league = PandaScore::League.find_by(panda_score_id: data[:league_id])
+        ModelUpsert::League.call(
+          panda_score_league: ps_league,
           time_zone: data[:time_zone]
         )
       end
