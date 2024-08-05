@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# Needed for when I want to run individual specs...
 require 'rails_helper'
 
 RSpec.describe ModelUpsert::Tournament do
