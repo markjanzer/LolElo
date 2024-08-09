@@ -38,7 +38,7 @@ class PandaScoreAPI
   end
 
   def self.matches(tournament_id:)
-    request(path: LOL_PATH + "matches", params: { "filter[tournament_id]": tournament_id })
+    request(path: LOL_PATH + "matches/past", params: { "filter[tournament_id]": tournament_id })
   end
 
   def self.games(match_id:)
