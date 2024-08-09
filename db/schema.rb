@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_08_09_180918) do
+ActiveRecord::Schema[7.0].define(version: 2024_08_09_221700) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -154,7 +154,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_09_180918) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "update_type", default: "api", null: false
-    t.datetime "model_update_completed_at"
     t.index ["update_type"], name: "index_update_trackers_on_update_type"
   end
 
