@@ -9,7 +9,7 @@ module ModelUpsert
     end
 
     def call
-      return unless valid_serie?
+      return if excluded_serie?
 
       ::Serie.find_or_initialize_by(panda_score_id: panda_score_serie.panda_score_id)
         .update!(
@@ -24,10 +24,11 @@ module ModelUpsert
     
     attr_reader :panda_score_serie
 
-    # This is probably wrong, didn't LEC just have a winter split?
-    def valid_serie?
-      raise "no full_name" unless panda_score_serie.data['full_name'].present?
-      panda_score_serie.data['full_name'].split.first.match?('Spring|Summer')
+    # LPL All-Star 2019 and LPL Online Scrims League Spring 2020
+    EXCLUDED_SERIE_IDS = [2299, 2516]
+
+    def excluded_serie?
+      EXCLUDED_SERIE_IDS.include?(panda_score_serie.panda_score_id)
     end
   end
 end

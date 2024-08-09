@@ -10,6 +10,9 @@ module ModelUpsert
     end
 
     def call
+      raise "No team" if ps_team.nil?
+      raise "No tournament" if tournament.nil?
+
       team = ::Team.find_or_initialize_by(panda_score_id: ps_team.panda_score_id)
 
       if team.color.nil?

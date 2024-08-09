@@ -2,10 +2,10 @@
 
 class Serie < ApplicationRecord
   belongs_to :league
-  has_many :tournaments
+  has_many :tournaments, dependent: :destroy
   has_many :teams, -> { distinct }, through: :tournaments
   has_many :matches, through: :tournaments
-  has_many :snapshots
+  has_many :snapshots, dependent: :destroy
 
   def panda_score_serie
     PandaScore::Serie.find_by(panda_score_id: panda_score_id)

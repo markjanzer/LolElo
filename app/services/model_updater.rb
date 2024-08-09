@@ -7,7 +7,7 @@ class ModelUpdater
     end
 
     PandaScore::Tournament.where("updated_at > ?", last_model_update).each do |ps_tournament|
-      ModelUpsert::Tournament.call(ps_tournament)
+      next unless ModelUpsert::Tournament.call(ps_tournament)
 
       tournament = ps_tournament.tournament
       ps_tournament.panda_score_teams.each do |ps_team|

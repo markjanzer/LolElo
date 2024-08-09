@@ -9,7 +9,7 @@ module ModelUpsert
     end
 
     def call
-      return if forfeit?
+      return if filter?
 
       attributes = {
         end_at: data["end_at"],
@@ -31,17 +31,27 @@ module ModelUpsert
       panda_score_game.data
     end
     
-    def forfeit?
-      panda_score_game.data["forfeit"]
+    def filter?
+      panda_score_game.data["forfeit"] || panda_score_game.data["status"] == "not_started"
     end
 
     # There is at least one game (ps_id: 149787) without an end_at that wasn't forfeited.
     def transform_data(attributes)
       return attributes if attributes[:end_at].present?
 
-      raise "no end_at, begin_at, or length" if data["begin_at"].nil? || data["length"].nil?
+      # Not sure if we want to have a game end at be the same time as a tournament. 
+      if data["begin_at"] && data["length"]
+        attributes[:end_at] = DateTime.parse(data["begin_at"]) + data["length"].seconds
+      elsif panda_score_game.panda_score_match.data["end_at"]
+        raise "do we really need to do this? panda_score_game.panda_score_id: #{panda_score_game.panda_score_id}"
+        # attributes[:end_at] = panda_score_game.panda_score_match.data["end_at"]
+      elsif panda_score_game.panda_score_match.panda_score_tournament.data["end_at"]
+        raise "do we really need to do this? panda_score_game.panda_score_id: #{panda_score_game.panda_score_id}"
+        # attributes[:end_at] = panda_score_game.panda_score_match.panda_score_tournament.data["end_at"]
+      else
+        raise "no end_at, begin_at, length, match end_at, or tournament end_at for game with panda_score_id: #{panda_score_game.panda_score_id}"
+      end 
 
-      attributes[:end_at] = DateTime.parse(data["begin_at"]) + data["length"].seconds
       attributes
     end
   end

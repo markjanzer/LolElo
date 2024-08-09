@@ -14,6 +14,10 @@ class PandaScore::Match < ApplicationRecord
     Tournament.find_by(panda_score_id: data["tournament_id"])
   end
 
+  def panda_score_tournament
+    PandaScore::Tournament.find_by(panda_score_id: data["tournament_id"])
+  end
+
   def opponent1
     Team.find_by(panda_score_id: opponent_id(0))
   end

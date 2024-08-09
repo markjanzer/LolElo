@@ -9,8 +9,6 @@ RSpec.describe ModelUpsert::Game do
         panda_score_game = create(:panda_score_game, data: {
           end_at: DateTime.now
         })
-        match = create(:match)
-        allow(panda_score_game).to receive(:match).and_return(match)
 
         team1 = create(:team)
         allow(panda_score_game).to receive(:winner).and_return(team1)
@@ -24,8 +22,6 @@ RSpec.describe ModelUpsert::Game do
         panda_score_game = create(:panda_score_game, data: {
           end_at: DateTime.now
         })
-        match = create(:match)
-        allow(panda_score_game).to receive(:match).and_return(match)
 
         team1 = create(:team)
         allow(panda_score_game).to receive(:winner).and_return(team1)
@@ -42,8 +38,22 @@ RSpec.describe ModelUpsert::Game do
           end_at: DateTime.now,
           forfeit: true
         })
-        match = create(:match)
-        allow(panda_score_game).to receive(:match).and_return(match)
+
+        team1 = create(:team)
+        allow(panda_score_game).to receive(:winner).and_return(team1)
+
+        create(:game, panda_score_id: panda_score_game.panda_score_id)
+
+        expect { described_class.call(panda_score_game) }.not_to change { Game.count }
+      end
+    end
+
+    context "when the game has not started" do
+      it "does not create the game" do
+        panda_score_game = create(:panda_score_game, data: {
+          end_at: DateTime.now,
+          status: "not_started"
+        })
 
         team1 = create(:team)
         allow(panda_score_game).to receive(:winner).and_return(team1)
@@ -61,8 +71,6 @@ RSpec.describe ModelUpsert::Game do
           "begin_at"=> DateTime.parse("2020-01-01 00:00:00 UTC"),
           "length"=> 1200
         })
-        match = create(:match)
-        allow(panda_score_game).to receive(:match).and_return(match)
 
         team1 = create(:team)
         allow(panda_score_game).to receive(:winner).and_return(team1)
@@ -72,6 +80,29 @@ RSpec.describe ModelUpsert::Game do
         game = Game.last
 
         expect(game.end_at).to eq(DateTime.parse("2020-01-01 00:20:00 UTC"))
+      end
+      
+      xcontext "the game has no begin_at and length" do
+        it "uses the match end_at value" do
+          panda_score_game = create(:panda_score_game, data: {
+            "end_at"=> nil
+          })
+          
+          match_end_at = DateTime.parse("2020-01-01 00:00:00 UTC")
+          panda_score_match = create(:panda_score_match, data: {
+            "end_at"=> match_end_at
+          })
+          allow(panda_score_game).to receive(:panda_score_match).and_return(panda_score_match)
+
+          team1 = create(:team)
+          allow(panda_score_game).to receive(:winner).and_return(team1)
+
+          described_class.call(panda_score_game)
+
+          game = Game.last
+
+          expect(game.end_at).to eq(match_end_at)
+        end
       end
     end
 

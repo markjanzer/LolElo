@@ -18,6 +18,10 @@ class PandaScore::Tournament < ApplicationRecord
     Serie.find_by(panda_score_id: data['serie_id'])
   end
 
+  def panda_score_serie
+    PandaScore::Serie.find_by(panda_score_id: data['serie_id'])
+  end
+
   def panda_score_teams
     team_ids = data["teams"].map { |team| team["id"] }
     PandaScore::Team.where(panda_score_id: team_ids)

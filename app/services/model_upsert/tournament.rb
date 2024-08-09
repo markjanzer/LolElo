@@ -9,7 +9,7 @@ module ModelUpsert
     end
 
     def call
-      return if reject?
+      return false if reject?
 
       ::Tournament
         .find_or_initialize_by(panda_score_id: panda_score_tournament.panda_score_id)

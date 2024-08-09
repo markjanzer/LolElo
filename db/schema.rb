@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_08_02_235647) do
+ActiveRecord::Schema[7.0].define(version: 2024_08_09_180918) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -158,5 +158,12 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_02_235647) do
     t.index ["update_type"], name: "index_update_trackers_on_update_type"
   end
 
+  add_foreign_key "games", "matches", on_delete: :cascade
+  add_foreign_key "matches", "tournaments", on_delete: :cascade
+  add_foreign_key "series", "leagues", on_delete: :cascade
   add_foreign_key "snapshots", "series", column: "serie_id"
+  add_foreign_key "snapshots", "teams", on_delete: :cascade
+  add_foreign_key "teams_tournaments", "teams", on_delete: :cascade
+  add_foreign_key "teams_tournaments", "tournaments", on_delete: :cascade
+  add_foreign_key "tournaments", "series", column: "serie_id", on_delete: :cascade
 end
