@@ -9,6 +9,7 @@ module ModelUpsert
     end
 
     def call
+      return false if panda_score_tournament.serie.nil?
       return false if reject?
 
       ::Tournament

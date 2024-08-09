@@ -9,6 +9,7 @@ module ModelUpsert
     end
 
     def call
+      return false if panda_score_game.match.nil? || panda_score_game.winner.nil?
       return if filter?
 
       attributes = {

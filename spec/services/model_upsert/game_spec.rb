@@ -12,12 +12,14 @@ RSpec.describe ModelUpsert::Game do
 
         team1 = create(:team)
         allow(panda_score_game).to receive(:winner).and_return(team1)
+        match = create(:match)
+        allow(panda_score_game).to receive(:match).and_return(match)
         
         expect { described_class.call(panda_score_game) }.to change { Game.count }.by(1)
       end
     end
 
-    context "when the game does exist" do
+    context "when the game already exists" do
       it "does not create a new game" do
         panda_score_game = create(:panda_score_game, data: {
           end_at: DateTime.now
@@ -41,8 +43,22 @@ RSpec.describe ModelUpsert::Game do
 
         team1 = create(:team)
         allow(panda_score_game).to receive(:winner).and_return(team1)
+        match = create(:match)
+        allow(panda_score_game).to receive(:match).and_return(match)
 
-        create(:game, panda_score_id: panda_score_game.panda_score_id)
+        expect { described_class.call(panda_score_game) }.not_to change { Game.count }
+      end
+    end
+
+    context "when there is no match" do
+      it "does not create the game" do
+        panda_score_game = create(:panda_score_game, data: {
+          end_at: DateTime.now
+        })
+
+        team1 = create(:team)
+        allow(panda_score_game).to receive(:winner).and_return(team1)
+        allow(panda_score_game).to receive(:match).and_return(nil)
 
         expect { described_class.call(panda_score_game) }.not_to change { Game.count }
       end
@@ -57,6 +73,8 @@ RSpec.describe ModelUpsert::Game do
 
         team1 = create(:team)
         allow(panda_score_game).to receive(:winner).and_return(team1)
+        match = create(:match)
+        allow(panda_score_game).to receive(:match).and_return(match)
 
         create(:game, panda_score_id: panda_score_game.panda_score_id)
 
@@ -74,6 +92,8 @@ RSpec.describe ModelUpsert::Game do
 
         team1 = create(:team)
         allow(panda_score_game).to receive(:winner).and_return(team1)
+        match = create(:match)
+        allow(panda_score_game).to receive(:match).and_return(match)
 
         described_class.call(panda_score_game)
 
@@ -96,6 +116,8 @@ RSpec.describe ModelUpsert::Game do
 
           team1 = create(:team)
           allow(panda_score_game).to receive(:winner).and_return(team1)
+          match = create(:match)
+          allow(panda_score_game).to receive(:match).and_return(match)
 
           described_class.call(panda_score_game)
 

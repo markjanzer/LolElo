@@ -9,6 +9,7 @@ module ModelUpsert
     end
 
     def call
+      return false if panda_score_match.tournament.nil? || panda_score_match.opponent1.nil? || panda_score_match.opponent2.nil?
       return if reject?
 
       ::Match.find_or_initialize_by(panda_score_id: panda_score_match.panda_score_id)

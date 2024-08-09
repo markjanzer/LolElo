@@ -37,6 +37,30 @@ RSpec.describe ModelUpsert::Tournament do
         expect { described_class.new(panda_score_tournament1).call }.not_to change { Tournament.count }
         expect { described_class.new(panda_score_tournament2).call }.not_to change { Tournament.count }
       end
+
+      it "returns false" do
+        panda_score_tournament = create(:panda_score_tournament, data: { "name" => "Promotion" })
+        serie = create(:serie)
+        allow(panda_score_tournament).to receive(:serie).and_return(serie)
+
+        expect { described_class.new(panda_score_tournament).call }.not_to change { Tournament.count }
+      end
+    end
+    
+    context "when the serie does not exist" do
+      it "does not create the tournament" do
+        panda_score_tournament = create(:panda_score_tournament)
+        allow(panda_score_tournament).to receive(:serie).and_return(nil)
+
+        expect { described_class.call(panda_score_tournament) }.not_to change { Tournament.count }
+      end
+
+      it "returns false" do
+        panda_score_tournament = create(:panda_score_tournament)
+        allow(panda_score_tournament).to receive(:serie).and_return(nil)
+
+        expect(described_class.call(panda_score_tournament)).to eq(false)
+      end
     end
 
     it "sets the tournament with correct attributes" do

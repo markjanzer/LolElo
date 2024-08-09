@@ -66,6 +66,20 @@ RSpec.describe ModelUpsert::Match do
       end
     end
 
+    context "when there is no tournament" do
+      it "does not create a new match" do
+        panda_score_match = create(:panda_score_match)
+        allow(panda_score_match).to receive(:tournament).and_return(nil)
+
+        team1 = create(:team)
+        team2 = create(:team)
+        allow(panda_score_match).to receive(:opponent1).and_return(team1)
+        allow(panda_score_match).to receive(:opponent2).and_return(team2)
+        
+        expect { described_class.call(panda_score_match) }.not_to change { Match.count }
+      end
+    end
+
     it "sets the match with correct attributes" do
       tournament = create(:tournament)
       panda_score_match = create(:panda_score_match, data: {
