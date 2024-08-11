@@ -44,5 +44,24 @@ RSpec.describe PandaScore::Serie do
       expect_any_instance_of(PandaScore::Tournament).to receive(:create_panda_score_teams)
       ps_serie.create_tournaments
     end
+
+    context "PandaScore tournament already exists, but belonging to a different serie" do
+      it "updates the tournament data" do
+        ps_serie1, ps_serie2 = create_list(:panda_score_serie, 2)
+        ps_tournament_id = 3
+        existing_tournament_data = { "id"=>ps_tournament_id, "serie_id"=>ps_serie1.panda_score_id, "teams"=>[] }
+        new_tournament_data = { "id"=>ps_tournament_id, "serie_id"=>ps_serie2.panda_score_id, "teams"=>[] }
+
+        ps_tournament = create(:panda_score_tournament, panda_score_id: ps_tournament_id, data: existing_tournament_data)
+        allow(PandaScoreAPI).to receive(:tournaments)
+          .with(serie_id: ps_serie2.panda_score_id)
+          .and_return([new_tournament_data])
+
+        expect { ps_serie2.create_tournaments }
+          .to change { ps_tournament.reload.data }
+          .from(existing_tournament_data)
+          .to(new_tournament_data)
+      end
+    end
   end
 end

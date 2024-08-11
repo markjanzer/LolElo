@@ -49,21 +49,23 @@ class Updater
   end
 
   def unfinished_series
-    PandaScore::Serie
-      .where("(data ->> 'end_at')::timestamp >= ?", time_to_update_from)
+    PandaScore::Serie.where(
+      "(data ->> 'end_at')::timestamp >= :time OR updated_at > :time",
+      time: time_to_update_from
+    )
   end
 
   def unfinished_tournaments
-    PandaScore::Tournament
-      .where("(data ->> 'end_at')::timestamp >= ?", time_to_update_from)
+    PandaScore::Tournament.where(
+      "(data ->> 'end_at')::timestamp >= :time OR updated_at > :time",
+      time: time_to_update_from
+    )
   end
 
   def unfinished_matches
-    PandaScore::Match
-      .where("data ->> 'end_at' IS NULL")
-      .where("data ->> 'status' = 'running' 
-        OR data ->> 'status' = 'not_started'
-        AND (data ->> 'scheduled_at')::timestamp < NOW()
-        AND (data ->> 'scheduled_at')::timestamp >= ?", time_to_update_from)
+    PandaScore::Match.where(
+      "(data ->> 'end_at')::timestamp >= :time OR updated_at > :time",
+      time: time_to_update_from
+    )
   end
 end
