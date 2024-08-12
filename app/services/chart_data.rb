@@ -51,7 +51,7 @@ class ChartData
     start = { name: "Start of #{serie.full_name}" }
 
     teams.each do |team|
-      start[team.acronym] = elo_at(team: team, datetime: serie.unofficial_begin_at)
+      start[team.acronym] = elo_before(team: team, datetime: serie.unofficial_begin_at)
     end
 
     result << start
