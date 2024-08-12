@@ -1,2 +1,2 @@
 snapshot = Snapshot.find(74080)
-snapshot.update!(datetime: snapshot.serie.unofficial_begin_at - 1.hour)
+snapshot.update!(datetime: snapshot.serie.earliest_game_end - 1.hour)

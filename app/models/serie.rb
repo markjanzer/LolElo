@@ -22,18 +22,18 @@ class Serie < ApplicationRecord
         JOIN teams_tournaments ON teams_tournaments.tournament_id = tournaments.id
         JOIN teams ON teams_tournaments.team_id = teams.id
         JOIN snapshots ON snapshots.team_id = teams.id
-        WHERE series.id = :serie_id AND snapshots.datetime < :unofficial_begin_at
+        WHERE series.id = :serie_id AND snapshots.datetime < :earliest_game_end
       )
       SELECT *
       FROM ranked_snapshots
       WHERE rn = 1;
     SQL
   
-    Snapshot.find_by_sql([sql, { serie_id: id, unofficial_begin_at: unofficial_begin_at }])
+    Snapshot.find_by_sql([sql, { serie_id: id, earliest_game_end: earliest_game_end }])
   end
 
   # We should have the serie begin_at as a backup right?
-  def unofficial_begin_at
+  def earliest_game_end
     Game.joins(match: { tournament: :serie })
       .where(series: { id: id })
       .minimum(:end_at)
