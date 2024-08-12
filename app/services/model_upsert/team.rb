@@ -12,6 +12,7 @@ module ModelUpsert
     def call
       raise "No team" if ps_team.nil?
       raise "No tournament" if tournament.nil?
+      return if filter?
 
       team = ::Team.find_or_initialize_by(panda_score_id: ps_team.panda_score_id)
 
@@ -33,6 +34,14 @@ module ModelUpsert
     private
 
     attr_reader :ps_team, :tournament
+
+    # We are not using the QG Reapers team, PandaScoreAPI has no games for them.
+    FILTERED_TEAM_IDS = [1541]
+
+    def filter?
+      return true if FILTERED_TEAM_IDS.include?(ps_team.panda_score_id)
+      false
+    end
   
     def remaining_colors
       (::Team::UNIQUE_COLORS - taken_colors)

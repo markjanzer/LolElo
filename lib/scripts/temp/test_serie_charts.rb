@@ -3,7 +3,7 @@ require_relative '../../../config/environment'
 def test
   series_without_matches = []
   series_that_break = []
-  number_of_serie = PandaScore::Serie.count
+  number_of_serie = Serie.count
 
   Serie.all.each_with_index do |serie, index|
     puts "Processing serie #{serie.id} (#{index + 1}/#{number_of_serie})"

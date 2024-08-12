@@ -51,7 +51,7 @@ class ChartData
     start = { name: "Start of #{serie.full_name}" }
 
     teams.each do |team|
-      start[team.acronym] = elo_at(team: team, datetime: serie.begin_at)
+      start[team.acronym] = elo_at(team: team, datetime: serie.unofficial_begin_at)
     end
 
     result << start
@@ -82,6 +82,7 @@ class ChartData
     opponent1_initial_elo = elo_before(team: opponent1, datetime: first_game_end_at)
     opponent2_initial_elo = elo_before(team: opponent2, datetime: first_game_end_at)
 
+    # I could do last_game.snapshots here instead of a query
     opponent1_final_elo = elo_after(team: opponent1, datetime: last_game_end_at)
     opponent2_final_elo = elo_after(team: opponent2, datetime: last_game_end_at)
 
@@ -90,7 +91,9 @@ class ChartData
 
     opponent1_score = 0
     opponent2_score = 0
-    results = games.each { |game| game.winner_id == opponent1.id ? opponent1_score += 1 : opponent2_score += 1 }
+    games.each do |game| 
+      game.winner_id == opponent1.id ? opponent1_score += 1 : opponent2_score += 1
+    end
 
     victor = opponent1_score > opponent2_score ? opponent1 : opponent2
 
@@ -139,8 +142,10 @@ class ChartData
       else
         raise "comparison must be one of :at, :before, :after"
     end
-    
-    raise "No snapshot for team (id: #{team.id}) exists #{comparison.to_s} #{datetime}" if closest_snapshot.nil?
+
+    if closest_snapshot.nil?
+      raise "No snapshot for team (id: #{team.id}) exists #{comparison.to_s} #{datetime}"
+    end
 
     closest_snapshot.elo
   end
