@@ -1,26 +1,24 @@
-<div
-  class="container mx-auto mt-12"
->
+<div class="container mx-auto mt-12">
   <h1 class="text-5xl my-12 text-center">
     LoL Elo
   </h1>
   <ul class="flex max-w-4xl mx-auto">
-  <% @leagues.each do |league| %>
-    <li class="bg-core-purple-1 p-4 m-4 rounded-xl flex-grow">
-      <h2 class="text-3xl font-bold mb-2">
-        <%= league.name %></h2>
-      <ul>
-        <% league.series.order(begin_at: :desc).each do |serie| %>
-          <li
-            class="text-xl my-2"
-          >
-           <a 
-            href=<%= series_path(serie) %>
-            class="hover:underline active:text-core-green-41"
-          ><%= serie.full_name %></a>
-        <% end %>
-      </ul>
-    </li>
-  <% end %>
+    <% @leagues.each do |league| %>
+      <li class="bg-core-purple-1 p-4 m-4 rounded-xl flex-grow">
+        <h2 class="text-3xl font-bold mb-2 underline">
+          <%= league.name %></h2>
+        <ul>
+          <% league.series.order(begin_at: :desc).each do |serie| %>
+            <li
+              class="text-xl my-2"
+            >
+            <a 
+              href=<%= series_path(serie) %>
+              class="hover:underline active:text-core-green-41"
+            ><%= serie.full_name %></a>
+          <% end %>
+        </ul>
+      </li>
+    <% end %>
   </ul>
 </div>

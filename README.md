@@ -18,4 +18,4 @@ Run with
 ./bin/dev
 ```
 
-Might also be able to do `rails s` and `rails tailwindcss::watch` in a separate window.
+Might also be able to do `rails s` and `rails tailwindcss:watch` in a separate window.

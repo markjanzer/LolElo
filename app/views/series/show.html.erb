@@ -1,9 +1,13 @@
 <div
   class="container mx-auto mt-12"
 >
-  <h1 class="text-center text-5xl mb-8"
-    ><%= "#{@serie.league.name} #{@serie.full_name}" %>
-  </h1>
+  <div class="flex justify-between items-center mb-8">
+    <%= link_to "← Back", root_path, class: "underline underline-offset-4 px-4" %>
+    <h1 class="flex-grow text-center text-5xl">
+      <%= "#{@serie.league.name} #{@serie.full_name}" %>
+    </h1>
+    <%= link_to "← Back", root_path, class: "px-4 invisible" %>
+  </div>
 
   <div class="bg-core-purple-1 py-8 px-4 border-core-green-41 border-solid border-2 mb-4 rounded-md">
     <%= content_tag :div,
