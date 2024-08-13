@@ -14,18 +14,6 @@ RSpec.describe EloSnapshots::LeagueProcessor do
     let(:team1) { create(:team, name: "team1") }
     let(:team2) { create(:team, name: "team2") }
 
-=begin
-This spec file is testing some weird shit.
-It's stuff I wanted tested early, but I'm not really at risk of calculating elos
-out of order for two games in a match. Or at least I don't think so
-
-Here's what I want to test.
-For two separate games, it creates elos for each in the right order
-For series in separate years it creates reset elos for them
-It finds the first game without an elo and removes/recalculates elos after that point
-    From games as well as serie resets.
-=end
-
     context "if the league is not defined" do
       let(:league) { nil }
 

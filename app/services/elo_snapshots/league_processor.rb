@@ -1,6 +1,13 @@
 # frozen_string_literal: true
+# I would like to refactor this a little, pass it a league and a date
+# And if the date is nil then use create_snapshots_from
+# Also it should be callable as a class method
 module EloSnapshots
   class LeagueProcessor
+    def self.call(league)
+      new(league).call
+    end
+
     def initialize(league)
       @league = league
     end
