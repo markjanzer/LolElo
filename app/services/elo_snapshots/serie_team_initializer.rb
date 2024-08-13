@@ -31,11 +31,11 @@ module EloSnapshots
     end
 
     def create_new_team_elo
-      Snapshot.create!(team: team, elo: EloCalculator::NEW_TEAM_ELO, datetime: serie.begin_at, serie: serie, elo_reset: true)
+      Snapshot.create!(team: team, elo: EloCalculator::NEW_TEAM_ELO, datetime: serie.earliest_game_end, serie: serie, elo_reset: true)
     end
 
     def create_reverted_elo
-      Snapshot.create!(team: team, elo: reverted_elo, datetime: serie.begin_at, serie: serie, elo_reset: true)
+      Snapshot.create!(team: team, elo: reverted_elo, datetime: serie.earliest_game_end, serie: serie, elo_reset: true)
     end
 
     def reverted_elo

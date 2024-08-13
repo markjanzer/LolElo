@@ -7,6 +7,10 @@ class ChartData
   end
 
   def call
+    if matches_data.empty?
+      Rails.logger.warn "No matches found for serie #{serie.id}"
+    end
+    
     {
       data: elos_at_dates,
       teams: teams_json,
@@ -37,7 +41,6 @@ class ChartData
   end
 
   def matches_data
-    # Should I raise an error here if matches_data is empty?
     ordered_past_matches.includes(:games, :opponent1, :opponent2).map do |match|
       match_data(match)
     end

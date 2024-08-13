@@ -1,0 +1,1 @@
+Team.where(color: "#000000").update_all(color: "#ffffff")
