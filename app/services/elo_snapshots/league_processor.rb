@@ -4,16 +4,17 @@
 # Also it should be callable as a class method
 module EloSnapshots
   class LeagueProcessor
-    def self.call(league)
-      new(league).call
+    def self.call(league, create_snapshots_from=nil)
+      new(league, create_snapshots_from).call
     end
 
-    def initialize(league)
+    def initialize(league, create_snapshots_from=nil)
+      raise "league not defined" unless league
       @league = league
+      @create_snapshots_from = create_snapshots_from || first_game_without_snapshots(league)
     end
 
     def call
-      raise "league not defined" unless league
       return "No snapshots to create" unless create_snapshots_from
 
       Snapshot.transaction do
@@ -27,10 +28,10 @@ module EloSnapshots
 
     private
 
-    attr_reader :league
+    attr_reader :league, :create_snapshots_from
 
-    def create_snapshots_from
-      first_game_without_snapshots = ActiveRecord::Base.connection.execute(
+    def first_game_without_snapshots(league)
+      first_game = ActiveRecord::Base.connection.execute(
         <<-SQL
           SELECT games.end_at
           FROM games
@@ -47,7 +48,7 @@ module EloSnapshots
         SQL
       )
 
-      first_game_without_snapshots.first&.[]('end_at')
+      first_game.first&.[]('end_at')
     end
   end
 end

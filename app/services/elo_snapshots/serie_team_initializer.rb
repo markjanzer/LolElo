@@ -6,7 +6,7 @@ module EloSnapshots
     end
 
     def call
-      # If there is a snapshot for this team in the serie's season, do nothing
+      # This is assuming that all previous snapshots in the same league have been destroyed
       return if team.snapshots.where(serie: same_year_series).present?
 
       # If there is a snapshot for this team in the previous season, revert the elo

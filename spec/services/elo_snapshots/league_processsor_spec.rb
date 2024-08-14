@@ -89,11 +89,40 @@ RSpec.describe EloSnapshots::LeagueProcessor do
       end
     end
 
-    xcontext "when passed a datetime" do
+    context "when passed a datetime" do
       it "recalculates elos of games from that time forward" do
+        league, serie, team1, team2, match1 = create_match.values_at(:league, :serie, :team1, :team2, :match1)
+        game1_time, game2_time, game3_time = [Date.parse("2020-01-02") + 1.hour, Date.parse("2020-01-02") + 2.hours, Date.parse("2020-01-02") + 3.hours]
+        game1 = create(:game, match: match1, winner: team1, end_at: game1_time)
+        game2 = create(:game, match: match1, winner: team2, end_at: game2_time)
+        game3 = create(:game, match: match1, winner: team2, end_at: game3_time)
+        _game1_team1_snapshot = create(:snapshot, game: game1, datetime: game1_time, team: team1, serie: serie)
+        _game1_team2_snapshot = create(:snapshot, game: game1, datetime: game1_time, team: team2, serie: serie)
+        game2_team1_snapshot = create(:snapshot, game: game2, datetime: game2_time, team: team1, serie: serie)
+        game2_team2_snapshot = create(:snapshot, game: game2, datetime: game2_time, team: team2, serie: serie)
+        game3_team1_snapshot = create(:snapshot, game: game3, datetime: game3_time, team: team1, serie: serie)
+        game3_team2_snapshot = create(:snapshot, game: game3, datetime: game3_time, team: team2, serie: serie)
+        
+        expect { described_class.new(league, game2_time).call }.not_to change { Snapshot.count }
+
+        expect(Snapshot.find_by(id: game2_team1_snapshot.id)).to be_nil
+        expect(Snapshot.find_by(id: game2_team2_snapshot.id)).to be_nil
+        expect(Snapshot.find_by(id: game3_team1_snapshot.id)).to be_nil
+        expect(Snapshot.find_by(id: game3_team2_snapshot.id)).to be_nil
       end
 
       it "does not change snapshots from before that time" do
+        league, serie, team1, team2, match1 = create_match.values_at(:league, :serie, :team1, :team2, :match1)
+        game1_time, game2_time = [Date.parse("2020-01-02") + 1.hour, Date.parse("2020-01-02") + 2.hours]
+        game1 = create(:game, match: match1, winner: team1, end_at: game1_time)
+        _game2 = create(:game, match: match1, winner: team2, end_at: game2_time)
+        game1_team1_snapshot = create(:snapshot, game: game1, datetime: game1_time, team: team1, serie: serie)
+        game1_team2_snapshot = create(:snapshot, game: game1, datetime: game1_time, team: team1, serie: serie)
+
+        described_class.new(league, game2_time).call
+
+        expect(Snapshot.find_by(id: game1_team1_snapshot.id)).to be_present
+        expect(Snapshot.find_by(id: game1_team2_snapshot.id)).to be_present
       end
     end
 
