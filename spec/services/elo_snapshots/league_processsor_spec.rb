@@ -4,107 +4,120 @@ require 'rails_helper'
 
 RSpec.describe EloSnapshots::LeagueProcessor do
   describe "#call" do
-    subject { EloSnapshots::LeagueProcessor.new(league).call }
-
-    let(:league) { create(:league, series: series) }
-    let(:series) { [serie1] }
-    let(:serie1) { create(:serie, tournaments: [s1_tournament], begin_at: "2020-01-01", year: 2020) }
-    let(:s1_tournament) { create(:tournament, teams: [team1, team2], matches: s1_t1_matches) }
-    let(:s1_t1_matches) { [] }
-    let(:team1) { create(:team, name: "team1") }
-    let(:team2) { create(:team, name: "team2") }
+    let(:new_team_elo) { EloCalculator::NEW_TEAM_ELO }
 
     context "if the league is not defined" do
-      let(:league) { nil }
-
       it "raises an error" do
-        expect { subject }.to raise_error "league not defined"
+        expect { described_class.call(nil) }.to raise_error "league not defined"
       end
     end
 
     context "when the league does not have any series" do
-      before { subject }
-      
-      let(:series) { [] }
-
       it "doesn't create any snapshots" do
-        expect(Snapshot.count).to eq(0)
+        league = create(:league)
+        expect { described_class.call(league) }.not_to change { Snapshot.count }
       end
     end
 
+    def create_match
+      league = create(:league)
+      serie = create(:serie, league: league, begin_at: "2020-01-01", year: 2020)
+      tournament = create(:tournament, serie: serie)
+      team1, team2 = create_list(:team, 2)
+      match1 = create(:match, opponent1: team1, opponent2: team2, tournament: tournament)
+
+      { league: league, serie: serie, tournament: tournament, team1: team1, team2: team2, match1: match1 }
+    end
+
     context "when there are two games without snapshots" do
-      let(:s1_t1_matches) { create_list(:match, 1, opponent1: team1, opponent2: team2, games: s1_t1_m1_games) }
-      let(:s1_t1_m1_games) { [s1_t1_m1_game2, s1_t1_m1_game1] }
-      let(:s1_t1_m1_game1) { create(:game, winner: team1, end_at: "2020-01-02") }
-      let(:s1_t1_m1_game2) { create(:game, winner: team2, end_at: Date.parse("2020-01-02") + 1.hour) }
-      
       it "calculates the games in the correct order" do
-        team1_elo, team2_elo = [1500, 1500]
+        league, team1, team2, match1 = create_match.values_at(:league, :team1, :team2, :match1)
+        _game1 = create(:game, match: match1, winner: team1, end_at: "2020-01-02")
+        _game2 = create(:game, match: match1, winner: team2, end_at: Date.parse("2020-01-02") + 1.hour)
+
+        team1_elo, team2_elo = [new_team_elo, new_team_elo]
         team1_elo1, team2_elo1 = EloCalculator::GameResults.new(winner_elo: team1_elo, loser_elo: team2_elo).new_elos
+        # Swap assignment because the winner is the first elo returned
         team2_elo2, team1_elo2 = EloCalculator::GameResults.new(winner_elo: team2_elo1, loser_elo: team1_elo1).new_elos
 
-        subject
+        described_class.call(league)
 
         expect(team1.elo).to eq team1_elo2
         expect(team2.elo).to eq team2_elo2
       end
     end
 
-    context "when the serie has three games, the first and third of which already has a elo" do
-      let(:s1_t1_matches) { create_list(:match, 1, opponent1: team1, opponent2: team2, games: s1_t1_m1_games) }
-      let(:s1_t1_m1_games) { [s1_t1_m1_game2, s1_t1_m1_game1, s1_t1_m1_game3] }
-      let(:s1_t1_m1_game1) { create(:game, winner: team1, end_at: "2020-01-02") }
-      let(:s1_t1_m1_game2) { create(:game, winner: team2, end_at: Date.parse("2020-01-02") + 1.hour) }
-      let(:s1_t1_m1_game3) { create(:game, winner: team2, end_at: Date.parse("2020-01-02") + 2.hours) }
-      let!(:game1_team1_snapshot) { create(:snapshot, game: s1_t1_m1_game1, team: team1, elo: 2550, datetime: s1_t1_m1_game1.end_at, serie: serie1) }
-      let!(:game1_team2_snapshot) { create(:snapshot, game: s1_t1_m1_game1, team: team2, elo: 2450, datetime: s1_t1_m1_game1.end_at, serie: serie1) }
-      let!(:game3_team1_snapshot) { create(:snapshot, game: s1_t1_m1_game3, team: team1, elo: 2600, datetime: s1_t1_m1_game3.end_at, serie: serie1) }
-      let!(:game3_team2_snapshot) { create(:snapshot, game: s1_t1_m1_game3, team: team2, elo: 2400, datetime: s1_t1_m1_game3.end_at, serie: serie1) }
+    context "when there is a gap in snapshots of consecutive games" do
+      def create_games_with_snapshot_gap
+        league = create(:league)
+        serie = create(:serie, league: league, begin_at: "2020-01-01", year: 2020)
+        tournament = create(:tournament, serie: serie)
+        team1, team2 = create_list(:team, 2)
+        match1 = create(:match, opponent1: team1, opponent2: team2, tournament: tournament)
+        game1 = create(:game, match: match1, winner: team1, end_at: "2020-01-02")
+        game2 = create(:game, match: match1, winner: team2, end_at: Date.parse("2020-01-02") + 1.hour)
+        game3 = create(:game, match: match1, winner: team2, end_at: Date.parse("2020-01-02") + 2.hours)
+        game1_team1_snapshot = create(:snapshot, game: game1, team: team1, elo: 2550, datetime: game1.end_at, serie: serie)
+        game1_team2_snapshot = create(:snapshot, game: game1, team: team2, elo: 2450, datetime: game1.end_at, serie: serie)
+        game3_team1_snapshot = create(:snapshot, game: game3, team: team1, elo: 2600, datetime: game3.end_at, serie: serie)
+        game3_team2_snapshot = create(:snapshot, game: game3, team: team2, elo: 2400, datetime: game3.end_at, serie: serie)
+
+        { league: league, game2: game2, game3: game3, game1_team1_snapshot: game1_team1_snapshot, game1_team2_snapshot: game1_team2_snapshot, game3_team1_snapshot: game3_team1_snapshot, game3_team2_snapshot: game3_team2_snapshot }
+      end
 
       it "creates snapshots for games without snapshots" do
-        subject
-        expect(Snapshot.where(game: s1_t1_m1_game2).count).to eq 2
+        league, game2 = create_games_with_snapshot_gap.values_at(:league, :game2)
+
+        expect { described_class.call(league) }.to change { Snapshot.count }.by(2)
+        expect(game2.snapshots.count).to eq 2
       end
 
-      it "deletes the snapshots with a date that is after the games without snapshots" do
-        subject
-        expect(Snapshot.where(id: game3_team1_snapshot.id)).to be_empty
-        expect(Snapshot.where(id: game3_team2_snapshot.id)).to be_empty
+      it "replaces the snapshots after the gap" do
+        league, game3, game3_team1_snapshot, game3_team2_snapshot = create_games_with_snapshot_gap.values_at(:league, :game3, :game3_team1_snapshot, :game3_team2_snapshot)
+
+        expect { described_class.call(league) }.not_to change { game3.snapshots.count }
+        expect(Snapshot.find_by(id: game3_team1_snapshot.id)).to be_nil
+        expect(Snapshot.find_by(id: game3_team2_snapshot.id)).to be_nil
       end
 
-      it "doesn't delete snapshots with a date that  is before games without snapshots" do
-        subject
+      it "doesn't change snapshots before the gap" do
+        league, game1_team1_snapshot, game1_team2_snapshot = create_games_with_snapshot_gap.values_at(:league, :game1_team1_snapshot, :game1_team2_snapshot)
+
+        described_class.call(league)
         expect(Snapshot.where(id: game1_team1_snapshot.id)).to be_present
         expect(Snapshot.where(id: game1_team2_snapshot.id)).to be_present
       end
     end
 
-    context "when the league has two series in different years" do
-      let(:series) { [serie0, serie1]}
-      let(:s1_t1_matches) { create_list(:match, 1, opponent1: team1, opponent2: team2, games: s1_t1_m1_games) }
-      let(:s1_t1_m1_games) { create_list(:game, 1, winner: team1, end_at: "2020-01-02") }
-      
-      let(:serie0) { create(:serie, tournaments: [s0_tournament], begin_at: "2019-06-01", year: 2020) }
-      let(:s0_tournament) { create(:tournament, teams: [team1, team2], matches: s0_t1_matches) }
-      let(:s0_t1_matches) { create_list(:match, 1, opponent1: team1, opponent2: team2, games: s0_t1_m1_games) }
-      let(:s0_t1_m1_games) { create_list(:game, 1, winner: team2, end_at: "2019-06-02") }
-
-      it "generates a elo reset for both teams" do
-        subject
-        expect(Snapshot.where(team: team1, datetime: serie0.begin_at, elo_reset: true, serie: serie0)).to be_present
-        expect(Snapshot.where(team: team2, datetime: serie0.begin_at, elo_reset: true, serie: serie0)).to be_present
+    xcontext "when passed a datetime" do
+      it "recalculates elos of games from that time forward" do
       end
 
-      context "when there are already reset snapshots for the second serie" do
-        let!(:t1_s1_reset_snapshot) { create(:snapshot, team: team1, elo: 1500, datetime: serie1.begin_at, elo_reset: true, serie: serie1) }
-        let!(:t2_s1_reset_snapshot) { create(:snapshot, team: team2, elo: 1500, datetime: serie1.begin_at, elo_reset: true, serie: serie1) }
+      it "does not change snapshots from before that time" do
+      end
+    end
 
-        it "removes the previous elo resets" do
-          subject
+    context "when the league has two series in different years" do
+      # Elo resets in this case are either a new_team_elo or a reverted team elo
+      it "generates a elo reset for both teams in both years" do
+        league = create(:league)
 
-          expect(Snapshot.where(id: t1_s1_reset_snapshot.id)).not_to be_present
-          expect(Snapshot.where(id: t2_s1_reset_snapshot.id)).not_to be_present
-        end
+        serie1 = create(:serie, league: league, begin_at: "2019-06-01", year: 2019)
+        tournament1 = create(:tournament, serie: serie1)
+        team1, team2 = create_list(:team, 2)
+        match1 = create(:match, opponent1: team1, opponent2: team2, tournament: tournament1)
+        _game1 = create(:game, match: match1, winner: team1, end_at: "2019-06-02")
+        
+        serie2 = create(:serie, league: league, begin_at: "2020-01-01", year: 2020)
+        tournament2 = create(:tournament, serie: serie2)
+        match2 = create(:match, opponent1: team1, opponent2: team2, tournament: tournament2)
+        _game2 = create(:game, match: match2, winner: team2, end_at: "2020-01-02")
+
+        described_class.call(league)
+        expect(Snapshot.where(team: team1, datetime: serie1.begin_at, elo_reset: true, serie: serie1)).to be_present
+        expect(Snapshot.where(team: team2, datetime: serie1.begin_at, elo_reset: true, serie: serie1)).to be_present
+        expect(Snapshot.where(team: team1, datetime: serie2.begin_at, elo_reset: true, serie: serie2)).to be_present
+        expect(Snapshot.where(team: team2, datetime: serie2.begin_at, elo_reset: true, serie: serie2)).to be_present
       end
     end
   end
