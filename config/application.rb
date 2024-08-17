@@ -33,7 +33,7 @@ module LolProElo
 
     # Avoid issues with Sass compression and Tailwind
     # https://stackoverflow.com/questions/70401077/rails-7-asset-pipeline-sasscsyntaxerror-with-tailwind
-    # Wrote about this in Notion
+    # Wrote about this in Notion in a Launch 1.0 ticket
     config.assets.css_compressor = nil
 
     config.active_job.queue_adapter = :sidekiq
