@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import styles from "./Chart.module.css";
-import ax from "packs/axios";
 
 import {
   LineChart,
@@ -13,10 +12,10 @@ import {
   ReferenceLine,
 } from "recharts";
 
-export const Chart = ({ chartData }) => {  
-  const lineChartData = chartData.data;
-  const teamData = chartData.teams;
-  const matchData = chartData.matches;
+export const Chart = ({ data }) => {  
+  const lineChartData = data.data;
+  const teamData = data.teams;
+  const matchData = data.matches;
 
   const [selectedDate, setSeletedDate] = useState(
     matchData[matchData.length - 1].date
