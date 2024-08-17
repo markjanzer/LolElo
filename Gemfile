@@ -39,6 +39,8 @@ gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 gem "sidekiq", "~> 7.2"
 
+gem "tailwindcss-rails", "~> 2.0"
+
 group :development, :test do
   gem 'rspec-rails'
   # gem 'rubocop-rails', require: false
@@ -60,4 +62,3 @@ group :development do
   # For better debugging
   gem 'awesome_print'
 end
-gem "tailwindcss-rails", "~> 2.0"

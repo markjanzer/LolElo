@@ -10,4 +10,4 @@ pin "turbolinks", to: "https://cdn.jsdelivr.net/npm/turbolinks@5.2.0/dist/turbol
 pin "@rails/activestorage", to: "https://cdn.jsdelivr.net/npm/@rails/activestorage@7.0.0"
 pin_all_from "app/javascript/controllers", under: "controllers"
 pin_all_from "app/javascript/components", under: "components"
-pin "components/Chart", to: "components/Chart.jsx"
+pin "components/Chart", to: "dist/Chart.js"
