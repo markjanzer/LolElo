@@ -31,6 +31,11 @@ module LolProElo
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
 
+    # Avoid issues with Sass compression and Tailwind
+    # https://stackoverflow.com/questions/70401077/rails-7-asset-pipeline-sasscsyntaxerror-with-tailwind
+    # Wrote about this in Notion
+    config.assets.css_compressor = nil
+
     config.active_job.queue_adapter = :sidekiq
 
     # Don't generate system test files.
