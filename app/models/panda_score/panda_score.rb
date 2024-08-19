@@ -1,2 +1,0 @@
-module PandaScore
-end
