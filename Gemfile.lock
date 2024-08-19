@@ -87,6 +87,8 @@ GEM
     did_you_mean (1.6.3)
     diff-lcs (1.5.1)
     erubi (1.13.0)
+    et-orbi (1.2.11)
+      tzinfo
     factory_bot (6.4.6)
       activesupport (>= 5.0.0)
     factory_bot_rails (6.4.3)
@@ -95,6 +97,9 @@ GEM
     ffi (1.17.0)
     figaro (1.2.0)
       thor (>= 0.14.0, < 2)
+    fugit (1.11.1)
+      et-orbi (~> 1, >= 1.2.11)
+      raabro (~> 1.4)
     globalid (1.2.1)
       activesupport (>= 6.1)
     hashdiff (1.1.0)
@@ -150,6 +155,7 @@ GEM
     public_suffix (5.0.5)
     puma (4.3.12)
       nio4r (~> 2.0)
+    raabro (1.4.0)
     racc (1.8.0)
     rack (2.2.9)
     rack-test (2.1.0)
@@ -229,6 +235,10 @@ GEM
       connection_pool (>= 2.3.0)
       rack (>= 2.2.4)
       redis-client (>= 0.19.0)
+    sidekiq-cron (1.12.0)
+      fugit (~> 1.8)
+      globalid (>= 1.0.1)
+      sidekiq (>= 6)
     spring (2.1.1)
     spring-watcher-listen (2.0.1)
       listen (>= 2.7, < 4.0)
@@ -290,6 +300,7 @@ DEPENDENCIES
   sentry-rails
   sentry-ruby
   sidekiq (~> 7.2)
+  sidekiq-cron
   spring
   spring-watcher-listen (~> 2.0.0)
   stackprof
