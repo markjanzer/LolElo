@@ -1,4 +1,4 @@
-class UpdateCycleJob
+class Update::UpdateCycleJob
   include Sidekiq::Job
 
   def perform(serie_id)
