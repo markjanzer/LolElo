@@ -26,6 +26,10 @@ gem 'jsbundling-rails', '~> 1.3'
 gem 'figaro'
 gem 'httparty'
 
+gem "stackprof"
+gem "sentry-ruby"
+gem "sentry-rails"
+
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
 

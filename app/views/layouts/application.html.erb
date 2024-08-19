@@ -11,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
+    <%= Sentry.get_trace_propagation_meta.html_safe %>
   </head>
 
   <body 
