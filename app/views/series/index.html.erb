@@ -4,7 +4,7 @@
   </h1>
   <ul class="flex max-w-4xl mx-auto">
     <% @leagues.each do |league| %>
-      <li class="bg-core-purple-1 p-4 m-4 rounded-xl flex-grow">
+      <li class="bg-purple-popout p-4 m-4 rounded-xl flex-grow">
         <h2 class="text-3xl font-bold mb-2 underline">
           <%= league.name %></h2>
         <ul>
@@ -14,7 +14,7 @@
             >
             <a 
               href=<%= series_path(serie) %>
-              class="hover:underline active:text-core-green-41"
+              class="hover:underline active:text-green-accent"
             ><%= serie.full_name %></a>
           <% end %>
         </ul>

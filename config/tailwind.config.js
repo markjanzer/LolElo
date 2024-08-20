@@ -15,10 +15,10 @@ module.exports = {
     },
     extend: {
       colors: {
-        'core-purple-1': "hsl(276, 100%, 6%)",
-        'core-purple-2': "hsl(276, 100%, 9%)",
-        'core-orange-90': "hsl(35, 100%, 90%)",
-        'core-green-41': "hsl(155, 100%, 41%)",
+        'purple-popout': "#12001F",
+        'purple-bg': "#3B0061",
+        'orange-text': "#FFF1DE",
+        'green-accent': "#00D17A",
       }
     }
   },
