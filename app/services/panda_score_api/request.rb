@@ -48,7 +48,7 @@ class PandaScoreAPI
     end
 
     def params_with_token
-      token_hash = { 'token' => ENV['panda_score_key'] }
+      token_hash = { 'token' => ENV['PANDA_SCORE_API_KEY'] }
       params.merge(token_hash)
     end
 
