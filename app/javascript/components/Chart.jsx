@@ -96,13 +96,19 @@ export const Chart = ({ data }) => {
             setHoveredDate(state.activeLabel);
           }
         }}
-        onMouseLeave={() => setHoveredDate(null)}
       >
         <CartesianGrid />
         {hoveredDate && (
           <ReferenceLine
             x={hoveredDate}
             stroke="#aaa"
+            strokeWidth={2}
+          />
+        )}
+        {selectedDate && (
+          <ReferenceLine
+            x={selectedDate}
+            stroke="#00D17A"
             strokeWidth={2}
           />
         )}
