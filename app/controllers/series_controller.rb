@@ -23,6 +23,14 @@ class SeriesController < ApplicationController
   
   def show
     @serie = Serie.find(params[:id])
+    @previous_serie = @serie.league.series.where("begin_at < ?", @serie.begin_at)
+      .order(begin_at: :desc)
+      .first
+    @next_serie = @serie.league.series.where("begin_at > ?", @serie.begin_at)
+      .order(begin_at: :asc)
+      .first
     @chart_data = ChartData.new(@serie).call
+
+    # Serie.all.map { |s| { id: s.id, fnl: s.full_name.length }.sort_by { |s| s[:fnl] } }
   end
 end
