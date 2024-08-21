@@ -2,23 +2,27 @@
   <h1 class="text-5xl my-12 text-center">
     LoL Pro Elo
   </h1>
-  <ul class="flex max-w-4xl mx-auto">
-    <% @leagues.each do |league| %>
-      <li class="bg-purple-popout p-4 m-4 rounded-xl flex-grow">
-        <h2 class="text-3xl font-bold mb-2 underline">
-          <%= league.name %></h2>
-        <ul>
-          <% league.series.order(begin_at: :desc).each do |serie| %>
-            <li
-              class="text-xl my-2"
-            >
-            <a 
-              href=<%= series_path(serie) %>
-              class="hover:underline active:text-green-accent"
-            ><%= serie.full_name %></a>
-          <% end %>
-        </ul>
-      </li>
-    <% end %>
-  </ul>
+
+  <% @years.each do |year, leagues| %>
+    <div class="max-w-4xl mx-auto mb-8">
+      <h2 class="text-3xl font-semibold mb-4 text-green-accent">
+        <%= year %>
+      </h2>
+      <div class="bg-purple-popout rounded-xl py-6 px-2 grid grid-cols-4 gap-4">
+        <% leagues.each do |name, series| %>
+          <div class="col-span-1 flex flex-col items-center">
+            <h3 class="text-3xl font-semibold mb-2"><%= name %></h3>
+            <ul class="flex flex-col items-center">
+              <% series.each do |serie| %>
+                <a href="<%= serie[:url] %>"
+                  class="text-md my-1 underline hover:text-green-accent"
+                  ><%= serie[:name] %>
+                </a>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
 </div>

@@ -2,7 +2,23 @@
 
 class SeriesController < ApplicationController
   def index
-    @leagues = League.all.includes(:series)
+    years = Serie.all.pluck(:year).uniq.sort.reverse
+    result = {}
+    years.each do |year|
+      year_data = {}
+      League.all.each do |league|
+        league_series = league.series.where(year: year).order(begin_at: :desc).map do |serie|
+          {
+            name: serie.full_name,
+            url: "series/#{serie.id}",
+          }
+        end
+        year_data[league.name] = league_series
+      end
+      result[year] = year_data
+    end
+
+    @years = result
   end
   
   def show
