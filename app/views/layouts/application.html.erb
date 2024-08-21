@@ -12,6 +12,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
     <%= Sentry.get_trace_propagation_meta.html_safe %>
+
+    <%= favicon_link_tag 'favicon/apple-touch-icon.png', rel: 'apple-touch-icon', sizes: '180x180', type: 'image/png' %>
+    <%= favicon_link_tag 'favicon/favicon-32x32.png', rel: 'icon', sizes: '32x32', type: 'image/png' %>
+    <%= favicon_link_tag 'favicon/favicon-16x16.png', rel: 'icon', sizes: '16x16', type: 'image/png' %>
+    <link rel="manifest" href="<%= asset_path 'favicon/site.webmanifest' %>">
   </head>
 
   <body 
