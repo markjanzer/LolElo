@@ -20,6 +20,7 @@ export const Chart = ({ data }) => {
   const [selectedDate, setSeletedDate] = useState(
     matchData[matchData.length - 1].date
   );
+  const [hoveredDate, setHoveredDate] = useState(null);
 
   function customToolTip(props) {
     return (
@@ -90,8 +91,21 @@ export const Chart = ({ data }) => {
         height={800}
         data={lineChartData}
         onClick={(chart) => setSeletedDate(chart.activeLabel)}
+        onMouseMove={(state) => {
+          if (state.activeLabel) {
+            setHoveredDate(state.activeLabel);
+          }
+        }}
+        onMouseLeave={() => setHoveredDate(null)}
       >
         <CartesianGrid />
+        {hoveredDate && (
+          <ReferenceLine
+            x={hoveredDate}
+            stroke="#aaa"
+            strokeWidth={2}
+          />
+        )}
         <XAxis dataKey="name" padding={{ left: 30, right: 30 }} />
         <YAxis type="number" domain={["dataMin - 50", "dataMax + 50"]} />
         <Legend />
