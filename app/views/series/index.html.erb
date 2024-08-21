@@ -3,15 +3,15 @@
     LoL Pro Elo
   </h1>
 
-  <% @years.each do |year, leagues| %>
+  <% @series_by_year_and_league.each do |year, leagues| %>
     <div class="max-w-4xl mx-auto mb-8">
       <h2 class="text-3xl font-semibold mb-4 text-green-accent">
         <%= year %>
       </h2>
       <div class="bg-purple-popout rounded-xl py-6 px-2 grid grid-cols-4 gap-4">
-        <% leagues.each do |name, series| %>
+        <% leagues.each do |league_name, series| %>
           <div class="col-span-1 flex flex-col items-center">
-            <h3 class="text-3xl font-semibold mb-2"><%= name %></h3>
+            <h3 class="text-3xl font-semibold mb-2"><%= league_name %></h3>
             <ul class="flex flex-col items-center">
               <% series.each do |serie| %>
                 <a href="<%= serie[:url] %>"

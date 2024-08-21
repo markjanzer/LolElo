@@ -11,6 +11,13 @@ class League < ApplicationRecord
 
   has_many :snapshots, through: :series
 
+  LEAGUE_ORDER = {
+    "LCS" => 1,
+    "LEC" => 2,
+    "LPL" => 3,
+    "LCK" => 4,
+  }
+
   def panda_score_league
     PandaScore::League.find_by(panda_score_id: panda_score_id)
   end
