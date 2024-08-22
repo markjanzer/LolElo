@@ -11,10 +11,22 @@ import {
   ReferenceLine,
 } from "recharts";
 
+// "Aug 18", "2022" => "August 18, 2022"
+function formatDate(dateStr, year) {
+  const date = new Date(`${dateStr} ${year}`);
+
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
+
 export const Chart = ({ data }) => {  
   const lineChartData = data.data;
   const teamData = data.teams;
   const matchData = data.matches;
+  const year = data.year;
 
   const [selectedDate, setSeletedDate] = useState(
     matchData[matchData.length - 1].date
@@ -27,7 +39,7 @@ export const Chart = ({ data }) => {
         <div className="text-2xl text-center">{props.label}</div>
         <ul className="my-2 mx-4">
           {matchData
-            .filter((d) => d.date == props.label)
+            .filter((match) => match.date == props.label)
             .map((datum) => {
               return renderMatch(datum);
             })}
@@ -127,30 +139,36 @@ export const Chart = ({ data }) => {
 
   function renderList() {
     const dateData = lineChartData.filter((d) => d.name === selectedDate)[0];
-    const formattedDateData = teamData.reduce((result, team) => {
-      const datum = {
+    const teamElos = teamData.reduce((result, team) => {
+      const teamObj = {
         name: team.name,
         elo: dateData[team.acronym],
         color: team.color,
       };
-      result.push(datum);
+      result.push(teamObj);
       return result;
     }, []);
-    const sortedFormattedDateData = formattedDateData.sort(
+    const sortedTeamElos = teamElos.sort(
       (a, b) => b.elo - a.elo
     );
 
     return (
-      <div className="my-1">
-        <h2 className="text-2xl mx-2 my-4 text-green-accent">{selectedDate}</h2>
+      <div className="my-1 mx-12">
+        <h2 
+          className={"text-2xl mx-2 my-4 text-green-accent"}
+        >{formatDate(selectedDate, year)}</h2>
         <ul>
-          {sortedFormattedDateData.map((datum) => {
+          {sortedTeamElos.map((team) => {
             return (
               <li 
-                key={datum.acronym}
-                className="m-2"
+                key={team.acronym}
+                className="m-2 flex items-center"
               >
-                {datum.name}: {datum.elo}
+                <div
+                  className="w-4 h-4 rounded-full mr-2"
+                  style={{ backgroundColor: team.color }}
+                />
+                <span>{team.name}: {team.elo}</span>
               </li>
             );
           })}

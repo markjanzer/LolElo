@@ -14,7 +14,8 @@ class ChartData
     {
       data: elos_at_dates,
       teams: teams_json,
-      matches: matches_data
+      matches: matches_data,
+      year: serie.year,
     }
   end
 
