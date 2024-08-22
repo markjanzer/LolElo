@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import styles from "./Chart.module.css";
 
 import {
   LineChart,
@@ -62,7 +61,7 @@ export const Chart = ({ data }) => {
             {renderEloChange(match.opponent1_elo_change)}
           </div>
         </div>
-        <div>{score}</div>
+        <div className="text-lg mt-4">{score}</div>
         <div className="mx-3 my-2 flex flex-col items-center">
           <div
             className="text-2xl"
