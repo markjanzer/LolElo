@@ -48,7 +48,7 @@ export const Chart = ({ data }) => {
     let score = `${match.opponent1_score} - ${match.opponent2_score}`;
 
     return (
-      <li className="flex m-2 bg-purple-popout rounded border border-green-accent">
+      <li key={match.id} className="flex m-2 bg-purple-popout rounded border border-green-accent">
         <div className="mx-3 my-2 flex flex-col items-center">
           <div
             className="text-2xl"

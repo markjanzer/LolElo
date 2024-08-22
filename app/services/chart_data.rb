@@ -101,6 +101,7 @@ class ChartData
     victor = opponent1_score > opponent2_score ? opponent1 : opponent2
 
     {
+      id: match.id,
       date: format_date(match.end_at),
       opponent1: opponent1,
       opponent2: opponent2,
