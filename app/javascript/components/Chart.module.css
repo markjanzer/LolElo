@@ -1,58 +1,5 @@
-.toolTip {
-}
 
-.toolTipTitle {
-  font-size: 1.5rem;
-  text-align: center;
-}
 
-.matches {
-  margin: 0.5rem 1rem;
-}
-
-.match {
-  display: flex;
-  background-color: hsl(276, 100%, 7%);
-  margin: 0.5rem;
-  border-radius: 4px;
-}
-
-.opponent {
-  margin: 0.5rem 0.75rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.opponentAcronym {
-  font-size: 1.5rem;
-}
-
-.opponentEloData {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-
-.opponentElo {
-}
-
-.negativeChange {
-  color: #cf0606;
-}
-
-.positiveChange {
-  color: #06cf32;
-}
-
-.gameResult {
-  font-size: 1.5rem;
-  margin: 1rem 0.5rem;
-}
-
-.teamElosList {
-  margin: 0 1rem;
-}
 
 .selectedDate {
   font-size: 1.5rem;
