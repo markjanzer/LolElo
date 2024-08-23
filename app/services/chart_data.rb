@@ -69,6 +69,8 @@ class ChartData
       result << date_data
     end
 
+    Time.zone = "UTC"
+
     result
   end
 
