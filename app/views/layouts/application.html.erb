@@ -5,7 +5,6 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
-    <%# stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,6 +16,18 @@
     <%= favicon_link_tag 'favicon/favicon-32x32.png', rel: 'icon', sizes: '32x32', type: 'image/png' %>
     <%= favicon_link_tag 'favicon/favicon-16x16.png', rel: 'icon', sizes: '16x16', type: 'image/png' %>
     <link rel="manifest" href="<%= asset_path 'favicon/site.webmanifest' %>">
+
+    <% if Rails.env.production %>
+      <!-- Google tag (gtag.js) -->
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-BY88XH8Q5Z"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-BY88XH8Q5Z');
+      </script>
+    <% end %>
   </head>
 
   <body 
