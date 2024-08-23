@@ -1,33 +1,33 @@
 <div
-  class="container mx-auto mt-12"
+  class="container mx-auto mt-8 sm:mt-12"
 >
   <div class="flex justify-between items-center mb-8">
-    <%= link_to "Home", root_path, class: "underline underline-offset-4 px-4" %>
+    <%= link_to "Home", root_path, class: "text-sm lg:text-base underline underline-offset-4 px-4" %>
     
     <div class="flex flex-row items-center">
       <% if @previous_serie.present? %>
         <%= link_to "← #{@previous_serie.full_name}",
               series_path(@previous_serie), 
-              class: "underline underline-offset-4 px-4" 
+              class: "text-sm lg:text-base underline underline-offset-4 px-4" 
         %>
       <% elsif @next_serie.present? %>
         <%= link_to "#{@next_serie.full_name} →", 
               series_path(@next_serie), 
-              class: "underline underline-offset-4 px-4 invisible" 
+              class: "text-sm lg:text-base underline underline-offset-4 px-4 invisible" 
         %>
       <% end %>
-      <h1 class="flex-grow text-center text-5xl mx-6">
+      <h1 class="flex-grow text-center sm:text-2xl md:text-3xl lg:text-4xl mx-6">
         <%= "#{@serie.league.name} #{@serie.full_name}" %>
       </h1>
       <% if @next_serie.present? %>
         <%= link_to "#{@next_serie.full_name} →", 
               series_path(@next_serie), 
-              class: "underline underline-offset-4 px-4" 
+              class: "text-sm lg:text-base underline underline-offset-4 px-4" 
         %>
       <% elsif @previous_serie.present? %>
         <%= link_to "← #{@previous_serie.full_name}",
               series_path(@previous_serie), 
-              class: "underline underline-offset-4 px-4 invisible" 
+              class: "text-sm lg:text-base underline underline-offset-4 px-4 invisible" 
         %>
       <% end %>
     </div>
@@ -35,7 +35,7 @@
     <%= link_to "Home", root_path, class: "px-4 invisible" %>
   </div>
 
-  <div class="bg-purple-popout py-8 px-4 mb-4 rounded-md shadow-xl">
+  <div class="bg-purple-popout p-4 md:p-8 mb-4 rounded-md shadow-xl">
     <%= content_tag :div,
       id: "chart",
       data: {

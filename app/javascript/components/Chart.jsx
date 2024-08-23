@@ -27,6 +27,7 @@ function formatDateString(dateStr, year) {
   });
 }
 
+
 export const Chart = ({ data }) => {  
   const lineChartData = data.data;
   const teamData = data.teams;
@@ -40,6 +41,34 @@ export const Chart = ({ data }) => {
   const [hoveredDate, setHoveredDate] = useState(
     matchData[matchData.length - 1].date
   );
+
+  const [fontSize, setFontSize] = useState(14);
+  const [aspectRatio, setAspectRatio] = useState(5 / 3); // Default aspect ratio
+  const [chartLeft, setChartLeft] = useState(-12);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width < 640) {
+        setFontSize(10);
+        setAspectRatio(3 / 3);
+        setChartLeft(-20);
+      } else if (width < 1024) {
+        setFontSize(12);
+        setAspectRatio(4 / 3);
+        setChartLeft(-12);
+      } else {
+        setFontSize(14);
+        setAspectRatio(5 / 3);
+        setChartLeft(-4);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize();
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   function customToolTip(props) {
     return (
@@ -100,11 +129,10 @@ export const Chart = ({ data }) => {
 
   function renderChart() {
     return (
-      <ResponsiveContainer width="100%" height={800}>
+      <ResponsiveContainer width="100%" aspect={aspectRatio}>
         <LineChart
-          width={1100}
-          height={800}
           data={lineChartData}
+          margin={{ left: chartLeft, right: 4 }}
           onClick={(chart) => setSeletedDate(chart.activeLabel)}
           onMouseMove={(state) => {
             if (state.activeLabel) {
@@ -127,8 +155,18 @@ export const Chart = ({ data }) => {
               strokeWidth={2}
             />
           )}
-          <XAxis dataKey="name" padding={{ left: 30, right: 30 }} />
-          <YAxis type="number" domain={["dataMin - 50", "dataMax + 50"]} />
+          <XAxis 
+            dataKey="name"
+            tick={{ fontSize: fontSize}}
+            tickFormatter={(value) => `${value}`}
+          />
+          <YAxis 
+            type="number" 
+            domain={["dataMin - 50", "dataMax + 50"]} 
+            tick={{ fontSize: fontSize}}
+            tickFormatter={(value) => `${value}`}
+            padding={{ left: 0 }}
+          />
           <Tooltip content={customToolTip} />
           {teamData.map((team) => {
             return (
@@ -162,9 +200,9 @@ export const Chart = ({ data }) => {
     );
 
     return (
-      <div className="ml-4 mr-2">
+      <div className="ml-1 md:ml-4 mr-2">
         <h2 
-          className={"text-2xl mx-2 my-4 text-green-accent"}
+          className={"text-lg lg:text-xl mx-2 mb-2 mt-1 text-green-accent"}
         >{formatDateString(selectedDate, year)}</h2>
         <ul>
           {sortedTeamElos.map((team) => {
@@ -177,7 +215,7 @@ export const Chart = ({ data }) => {
                   className="w-4 h-4 rounded-full mr-2"
                   style={{ backgroundColor: team.color }}
                 />
-                <span>{team.name}: {team.elo}</span>
+                <span className="text-sm lg:text-base">{team.name}: {team.elo}</span>
               </li>
             );
           })}
@@ -187,7 +225,7 @@ export const Chart = ({ data }) => {
   }
 
   return (
-    <div class="flex flex-row">
+    <div class="flex flex-col md:flex-row">
       {renderChart()}
       {renderList()}
     </div>
