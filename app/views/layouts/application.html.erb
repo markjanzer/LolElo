@@ -17,8 +17,8 @@
     <%= favicon_link_tag 'favicon/favicon-16x16.png', rel: 'icon', sizes: '16x16', type: 'image/png' %>
     <link rel="manifest" href="<%= asset_path 'favicon/site.webmanifest' %>">
 
+   <!-- Google Analytics -->
     <% if Rails.env.production? %>
-      <!-- Google tag (gtag.js) -->
       <script async src="https://www.googletagmanager.com/gtag/js?id=G-BY88XH8Q5Z"></script>
       <script>
         window.dataLayer = window.dataLayer || [];
@@ -28,6 +28,27 @@
         gtag('config', 'G-BY88XH8Q5Z');
       </script>
     <% end %>
+
+    <!-- Primary Meta Tags -->
+    <title>LoLProElo - Elo rankings for professional League of Legends teams</title>
+    <meta name="title" content="LoLProElo - Elo rankings for professional League of Legends teams" />
+    <meta name="description" content="Explore and compare the current and historic strength of professional League of Legends teams using an Elo rating system. Track team performance, analyze trends, and dive deep into LoL esports history." />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="<%= request.original_url %>" />
+    <meta property="og:title" content="LoLProElo - Elo rankings for professional League of Legends teams" />
+    <meta property="og:description" content="Explore and compare the current and historic strength of professional League of Legends teams using an Elo rating system. Track team performance, analyze trends, and dive deep into LoL esports history." />
+    <meta property="og:image" content="<%= asset_url('meta/meta-image.png') %>" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="<%= request.original_url %>" />
+    <meta property="twitter:title" content="LoLProElo - Elo rankings for professional League of Legends teams" />
+    <meta property="twitter:description" content="Explore and compare the current and historic strength of professional League of Legends teams using an Elo rating system. Track team performance, analyze trends, and dive deep into LoL esports history." />
+    <meta property="twitter:image" content="<%= asset_url('meta/meta-image.png') %>" />
+    <!-- Meta Tags Generated with https://metatags.io -->
+
   </head>
 
   <body 
