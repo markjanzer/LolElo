@@ -9,6 +9,7 @@ import {
   Tooltip,
   Legend,
   ReferenceLine,
+  ResponsiveContainer
 } from "recharts";
 
 // "Aug 18", "2022" => "August 18, 2022"
@@ -99,47 +100,49 @@ export const Chart = ({ data }) => {
 
   function renderChart() {
     return (
-      <LineChart
-        width={1100}
-        height={800}
-        data={lineChartData}
-        onClick={(chart) => setSeletedDate(chart.activeLabel)}
-        onMouseMove={(state) => {
-          if (state.activeLabel) {
-            setHoveredDate(state.activeLabel);
-          }
-        }}
-      >
-        <CartesianGrid />
-        {hoveredDate && (
-          <ReferenceLine
-            x={hoveredDate}
-            stroke="#aaa"
-            strokeWidth={2}
-          />
-        )}
-        {selectedDate && (
-          <ReferenceLine
-            x={selectedDate}
-            stroke="#00D17A"
-            strokeWidth={2}
-          />
-        )}
-        <XAxis dataKey="name" padding={{ left: 30, right: 30 }} />
-        <YAxis type="number" domain={["dataMin - 50", "dataMax + 50"]} />
-        <Tooltip content={customToolTip} />
-        {teamData.map((team) => {
-          return (
-            <Line
-              key={team.id}
-              type="monotone"
+      <ResponsiveContainer width="100%" height={800}>
+        <LineChart
+          width={1100}
+          height={800}
+          data={lineChartData}
+          onClick={(chart) => setSeletedDate(chart.activeLabel)}
+          onMouseMove={(state) => {
+            if (state.activeLabel) {
+              setHoveredDate(state.activeLabel);
+            }
+          }}
+        >
+          <CartesianGrid />
+          {hoveredDate && (
+            <ReferenceLine
+              x={hoveredDate}
+              stroke="#aaa"
               strokeWidth={2}
-              dataKey={team.acronym}
-              stroke={team.color}
             />
-          );
-        })}
-      </LineChart>
+          )}
+          {selectedDate && (
+            <ReferenceLine
+              x={selectedDate}
+              stroke="#00D17A"
+              strokeWidth={2}
+            />
+          )}
+          <XAxis dataKey="name" padding={{ left: 30, right: 30 }} />
+          <YAxis type="number" domain={["dataMin - 50", "dataMax + 50"]} />
+          <Tooltip content={customToolTip} />
+          {teamData.map((team) => {
+            return (
+              <Line
+                key={team.id}
+                type="monotone"
+                strokeWidth={2}
+                dataKey={team.acronym}
+                stroke={team.color}
+              />
+            );
+          })}
+        </LineChart>
+      </ResponsiveContainer>
     );
   }
 
