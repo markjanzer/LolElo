@@ -1,33 +1,35 @@
 <div class="container mx-auto mt-12">
-  <div class="max-w-4xl mx-auto mb-8 flex flex-row items-center space-x-8">
-    <div class="bg-purple-popout p-6 rounded-xl">
-      <%= image_tag 'logos/logo-1-accent.svg', alt: 'LoL Pro Elo Logo' %>
-    </div>
-    <div class="bg-purple-popout rounded-xl p-6 my-6 flex-grow min-h-36">
-      <p class="text-xl">This site calculates the Elo rankings of all professional teams within their domestic competition.</p>
-    </div>
-  </div>
-
-  <% @series_by_year_and_league.each do |year, leagues| %>
-    <div class="max-w-4xl mx-auto mb-8">
-      <h2 class="text-3xl font-semibold mb-4 text-green-accent">
-        <%= year %>
-      </h2>
-      <div class="bg-purple-popout rounded-xl py-6 px-2 grid grid-cols-4 gap-4">
-        <% leagues.each do |league_name, series| %>
-          <div class="col-span-1 flex flex-col items-center">
-            <h3 class="text-3xl font-semibold mb-2"><%= league_name %></h3>
-            <ul class="flex flex-col items-center">
-              <% series.each do |serie| %>
-                <a href="<%= serie[:url] %>"
-                  class="text-md my-1 underline hover:text-green-accent"
-                  ><%= serie[:name] %>
-                </a>
-              <% end %>
-            </ul>
-          </div>
-        <% end %>
+  <div class="max-w-4xl mx-auto">
+    <div class="lg:mx-0 mx-4 mb-6 md:mb-8 flex flex-row items-center space-x-4 md:space-x-8">
+      <div class="bg-purple-popout p-4 md:p-6 rounded-xl">
+        <%= image_tag 'logos/logo-1-accent.svg', alt: 'LoL Pro Elo Logo', class: "w-52 md:w-40 lg:w-32 aspect-square"%>
+      </div>
+      <div class="bg-purple-popout rounded-xl p-4 md:p-6 flex-grow">
+        <p class="text-base sm:text-lg md:text-xl">This site calculates the Elo rankings of all professional teams within their domestic competition.</p>
       </div>
     </div>
-  <% end %>
+
+    <% @series_by_year_and_league.each do |year, leagues| %>
+      <div class="lg:mx-0 mx-4 mb-8">
+        <h2 class="text-3xl font-semibold mb-4 text-green-accent">
+          <%= year %>
+        </h2>
+        <div class="bg-purple-popout rounded-xl py-4 md:py-6 px-2 md:px-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+          <% leagues.each do |league_name, series| %>
+            <div class="col-span-1 flex flex-col items-center mt-2 md:mt-0">
+              <h3 class="text-2xl md:text-3xl font-semibold mb-2"><%= league_name %></h3>
+              <ul class="flex flex-col items-center">
+                <% series.each do |serie| %>
+                  <a href="<%= serie[:url] %>"
+                    class="text-sm md:text-base my-1 underline hover:text-green-accent"
+                    ><%= serie[:name] %>
+                  </a>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
 </div>
