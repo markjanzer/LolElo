@@ -12,8 +12,12 @@ import {
 } from "recharts";
 
 // "Aug 18", "2022" => "August 18, 2022"
-function formatDate(dateStr, year) {
+// "Start of Season Finals 2024" => "Start of Season Finals 2024"
+function formatDateString(dateStr, year) {
   const date = new Date(`${dateStr} ${year}`);
+  if (isNaN(date)) {
+    return dateStr;
+  }
 
   return date.toLocaleDateString('en-US', {
     year: 'numeric',
@@ -31,7 +35,10 @@ export const Chart = ({ data }) => {
   const [selectedDate, setSeletedDate] = useState(
     matchData[matchData.length - 1].date
   );
-  const [hoveredDate, setHoveredDate] = useState(null);
+  // Set default so chart doesn't rerender on first hover
+  const [hoveredDate, setHoveredDate] = useState(
+    matchData[matchData.length - 1].date
+  );
 
   function customToolTip(props) {
     return (
@@ -93,7 +100,7 @@ export const Chart = ({ data }) => {
   function renderChart() {
     return (
       <LineChart
-        width={1200}
+        width={1100}
         height={800}
         data={lineChartData}
         onClick={(chart) => setSeletedDate(chart.activeLabel)}
@@ -120,7 +127,6 @@ export const Chart = ({ data }) => {
         )}
         <XAxis dataKey="name" padding={{ left: 30, right: 30 }} />
         <YAxis type="number" domain={["dataMin - 50", "dataMax + 50"]} />
-        <Legend />
         <Tooltip content={customToolTip} />
         {teamData.map((team) => {
           return (
@@ -153,10 +159,10 @@ export const Chart = ({ data }) => {
     );
 
     return (
-      <div className="my-1 mx-12">
+      <div className="ml-4 mr-2">
         <h2 
           className={"text-2xl mx-2 my-4 text-green-accent"}
-        >{formatDate(selectedDate, year)}</h2>
+        >{formatDateString(selectedDate, year)}</h2>
         <ul>
           {sortedTeamElos.map((team) => {
             return (
@@ -178,10 +184,10 @@ export const Chart = ({ data }) => {
   }
 
   return (
-    <>
+    <div class="flex flex-row">
       {renderChart()}
       {renderList()}
-    </>
+    </div>
   );
 }
 
