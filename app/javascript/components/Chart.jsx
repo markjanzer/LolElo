@@ -99,7 +99,7 @@ export const Chart = ({ data }) => {
     return (
       <li key={match.id} className="flex m-2 bg-purple-popout rounded border border-green-accent">
         {renderMatchOpponent(match.opponent1.color, match.opponent1.acronym, match.opponent1_elo, match.opponent1_elo_change)}
-        <div className="text-base sm:text-lg md:text-xl mt-4">{score}</div>
+        <div className="text-base lg:text-lg mt-4">{score}</div>
         {renderMatchOpponent(match.opponent2.color, match.opponent2.acronym, match.opponent2_elo, match.opponent2_elo_change)}
       </li>
     );
@@ -109,12 +109,12 @@ export const Chart = ({ data }) => {
     return (
       <div className="mx-3 my-2 flex flex-col items-center">
         <div
-          className="text-base sm:text-lg md:text-xl"
+          className="text-base lg:text-lg "
           style={{ borderBottom: `2px solid ${color}` }}
         >
           {acronym}
         </div>
-        <div className="flex flex-col items-end text-sm sm:text-md md:text-lg">
+        <div className="flex flex-col items-end text-sm lg:text-md">
           <div>{elo}</div>
           {renderEloChange(eloChange)}
         </div>
