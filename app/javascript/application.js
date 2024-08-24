@@ -23,7 +23,6 @@ document.addEventListener("turbolinks:load", () => {
     if (node) {
       const root = createRoot(node);
       const data = JSON.parse(node.getAttribute("data"));
-      console.log(data)
   
       root.render(<Chart data={data.chartData} />);
     }

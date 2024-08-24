@@ -128,7 +128,11 @@ export const Chart = ({ data }) => {
         <LineChart
           data={lineChartData}
           margin={{ left: chartLeft, right: 4 }}
-          onClick={(chart) => setSeletedDate(chart.activeLabel)}
+          onClick={(chart) => {
+            if (chart.activeLabel) {
+              setSeletedDate(chart.activeLabel)
+            }
+          }}
           onMouseMove={(state) => {
             if (state.activeLabel) {
               setHoveredDate(state.activeLabel);
