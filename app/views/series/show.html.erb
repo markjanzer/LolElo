@@ -1,33 +1,33 @@
 <div
   class="container mx-auto mt-8 sm:mt-12"
 >
-  <div class="flex justify-between items-center mb-8">
+  <div class="flex justify-between items-center mb-4 lg:mb-6">
     <%= link_to "Home", root_path, class: "text-sm lg:text-base underline underline-offset-4 px-4" %>
     
     <div class="flex flex-row items-center">
       <% if @previous_serie.present? %>
         <%= link_to "← #{@previous_serie.full_name}",
               series_path(@previous_serie), 
-              class: "text-sm lg:text-base underline underline-offset-4 px-4" 
+              class: "text-sm lg:text-base underline underline-offset-4 text-center mx-2 md:mx-4" 
         %>
       <% elsif @next_serie.present? %>
         <%= link_to "#{@next_serie.full_name} →", 
               series_path(@next_serie), 
-              class: "text-sm lg:text-base underline underline-offset-4 px-4 invisible" 
+              class: "text-sm lg:text-base underline underline-offset-4 text-center mx-2 md:mx-4 invisible" 
         %>
       <% end %>
-      <h1 class="flex-grow text-center sm:text-2xl md:text-3xl lg:text-4xl mx-6">
+      <h1 class="flex-grow text-center text-xl sm:text-2xl md:text-3xl lg:text-4xl mx-4 md:mx-6">
         <%= "#{@serie.league.name} #{@serie.full_name}" %>
       </h1>
       <% if @next_serie.present? %>
         <%= link_to "#{@next_serie.full_name} →", 
               series_path(@next_serie), 
-              class: "text-sm lg:text-base underline underline-offset-4 px-4" 
+              class: "text-sm lg:text-base underline underline-offset-4 text-center mx-2 md:mx-4" 
         %>
       <% elsif @previous_serie.present? %>
         <%= link_to "← #{@previous_serie.full_name}",
               series_path(@previous_serie), 
-              class: "text-sm lg:text-base underline underline-offset-4 px-4 invisible" 
+              class: "text-sm lg:text-base underline underline-offset-4 text-center mx-2 md:mx-4 invisible" 
         %>
       <% end %>
     </div>
