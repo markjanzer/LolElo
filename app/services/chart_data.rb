@@ -10,13 +10,15 @@ class ChartData
     if matches_data.empty?
       Rails.logger.warn "No matches found for serie #{serie.id}"
     end
-    
-    {
-      data: elos_at_dates,
-      teams: teams_json,
-      matches: matches_data,
-      year: serie.year,
-    }
+
+    Time.use_zone(serie.league.time_zone) do
+      return {
+        data: elos_at_dates,
+        teams: teams_json,
+        matches: matches_data,
+        year: serie.year,
+      }
+    end
   end
 
   private
@@ -49,7 +51,7 @@ class ChartData
 
   def elos_at_dates
     # Time zone should be tied to the League
-    Time.zone = serie.league.time_zone
+    # Time.zone = serie.league.time_zone
     result = []
 
     start = { name: "Start of #{serie.full_name}" }
@@ -69,7 +71,7 @@ class ChartData
       result << date_data
     end
 
-    Time.zone = "UTC"
+    # Time.zone = "UTC"
 
     result
   end
