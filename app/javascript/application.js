@@ -1,5 +1,6 @@
 // Entry point for the build script in your package.json
 
+import { initSentry } from './sentry-config';
 import Rails from "@rails/ujs"
 import Turbolinks from "turbolinks"
 import * as ActiveStorage from "@rails/activestorage"
@@ -11,6 +12,8 @@ import { createRoot } from 'react-dom/client';
 // Importing your custom Chart component
 import Chart from "./components/Chart";
 
+// Start sentry monitoring
+initSentry();
 // Start Rails utilities
 Rails.start();
 Turbolinks.start();
@@ -28,3 +31,6 @@ document.addEventListener("turbolinks:load", () => {
     }
   }
 });
+
+// Test Sentry
+myUndefinedFunction();

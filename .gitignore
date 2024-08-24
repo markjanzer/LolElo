@@ -47,3 +47,6 @@ spec/spec_log.txt
 
 # Ignore database backups
 /db/backups/*
+
+# Sentry Config File
+.sentryclirc
