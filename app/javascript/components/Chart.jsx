@@ -203,7 +203,7 @@ export const Chart = ({ data }) => {
           {sortedTeamElos.map((team) => {
             return (
               <li 
-                key={team.acronym}
+                key={team.name}
                 className="m-2 flex items-center"
               >
                 <div
@@ -220,7 +220,7 @@ export const Chart = ({ data }) => {
   }
 
   return (
-    <div class="flex flex-col md:flex-row">
+    <div className="flex flex-col md:flex-row">
       {renderChart()}
       {renderList()}
     </div>

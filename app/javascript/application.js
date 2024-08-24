@@ -18,8 +18,6 @@ ActiveStorage.start();
 
 // Event listener for Turbolinks
 document.addEventListener("turbolinks:load", () => {
-  console.log("turbolinks:load");
-
   if (document.body.dataset["route"] === "series-show") {
     const node = document.getElementById("chart");
     if (node) {
