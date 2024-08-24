@@ -74,7 +74,7 @@ export const Chart = ({ data }) => {
     return (
       <div>
         <div className="text-base sm:text-lg md:text-xl text-center">{props.label}</div>
-        <ul className="my-2 mx-4">
+        <ul>
           {matchData
             .filter((match) => match.date == props.label)
             .map((datum) => {
@@ -97,7 +97,7 @@ export const Chart = ({ data }) => {
     let score = `${match.opponent1_score} - ${match.opponent2_score}`;
 
     return (
-      <li key={match.id} className="flex m-2 bg-purple-popout rounded border border-green-accent">
+      <li key={match.id} className="flex mt-1 mb-2 bg-purple-popout rounded border border-green-accent">
         {renderMatchOpponent(match.opponent1.color, match.opponent1.acronym, match.opponent1_elo, match.opponent1_elo_change)}
         <div className="text-base lg:text-lg mt-4">{score}</div>
         {renderMatchOpponent(match.opponent2.color, match.opponent2.acronym, match.opponent2_elo, match.opponent2_elo_change)}
@@ -107,7 +107,7 @@ export const Chart = ({ data }) => {
 
   function renderMatchOpponent(color, acronym, elo, eloChange) {
     return (
-      <div className="mx-3 my-2 flex flex-col items-center">
+      <div className="mx-2 my-1 flex flex-col items-center">
         <div
           className="text-base lg:text-lg "
           style={{ borderBottom: `2px solid ${color}` }}
