@@ -73,7 +73,7 @@ export const Chart = ({ data }) => {
   function customToolTip(props) {
     return (
       <div>
-        <div className="text-2xl text-center">{props.label}</div>
+        <div className="text-base sm:text-lg md:text-xl text-center">{props.label}</div>
         <ul className="my-2 mx-4">
           {matchData
             .filter((match) => match.date == props.label)
@@ -98,33 +98,28 @@ export const Chart = ({ data }) => {
 
     return (
       <li key={match.id} className="flex m-2 bg-purple-popout rounded border border-green-accent">
-        <div className="mx-3 my-2 flex flex-col items-center">
-          <div
-            className="text-2xl"
-            style={{ borderBottom: `2px solid ${match.opponent1.color}` }}
-          >
-            {match.opponent1.acronym}
-          </div>
-          <div className="flex flex-col items-end">
-            <div>{match.opponent1_elo}</div>
-            {renderEloChange(match.opponent1_elo_change)}
-          </div>
-        </div>
-        <div className="text-lg mt-4">{score}</div>
-        <div className="mx-3 my-2 flex flex-col items-center">
-          <div
-            className="text-2xl"
-            style={{ borderBottom: `2px solid ${match.opponent2.color}` }}
-          >
-            {match.opponent2.acronym}
-          </div>
-          <div className="flex flex-col items-end">
-            <div>{match.opponent2_elo}</div>
-            {renderEloChange(match.opponent2_elo_change)}
-          </div>
-        </div>
+        {renderMatchOpponent(match.opponent1.color, match.opponent1.acronym, match.opponent1_elo, match.opponent1_elo_change)}
+        <div className="text-base sm:text-lg md:text-xl mt-4">{score}</div>
+        {renderMatchOpponent(match.opponent2.color, match.opponent2.acronym, match.opponent2_elo, match.opponent2_elo_change)}
       </li>
     );
+  }
+
+  function renderMatchOpponent(color, acronym, elo, eloChange) {
+    return (
+      <div className="mx-3 my-2 flex flex-col items-center">
+        <div
+          className="text-base sm:text-lg md:text-xl"
+          style={{ borderBottom: `2px solid ${color}` }}
+        >
+          {acronym}
+        </div>
+        <div className="flex flex-col items-end text-sm sm:text-md md:text-lg">
+          <div>{elo}</div>
+          {renderEloChange(eloChange)}
+        </div>
+      </div>
+    )
   }
 
   function renderChart() {
