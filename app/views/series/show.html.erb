@@ -6,29 +6,17 @@
     
     <div class="flex flex-row items-center">
       <% if @previous_serie.present? %>
-        <%= link_to "← #{@previous_serie.full_name}",
-              series_path(@previous_serie), 
-              class: "text-sm lg:text-base underline underline-offset-4 text-center mx-2 md:mx-4" 
-        %>
+        <%= render partial: "series/previous_serie", locals: { previous_serie: @previous_serie, visible: true } %>
       <% elsif @next_serie.present? %>
-        <%= link_to "#{@next_serie.full_name} →", 
-              series_path(@next_serie), 
-              class: "text-sm lg:text-base underline underline-offset-4 text-center mx-2 md:mx-4 invisible" 
-        %>
+        <%= render partial: "series/next_serie", locals: { next_serie: @next_serie, visible: false } %>
       <% end %>
-      <h1 class="flex-grow text-center text-xl sm:text-2xl md:text-3xl lg:text-4xl mx-4 md:mx-6">
+      <h1 class="flex-grow text-center text-xl sm:text-2xl md:text-3xl lg:text-4xl mx-4 md:mx-6 lg:mx-8">
         <%= "#{@serie.league.name} #{@serie.full_name}" %>
       </h1>
       <% if @next_serie.present? %>
-        <%= link_to "#{@next_serie.full_name} →", 
-              series_path(@next_serie), 
-              class: "text-sm lg:text-base underline underline-offset-4 text-center mx-2 md:mx-4" 
-        %>
+        <%= render partial: "series/next_serie", locals: { next_serie: @next_serie, visible: true } %>
       <% elsif @previous_serie.present? %>
-        <%= link_to "← #{@previous_serie.full_name}",
-              series_path(@previous_serie), 
-              class: "text-sm lg:text-base underline underline-offset-4 text-center mx-2 md:mx-4 invisible" 
-        %>
+        <%= render partial: "series/previous_serie", locals: { previous_serie: @previous_serie, visible: false } %>
       <% end %>
     </div>
 

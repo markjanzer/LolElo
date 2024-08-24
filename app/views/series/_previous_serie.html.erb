@@ -1,0 +1,6 @@
+<a 
+  href="<%= series_path(previous_serie) %>" 
+  class="border-b-0 hover:text-green-accent hover:border-green-accent md:border-b-2 <%= "invisible" unless visible %>"
+>
+  ←<span class="hidden md:inline-block pr-1"><%= previous_serie.full_name %></span>
+</a>
