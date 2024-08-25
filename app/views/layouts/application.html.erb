@@ -10,7 +10,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
-    <%= Sentry.get_trace_propagation_meta.html_safe %>
 
     <%= favicon_link_tag 'favicon/apple-touch-icon.png', rel: 'apple-touch-icon', sizes: '180x180', type: 'image/png' %>
     <%= favicon_link_tag 'favicon/favicon-32x32.png', rel: 'icon', sizes: '32x32', type: 'image/png' %>
@@ -18,6 +17,9 @@
     <link rel="manifest" href="<%= asset_path 'favicon/site.webmanifest' %>">
 
     <% if Rails.env.production? %>
+      <!-- Sentry -->
+      <%= Sentry.get_trace_propagation_meta.html_safe %>
+      
       <!-- Google Analytics -->
       <script async src="https://www.googletagmanager.com/gtag/js?id=G-BY88XH8Q5Z"></script>
       <script>
