@@ -23,7 +23,8 @@
     "esbuild": "^0.23.1"
   },
   "scripts": {
-    "build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds --public-path=assets --loader:.js=jsx --loader:.css=css && yarn sentry:sourcemaps",
-    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org lolproelo --project javascript app/assets/builds && sentry-cli sourcemaps upload --org lolproelo --project javascript app/assets/builds"
+    "build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds --public-path=assets --loader:.js=jsx --loader:.css=css",
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org lolproelo --project javascript app/assets/builds && sentry-cli sourcemaps upload --org lolproelo --project javascript app/assets/builds",
+    "heroku-postbuild": "yarn sentry:sourcemaps"
   }
 }
