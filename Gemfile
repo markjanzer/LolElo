@@ -26,10 +26,6 @@ gem 'jsbundling-rails', '~> 1.3'
 gem 'figaro'
 gem 'httparty'
 
-gem "stackprof"
-gem "sentry-ruby"
-gem "sentry-rails"
-
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
 
@@ -66,4 +62,11 @@ group :development do
   gem 'spring-watcher-listen', '~> 2.0.0'
   # For better debugging
   gem 'awesome_print'
+end
+
+group :production do
+  # Sentry setup
+  gem "stackprof"
+  gem "sentry-ruby"
+  gem "sentry-rails"
 end
