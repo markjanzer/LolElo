@@ -25,6 +25,6 @@
   "scripts": {
     "build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds --public-path=assets --loader:.js=jsx --loader:.css=css",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org lolproelo --project javascript app/assets/builds && sentry-cli sourcemaps upload --org lolproelo --project javascript app/assets/builds",
-    "heroku-postbuild": "yarn sentry:sourcemaps"
+    "heroku-postbuild": "yarn build && yarn sentry:sourcemaps"
   }
 }
