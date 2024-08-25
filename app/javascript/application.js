@@ -33,4 +33,4 @@ document.addEventListener("turbolinks:load", () => {
 });
 
 // Test Sentry
-myUndefinedFunction();
+anotherUndefinedFunction();
