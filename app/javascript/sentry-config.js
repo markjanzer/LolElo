@@ -1,6 +1,8 @@
 import * as Sentry from "@sentry/browser";
 
 export function initSentry() {
+  if (window.RAILS_ENV !== "production") return;
+
   Sentry.init({
     dsn: "https://433640f6ce0eddb0adb515022fc34e67@o4507806515396608.ingest.us.sentry.io/4507834693582848",
     integrations: [
