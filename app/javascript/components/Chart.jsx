@@ -34,13 +34,22 @@ export const Chart = ({ data }) => {
   const matchData = data.matches;
   const year = data.year;
 
+  const lastDate = lineChartData[lineChartData.length - 1].name;
   const [selectedDate, setSeletedDate] = useState(
-    matchData[matchData.length - 1].date
+    lastDate
   );
   // Set default so chart doesn't rerender on first hover
   const [hoveredDate, setHoveredDate] = useState(
-    matchData[matchData.length - 1].date
+    lastDate
   );
+
+  const dateData = lineChartData.filter((d) => d.name === lastDate)[0];
+  const teamElos = sortedTeamElos(dateData);
+  const [selectedTeamId, setSelectedTeamId] = useState(
+    teamElos[0].id
+  )
+
+  console.log(teamData);
 
   const [fontSize, setFontSize] = useState(14);
   const [aspectRatio, setAspectRatio] = useState(5 / 3); // Default aspect ratio
@@ -174,7 +183,7 @@ export const Chart = ({ data }) => {
                 type="monotone"
                 strokeWidth={2}
                 dataKey={team.acronym}
-                stroke={team.color}
+                stroke={selectedTeamId === team.id ? team.color : "#777"}
               />
             );
           })}
@@ -183,20 +192,22 @@ export const Chart = ({ data }) => {
     );
   }
 
-  function renderList() {
-    const dateData = lineChartData.filter((d) => d.name === selectedDate)[0];
-    const teamElos = teamData.reduce((result, team) => {
+  function sortedTeamElos(dateData) {
+    return teamData.reduce((result, team) => {
       const teamObj = {
         name: team.name,
         elo: dateData[team.acronym],
         color: team.color,
+        id: team.id,
       };
       result.push(teamObj);
       return result;
-    }, []);
-    const sortedTeamElos = teamElos.sort(
-      (a, b) => b.elo - a.elo
-    );
+    }, []).sort((a, b) => b.elo - a.elo);
+  }
+
+  function renderList() {
+    const dateData = lineChartData.filter((d) => d.name === selectedDate)[0];
+    const teamElos = sortedTeamElos(dateData);
 
     return (
       <div className="ml-1 md:ml-4 mr-2">
@@ -204,15 +215,16 @@ export const Chart = ({ data }) => {
           className={"text-lg lg:text-xl mx-2 mb-2 mt-1 text-green-accent"}
         >{formatDateString(selectedDate, year)}</h2>
         <ul>
-          {sortedTeamElos.map((team) => {
+          {teamElos.map((team) => {
             return (
               <li 
                 key={team.name}
-                className="m-2 flex items-center"
+                className="m-2 flex items-center cursor-pointer"
+                onClick={() => setSelectedTeamId(team.id)}
               >
                 <div
-                  className="w-4 h-4 rounded-full mr-2"
-                  style={{ backgroundColor: team.color }}
+                  className="w-4 h-4 rounded-full mr-2 border-2"
+                  style={{ backgroundColor: selectedTeamId === team.id ? team.color : "transparent", borderColor: team.color }}
                 />
                 <span className="text-sm lg:text-base">{team.name}: {team.elo}</span>
               </li>
