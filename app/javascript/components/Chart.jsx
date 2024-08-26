@@ -7,7 +7,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ReferenceLine,
   ResponsiveContainer
 } from "recharts";
@@ -44,12 +43,24 @@ export const Chart = ({ data }) => {
   );
 
   const dateData = lineChartData.filter((d) => d.name === lastDate)[0];
-  const teamElos = sortedTeamElos(dateData);
-  const [selectedTeamId, setSelectedTeamId] = useState(
-    teamElos[0].id
+  const bestTeam = sortedTeamElos(dateData)[0];
+  const [selectedTeamIds, setSelectedTeamIds] = useState(
+    [bestTeam.id]
   )
-
-  console.log(teamData);
+  function selectTeam(teamId) {
+    if (selectedTeamIds.includes(teamId)) {
+      setSelectedTeamIds(selectedTeamIds.filter((id) => id !== teamId));
+    } else {
+      setSelectedTeamIds([...selectedTeamIds, teamId]);
+    }
+  }
+  function isTeamSelected(teamId) {
+    if (selectedTeamIds.length === 0) {
+      return true;
+    } else {
+      return selectedTeamIds.includes(teamId);
+    }
+  }
 
   const [fontSize, setFontSize] = useState(14);
   const [aspectRatio, setAspectRatio] = useState(5 / 3); // Default aspect ratio
@@ -183,7 +194,7 @@ export const Chart = ({ data }) => {
                 type="monotone"
                 strokeWidth={2}
                 dataKey={team.acronym}
-                stroke={selectedTeamId === team.id ? team.color : "#777"}
+                stroke={isTeamSelected(team.id) ? team.color : "#777"}
               />
             );
           })}
@@ -220,11 +231,11 @@ export const Chart = ({ data }) => {
               <li 
                 key={team.name}
                 className="m-2 flex items-center cursor-pointer"
-                onClick={() => setSelectedTeamId(team.id)}
+                onClick={() => selectTeam(team.id)}
               >
                 <div
                   className="w-4 h-4 rounded-full mr-2 border-2"
-                  style={{ backgroundColor: selectedTeamId === team.id ? team.color : "transparent", borderColor: team.color }}
+                  style={{ backgroundColor: isTeamSelected(team.id) ? team.color : "transparent", borderColor: team.color }}
                 />
                 <span className="text-sm lg:text-base">{team.name}: {team.elo}</span>
               </li>
