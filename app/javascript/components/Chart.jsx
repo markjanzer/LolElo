@@ -54,12 +54,8 @@ export const Chart = ({ data }) => {
       setSelectedTeamIds([...selectedTeamIds, teamId]);
     }
   }
-  function isTeamSelected(teamId) {
-    if (selectedTeamIds.length === 0) {
-      return true;
-    } else {
-      return selectedTeamIds.includes(teamId);
-    }
+  function selectAllTeams() {
+    setSelectedTeamIds(teamData.map((team) => team.id));
   }
 
   const [fontSize, setFontSize] = useState(14);
@@ -194,7 +190,7 @@ export const Chart = ({ data }) => {
                   type="monotone"
                   strokeWidth={3}
                   dataKey={team.acronym}
-                  stroke={isTeamSelected(team.id) ? team.color : "#777"}
+                  stroke={selectedTeamIds.includes(team.id) ? team.color : "#777"}
                 />
                 <Line
                   strokeWidth={12}
@@ -225,6 +221,18 @@ export const Chart = ({ data }) => {
     }, []).sort((a, b) => b.elo - a.elo);
   }
 
+  function renderSelectHelper() {
+    if (selectedTeamIds.length === 0) {
+      return (
+        <button onClick={selectAllTeams} className="text-sm lg:text-base underline mx-2">Select All</button>
+      )
+    } else {
+      return (
+        <button onClick={() => setSelectedTeamIds([])} className="text-sm lg:text-base underline mx-2">Clear Selections</button>
+      );
+    }
+  }
+
   function renderList() {
     const dateData = lineChartData.filter((d) => d.name === selectedDate)[0];
     const teamElos = sortedTeamElos(dateData);
@@ -244,14 +252,14 @@ export const Chart = ({ data }) => {
               >
                 <div
                   className="w-4 h-4 rounded-full mr-2 border-2"
-                  style={{ backgroundColor: isTeamSelected(team.id) ? team.color : "transparent", borderColor: team.color }}
+                  style={{ backgroundColor: selectedTeamIds.includes(team.id) ? team.color : "transparent", borderColor: team.color }}
                 />
                 <span className="text-sm lg:text-base">{team.name}: {team.elo}</span>
               </li>
             );
           })}
         </ul>
-        <button onClick={() => setSelectedTeamIds([])} className="text-sm lg:text-base underline">Clear Selections</button>
+        {renderSelectHelper()}
       </div>
     );
   }
