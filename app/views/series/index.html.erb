@@ -5,8 +5,16 @@
         <%= image_tag 'logos/logo-1-accent.svg', alt: 'LoL Pro Elo Logo', class: "w-52 md:w-40 aspect-square"%>
       </div>
       <div class="bg-purple-popout rounded-xl p-4 md:p-6 flex-grow">
-        <p class="text-base md:text-lg">Track the historical and current Elo ratings of professional League of Legends teams across various regions. See how teams stack up and follow their progress through the season.</p>
+        <p class="text-base md:text-lg">
+          Track the historical and current Elo<sup>
+            <%= link_to "?", what_is_elo_path, 
+                class: "text-sm text-green-accent hover:underline", 
+                title: "What is Elo?", 
+                aria: { label: "Learn more about Elo" } %>
+          </sup> ratings of professional League of Legends teams across various regions. See how teams stack up and follow their progress through the season.
+        </p>
       </div>
+
     </div>
 
     <% @series_by_year_and_league.each do |year, leagues| %>

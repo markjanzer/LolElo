@@ -1,0 +1,26 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-4xl mx-auto">
+    <div class="flex flex-row items-center justify-between">
+      <%= link_to "Home", root_path, class: "text-sm lg:text-base underline underline-offset-4 px-4" %>
+      <div class="bg-purple-popout p-2 md:p-4 rounded-xl">
+        <%= image_tag 'logos/logo-1-accent.svg', alt: 'LoL Pro Elo Logo', class: "w-12 aspect-square"%>
+      </div>
+      <%= link_to "Home", root_path, class: "text-sm lg:text-base underline underline-offset-4 px-4 invisible" %>
+    </div>
+    <div class="text-orange-text bg-purple-popout rounded-xl p-6 md:p-8 mt-6 w-full">
+      <div class="prose lg:prose-xl text-orange-text">
+        <h1 class="font-bold mb-4 text-orange-text">What is Elo?</h1>
+        <p>
+          Elo is a method for calculating the relative skill levels of players in two-player games, such as chess. It is named after its creator Arpad Elo, a Hungarian-American physics professor.
+        </p>
+        <ul>
+          <li>Elo is used to rank teams based on their performance.</li>
+          <li>Teams gain Elo points by winning games and lose points when defeated.</li>
+          <li>The amount of points gained or lost depends on the relative Elo ratings of the competing teams.</li>
+        </ul>
+        <p>Elo provides a way to compare teams across different regions and track their performance over time.</p>
+        <p>Despite the simplicity of the algorithm, it is surprisingly effective as predicting outcomes.</p>
+      </div>
+    </div>
+  </div>
+</div>
