@@ -147,7 +147,7 @@ export const Chart = ({ data }) => {
       <ResponsiveContainer width="100%" aspect={aspectRatio}>
         <LineChart
           data={lineChartData}
-          margin={{ left: chartLeft, right: 4 }}
+          margin={{ left: chartLeft, right: 6 }}
           onClick={(chart) => {
             if (chart.activeLabel) {
               setSeletedDate(chart.activeLabel)
@@ -189,13 +189,22 @@ export const Chart = ({ data }) => {
           <Tooltip content={customToolTip} />
           {teamData.map((team) => {
             return (
-              <Line
-                key={team.id}
-                type="monotone"
-                strokeWidth={2}
-                dataKey={team.acronym}
-                stroke={isTeamSelected(team.id) ? team.color : "#777"}
-              />
+              <React.Fragment key={team.id}>
+                <Line
+                  type="monotone"
+                  strokeWidth={3}
+                  dataKey={team.acronym}
+                  stroke={isTeamSelected(team.id) ? team.color : "#777"}
+                />
+                <Line
+                  strokeWidth={12}
+                  stroke="transparent"
+                  dataKey={team.acronym}
+                  onClick={() => selectTeam(team.id)}
+                  style={{ cursor: 'pointer' }}
+                  dot={false}
+                />
+              </React.Fragment>
             );
           })}
         </LineChart>
@@ -242,6 +251,7 @@ export const Chart = ({ data }) => {
             );
           })}
         </ul>
+        <button onClick={() => setSelectedTeamIds([])} className="text-sm lg:text-base underline">Clear Selections</button>
       </div>
     );
   }
