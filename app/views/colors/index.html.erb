@@ -1,0 +1,38 @@
+<div class="container mx-auto mt-12">
+  <div class="max-w-4xl mx-auto">
+    <%= link_to "Home", root_path, class: "text-sm lg:text-base underline underline-offset-4 px-4" %>
+    <% @teams_by_league.each do |league_name, teams| %>
+      <div class="bg-purple-popout rounded-xl mt-12 p-4">
+        <h2 class="text-2xl font-bold"><%= league_name %></h2>
+        <ul>
+          <% teams.each do |team| %>
+            <li
+              id="team-<%= team[:id] %>" 
+              class="mt-4 mb-8">
+              <div class="text-lg font-bold">
+                <%= team[:name] %> 
+              </div>
+              <div>
+                Custom color? <%= team[:custom_color] ? "YES (probably)" : "NO" %>
+              </div>
+              <div class="flex items-center">
+                <div 
+                  class="w-6 h-6 rounded-full mr-2" 
+                  style="background-color:<%= team[:color] %>;"></div>
+                <div class="mr-2">Current color:</div>
+                <%= form_tag(update_color_path(anchor: "team-#{team[:id]}"), method: :patch, class: "flex items-center") do %>
+                  <%= hidden_field_tag :team_id, team[:id] %>
+                  <%= text_field_tag :color, team[:color], class: "mr-2 px-2 py-0 border text-black rounded", placeholder: "e.g. #FF5733" %>
+                  <%= submit_tag "Update Color", class: "bg-gray-500 hover:bg-gray-700 text-white cursor-pointer font-bold py-1 px-2 rounded" %>
+                <% end %>
+              </div>
+              <div>
+                Last match: <%= team[:last_match_date].strftime("%B %d, %Y") %>
+              </div>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+  </div>
+</div>

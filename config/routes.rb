@@ -5,6 +5,9 @@ require 'sidekiq/web'
 Rails.application.routes.draw do
   resources :series, only: %i[index show]
 
+  get "/colors", to: "colors#index"
+  patch "/update_color", to: "colors#update_color"
+
   root 'series#index'
 
   get 'what-is-elo', to: 'static_pages#what_is_elo'
