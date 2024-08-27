@@ -10,6 +10,8 @@ class PandaScore::Team < ApplicationRecord
     create(panda_score_id: id, data: api_data)
   end
 
+  # This doesn't have to take a tournament, we could just pick the
+  # last tournament for a team.
   def upsert_model(tournament)
     team = Team.find_or_initialize_by(panda_score_id: panda_score_id)
 
