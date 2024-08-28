@@ -19,16 +19,6 @@
     <% if Rails.env.production? %>
       <!-- Sentry -->
       <%= Sentry.get_trace_propagation_meta.html_safe %>
-      
-      <!-- Google Analytics -->
-      <script async src="https://www.googletagmanager.com/gtag/js?id=G-BY88XH8Q5Z"></script>
-      <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', 'G-BY88XH8Q5Z');
-      </script>
 
       <!-- Plausible Analytics -->
       <script defer data-domain="lolproelo.com" src="https://plausible.io/js/script.js"></script>
