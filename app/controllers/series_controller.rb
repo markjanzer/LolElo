@@ -20,12 +20,16 @@ class SeriesController < ApplicationController
   
   def show
     @serie = Serie.find(params[:id])
-    @previous_serie = @serie.league.series.where("begin_at < ?", @serie.begin_at)
+    league = @serie.league
+    @previous_serie = league.series.where("begin_at < ?", @serie.begin_at)
       .order(begin_at: :desc)
       .first
-    @next_serie = @serie.league.series.where("begin_at > ?", @serie.begin_at)
+    @next_serie = league.series.where("begin_at > ?", @serie.begin_at)
       .order(begin_at: :asc)
       .first
     @chart_data = ChartData.new(@serie).call
+
+    @page_title = "#{league.name} #{@serie.full_name} Elo Rankings"
+    @page_description = "Explore Elo rankings and performance trends for professional LoL teams in the #{league.name} #{@serie.full_name} series. Compare team strengths and track their progress throughout the season."
   end
 end

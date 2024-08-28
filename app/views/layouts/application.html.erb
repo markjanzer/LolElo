@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>LoLProElo</title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
@@ -30,26 +29,33 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Primary Meta Tags -->
-    <title>LoLProElo - Elo rankings for professional League of Legends teams</title>
-    <meta name="title" content="LoLProElo - Elo rankings for professional League of Legends teams" />
-    <meta name="description" content="Explore and compare the current and historic strength of professional League of Legends teams using an Elo rating system. Track team performance, analyze trends, and dive deep into LoL esports history." />
+
+    <% 
+      default_title = "LoLProElo - Elo rankings for League of Legends teams"
+      default_description = "Explore and compare the current and historic strength of professional League of Legends teams using an Elo rating system. Track team performance, analyze trends, and dive deep into LoL esports history."
+      
+      page_title = @page_title
+      page_description = @page_description
+    %>
+
+    <title><%= page_title || default_title %></title>
+    <meta name="title" content="<%= page_title || default_title %>" />
+    <meta name="description" content="<%= page_description || default_description %>" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="<%= request.original_url %>" />
-    <meta property="og:title" content="LoLProElo - Elo rankings for professional League of Legends teams" />
-    <meta property="og:description" content="Explore and compare the current and historic strength of professional League of Legends teams using an Elo rating system. Track team performance, analyze trends, and dive deep into LoL esports history." />
+    <meta property="og:title" content="<%= page_title || default_title %>" />
+    <meta property="og:description" content="<%= page_description || default_description %>" />
     <meta property="og:image" content="<%= asset_url('meta/meta-image.png') %>" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content="<%= request.original_url %>" />
-    <meta property="twitter:title" content="LoLProElo - Elo rankings for professional League of Legends teams" />
-    <meta property="twitter:description" content="Explore and compare the current and historic strength of professional League of Legends teams using an Elo rating system. Track team performance, analyze trends, and dive deep into LoL esports history." />
+    <meta property="twitter:title" content="<%= page_title || default_title %>" />
+    <meta property="twitter:description" content="<%= page_description || default_description %>" />
     <meta property="twitter:image" content="<%= asset_url('meta/meta-image.png') %>" />
     <!-- Meta Tags Generated with https://metatags.io -->
-
   </head>
 
   <body 
