@@ -56,9 +56,9 @@
 
       <%= render partial: "seasons/stat_box", locals: {
         title: "Most improved",
-        team_name: "Team Liquid",
-        team_color: "#5651ed",
-        sub_stats: ["Gained 190 elo"]
+        team_name: @stats[:most_improved][:name],
+        team_color: @stats[:most_improved][:color],
+        sub_stats: ["Gained #{@stats[:most_improved][:elo_change]} elo"]
       } %>
 
       <%= render partial: "seasons/stat_box", locals: {
@@ -77,9 +77,9 @@
 
       <%= render partial: "seasons/stat_box", locals: {
         title: "Steepest decline",
-        team_name: "NRG Esports",
-        team_color: "#f44200",
-        sub_stats: ["Lost 180 Elo"]
+        team_name: @stats[:steepest_decline][:name],
+        team_color: @stats[:steepest_decline][:color],
+        sub_stats: ["Lost #{@stats[:steepest_decline][:elo_change]} Elo"]
       } %>
 
       <%= render partial: "seasons/stat_box", locals: {
