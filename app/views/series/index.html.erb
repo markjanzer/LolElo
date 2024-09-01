@@ -25,7 +25,7 @@
         <div class="bg-purple-popout rounded-xl py-4 md:py-6 px-2 md:px-4 grid grid-cols-2 md:grid-cols-4 gap-4">
           <% leagues.each do |league_name, series| %>
             <div class="col-span-1 flex flex-col items-center mt-2 md:mt-0">
-              <h3 class="text-2xl md:text-3xl font-semibold mb-2"><%= league_name %></h3>
+              <h3 class="text-2xl md:text-3xl font-semibold mb-2"><a href="/seasons/<%= year %>/14"><%= league_name %></a></h3>
               <ul class="flex flex-col items-center">
                 <% series.each do |serie| %>
                   <a href="<%= serie[:url] %>"

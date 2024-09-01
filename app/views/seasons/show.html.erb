@@ -1,0 +1,107 @@
+<div class="container mx-auto mt-12">
+  <div class="max-w-4xl mx-auto">
+    <div class="flex justify-between items-center mb-4 lg:mb-6">
+      <%= link_to "Home", root_path, class: "text-sm lg:text-base underline underline-offset-4 px-4" %>
+
+      <h1 class="flex-grow text-center text-xl sm:text-2xl md:text-3xl lg:text-4xl mx-4 md:mx-6 lg:mx-8">
+        <%= "#{@league.name} #{@year}" %>
+      </h1>
+
+      <%= link_to "Home", root_path, class: "px-4 invisible" %>
+    </div>
+
+    <div class="bg-purple-popout rounded-xl p-4 md:p-6 flex-grow">
+      <div class="flex justify-between">
+        <div>
+          <h2 class="text-2xl underline">Starting Elo</h2>
+          <p class="text-green-accent text-sm"><%= @stats[:starting_elos][:date] %></p>
+          <ul>
+            <% @stats[:starting_elos][:teams].each do |team| %>
+              <li
+                class="underline text-xl decoration-2"
+                style="text-decoration-color: <%= team[:color] %>"
+              ><%= "#{team[:name]}: #{team[:elo]}" %></li>
+            <% end %>
+          </ul>
+        </div>
+        <div>
+          <h2 class="text-2xl underline">Final Elo</h2>
+          <p class="text-green-accent text-sm"><%= @stats[:ending_elos][:date] %></p>
+          <ul>
+            <% @stats[:ending_elos][:teams].each do |team| %>
+              <li
+                class="underline text-xl decoration-2"
+                style="text-decoration-color: <%= team[:color] %>"
+              ><%= "#{team[:name]}: #{team[:elo]}" %></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  <div class="flex flex-wrap -mx-2 my-8">
+      <%= render partial: "seasons/stat_box", locals: {
+        title: "Most dominant",
+        team_name: @stats[:most_dominant][:name],
+        team_color: @stats[:most_dominant][:color],
+        sub_stats: ["Average Elo: #{@stats[:most_dominant][:average_elo]}"]
+      } %>
+
+      <%= render partial: "seasons/stat_box", locals: {
+        title: "Highest high",
+        team_name: "Team Liquid",
+        team_color: "#5651ed",
+        sub_stats: ["Highest Elo: 1726", "August 31st, after beating FLY 3-0"]
+      } %>
+
+      <%= render partial: "seasons/stat_box", locals: {
+        title: "Most improved",
+        team_name: "Team Liquid",
+        team_color: "#5651ed",
+        sub_stats: ["Gained 190 elo"]
+      } %>
+
+      <%= render partial: "seasons/stat_box", locals: {
+        title: "Weakest",
+        team_name: @stats[:weakest][:name],
+        team_color: @stats[:weakest][:color],
+        sub_stats: ["Average Elo: #{@stats[:weakest][:average_elo]}"]
+      } %>
+
+      <%= render partial: "seasons/stat_box", locals: {
+        title: "Lowest low",
+        team_name: "Immortals",
+        team_color: "#01B1A9",
+        sub_stats: ["Lowest Elo: 1325", "August 11th, after losing to Dig 2-1"]
+      } %>
+
+      <%= render partial: "seasons/stat_box", locals: {
+        title: "Steepest decline",
+        team_name: "NRG Esports",
+        team_color: "#f44200",
+        sub_stats: ["Lost 180 Elo"]
+      } %>
+
+      <%= render partial: "seasons/stat_box", locals: {
+        title: "Biggest upset",
+        team_name: "FlyQuest",
+        team_color: "#18552e",
+        sub_stats: ["Beat C9 3-0 on March 23rd"]
+      } %>
+
+      <%= render partial: "seasons/stat_box", locals: {
+        title: "Most predictable",
+        team_name: "Team Liquid",
+        team_color: "#5651ed",
+        sub_stats: []
+      } %>
+
+      <%= render partial: "seasons/stat_box", locals: {
+        title: "Least predictable",
+        team_name: "100 Thieves",
+        team_color: "#f32d33",
+        sub_stats: []
+      } %>
+    </div>
+  </div>
+</div>
