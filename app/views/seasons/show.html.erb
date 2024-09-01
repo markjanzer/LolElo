@@ -49,9 +49,9 @@
 
       <%= render partial: "seasons/stat_box", locals: {
         title: "Highest high",
-        team_name: "Team Liquid",
-        team_color: "#5651ed",
-        sub_stats: ["Highest Elo: 1726", "August 31st, after beating FLY 3-0"]
+        team_name: @stats[:highest_high][:name],
+        team_color: @stats[:highest_high][:color],
+        sub_stats: ["Highest Elo: #{@stats[:highest_high][:elo]}", "CHANGE THIS, after beating FLY 3-0"]
       } %>
 
       <%= render partial: "seasons/stat_box", locals: {
@@ -70,9 +70,9 @@
 
       <%= render partial: "seasons/stat_box", locals: {
         title: "Lowest low",
-        team_name: "Immortals",
-        team_color: "#01B1A9",
-        sub_stats: ["Lowest Elo: 1325", "August 11th, after losing to Dig 2-1"]
+        team_name: @stats[:lowest_low][:name],
+        team_color: @stats[:lowest_low][:color],
+        sub_stats: ["Lowest Elo: #{@stats[:lowest_low][:elo]}", "CHANGE THIS, after losing to Dig 2-1"]
       } %>
 
       <%= render partial: "seasons/stat_box", locals: {

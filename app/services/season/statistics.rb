@@ -10,6 +10,7 @@ module Season
       starting_elos, ending_elos, most_improved, most_declined = team_elo_changes
         .values_at(:starting_elos, :ending_elos, :most_improved, :most_declined)
       most_dominant, weakest = most_and_least_dominant
+      highest_high, lowest_low = highest_high_and_lowest_low
 
       return {
         starting_elos: starting_elos,
@@ -17,7 +18,9 @@ module Season
         most_dominant: most_dominant,
         weakest: weakest,
         most_improved: most_improved,
-        steepest_decline: most_declined
+        steepest_decline: most_declined,
+        highest_high: highest_high,
+        lowest_low: lowest_low
       }
     end
 
@@ -58,6 +61,15 @@ module Season
       JOIN teams_tournaments ON teams_tournaments.team_id = teams.id
       JOIN tournaments ON tournaments.id = teams_tournaments.tournament_id
       JOIN season_series ON season_series.id = tournaments.serie_id
+    SQL
+
+    SEASON_SNAPSHOTS_SQL = <<-SQL
+      SELECT *
+      FROM snapshots
+      JOIN games on snapshots.game_id = games.id
+      JOIN matches on games.match_id = matches.id
+      JOIN tournaments on matches.tournament_id = tournaments.id
+      JOIN season_series on tournaments.serie_id = season_series.id
     SQL
 
     def season_start_and_end_dates
@@ -192,5 +204,43 @@ module Season
         .execute(average_elo_sql)
         .to_a
     end
+
+    def highest_high_and_lowest_low
+      highest_elo_snapshot_sql = <<-SQL
+        WITH season_series AS (
+          #{season_series_sql}
+        ), season_snapshots AS (
+          #{SEASON_SNAPSHOTS_SQL}
+        )
+        SELECT *
+        FROM season_snapshots
+        ORDER BY ELO DESC
+        LIMIT 1;
+      SQL
+
+      lowest_elo_snapshot_sql = <<-SQL
+        WITH season_series AS (
+          #{season_series_sql}
+        ), season_snapshots AS (
+          #{SEASON_SNAPSHOTS_SQL}
+        )
+        SELECT *
+        FROM season_snapshots
+        ORDER BY ELO ASC
+        LIMIT 1;
+      SQL
+
+      highest_elo_snapshot = ActiveRecord::Base.connection.execute(highest_elo_snapshot_sql)[0]
+      lowest_elo_snapshot = ActiveRecord::Base.connection.execute(lowest_elo_snapshot_sql)[0]
+
+      highest_elo_team = season_teams.find { |team| team.id == highest_elo_snapshot["team_id"] }
+      lowest_elo_team = season_teams.find { |team| team.id == lowest_elo_snapshot["team_id"] }
+
+      return [
+        { name: highest_elo_team.name, color: highest_elo_team.color, elo: highest_elo_snapshot["elo"] },
+        { name: lowest_elo_team.name, color: lowest_elo_team.color, elo: lowest_elo_snapshot["elo"] }
+      ]
+    end
+
   end
 end
