@@ -10,10 +10,13 @@ class SeriesController < ApplicationController
       .order(begin_at: :desc)
       .group_by { |serie| [serie.year, serie.league_id]}
 
-    @series_by_year_and_league = years.each_with_object({}) do |year, result|
-      result[year] = leagues.each_with_object({}) do |league, league_data|
+    @series_by_year_and_league = years.each_with_object({}) do |year, years_hash|
+      years_hash[year] = leagues.each_with_object({}) do |league, leagues_hash|
         league_series = series_data[[year, league.id]] || []
-        league_data[league.name] = league_series.map { |serie| { name: serie.full_name, url: "series/#{serie.id}" } }
+        leagues_hash[league.name] = {
+          id: league.id,
+          series: league_series.map { |serie| { name: serie.full_name, url: "series/#{serie.id}" } }
+        }
       end
     end
   end

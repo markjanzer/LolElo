@@ -241,8 +241,8 @@ module Season
       lowest_elo_team = season_teams.find { |team| team.id == lowest_elo_snapshot["team_id"] }
 
       return [
-        { name: highest_elo_team.name, color: highest_elo_team.color, elo: highest_elo_snapshot["elo"] },
-        { name: lowest_elo_team.name, color: lowest_elo_team.color, elo: lowest_elo_snapshot["elo"] }
+        { name: highest_elo_team.name, color: highest_elo_team.color, elo: highest_elo_snapshot["elo"], date: highest_elo_snapshot["datetime"].strftime("%B %d, %Y") },
+        { name: lowest_elo_team.name, color: lowest_elo_team.color, elo: lowest_elo_snapshot["elo"], date: lowest_elo_snapshot["datetime"].strftime("%B %d, %Y") }
       ]
     end
 

@@ -51,7 +51,7 @@
         title: "Highest high",
         team_name: @stats[:highest_high][:name],
         team_color: @stats[:highest_high][:color],
-        sub_stats: ["Highest Elo: #{@stats[:highest_high][:elo]}", "CHANGE THIS, after beating FLY 3-0"]
+        sub_stats: ["Highest Elo: #{@stats[:highest_high][:elo]}", "#{@stats[:highest_high][:date]}"]
       } %>
 
       <%= render partial: "seasons/stat_box", locals: {
@@ -72,7 +72,7 @@
         title: "Lowest low",
         team_name: @stats[:lowest_low][:name],
         team_color: @stats[:lowest_low][:color],
-        sub_stats: ["Lowest Elo: #{@stats[:lowest_low][:elo]}", "CHANGE THIS, after losing to Dig 2-1"]
+        sub_stats: ["Lowest Elo: #{@stats[:lowest_low][:elo]}", "#{@stats[:lowest_low][:date]}"]
       } %>
 
       <%= render partial: "seasons/stat_box", locals: {
