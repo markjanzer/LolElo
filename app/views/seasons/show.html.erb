@@ -10,32 +10,34 @@
       <%= link_to "Home", root_path, class: "px-4 invisible" %>
     </div>
 
-    <div class="bg-purple-popout rounded-xl p-4 md:p-6 flex-grow">
-      <div class="flex justify-between">
-        <div>
+    <div class="flex justify-around mt-8">
+      <div class="bg-purple-popout rounded-xl py-4 md:py-6 px-8 md:px-12 drop-shadow-lg">
+        <div class="mb-4">
           <h2 class="text-2xl underline">Starting Elo</h2>
           <p class="text-green-accent text-sm"><%= @stats[:starting_elos][:date] %></p>
-          <ul>
-            <% @stats[:starting_elos][:teams].each do |team| %>
-              <li
-                class="underline text-xl decoration-2"
-                style="text-decoration-color: <%= team[:color] %>"
-              ><%= "#{team[:name]}: #{team[:elo]}" %></li>
-            <% end %>
-          </ul>
         </div>
-        <div>
+        <ul>
+          <% @stats[:starting_elos][:teams].each do |team| %>
+            <li
+              class="underline text-xl decoration-2 mb-1"
+              style="text-decoration-color: <%= team[:color] %>"
+            ><%= "#{team[:name]}: #{team[:elo]}" %></li>
+          <% end %>
+        </ul>
+      </div>
+      <div class="bg-purple-popout rounded-xl py-4 md:py-6 px-8 md:px-12 drop-shadow-lg">
+        <div class="mb-4">
           <h2 class="text-2xl underline">Final Elo</h2>
           <p class="text-green-accent text-sm"><%= @stats[:ending_elos][:date] %></p>
-          <ul>
-            <% @stats[:ending_elos][:teams].each do |team| %>
-              <li
-                class="underline text-xl decoration-2"
-                style="text-decoration-color: <%= team[:color] %>"
-              ><%= "#{team[:name]}: #{team[:elo]}" %></li>
-            <% end %>
-          </ul>
         </div>
+        <ul>
+          <% @stats[:ending_elos][:teams].each do |team| %>
+            <li
+              class="underline text-xl decoration-2 mb-1"
+              style="text-decoration-color: <%= team[:color] %>"
+            ><%= "#{team[:name]}: #{team[:elo]}" %></li>
+          <% end %>
+        </ul>
       </div>
     </div>
 
