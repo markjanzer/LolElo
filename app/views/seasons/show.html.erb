@@ -91,15 +91,15 @@
 
       <%= render partial: "seasons/stat_box", locals: {
         title: "Most predictable",
-        team_name: "Team Liquid",
-        team_color: "#5651ed",
+        team_name: @stats[:most_predictable][:name],
+        team_color: @stats[:most_predictable][:color],
         sub_stats: []
       } %>
 
       <%= render partial: "seasons/stat_box", locals: {
         title: "Least predictable",
-        team_name: "100 Thieves",
-        team_color: "#f32d33",
+        team_name: @stats[:least_predictable][:name],
+        team_color: @stats[:least_predictable][:color],
         sub_stats: []
       } %>
     </div>

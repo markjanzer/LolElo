@@ -11,6 +11,7 @@ module Season
         .values_at(:starting_elos, :ending_elos, :most_improved, :most_declined)
       most_dominant, weakest = most_and_least_dominant
       highest_high, lowest_low = highest_high_and_lowest_low
+      most_predictable, least_predictable = most_and_least_predictable
 
       return {
         starting_elos: starting_elos,
@@ -21,7 +22,9 @@ module Season
         steepest_decline: most_declined,
         highest_high: highest_high,
         lowest_low: lowest_low,
-        biggest_upset: biggest_upset
+        biggest_upset: biggest_upset,
+        most_predictable: most_predictable,
+        least_predictable: least_predictable
       }
     end
 
@@ -243,7 +246,6 @@ module Season
       ]
     end
 
-    # Might be able to trim down some on the fields in elo_changes
     def biggest_upset
       upset_sql = <<-SQL
         WITH season_series AS (
@@ -253,14 +255,10 @@ module Season
         ), elo_changes AS (
           SELECT 
             season_snapshots.id,
-            datetime,
-            elo,
-            LAG(elo) OVER (PARTITION BY team_id ORDER BY datetime) AS previous_elo,
             COALESCE (elo - LAG(elo) OVER (PARTITION BY team_id ORDER BY datetime), 0) AS elo_change
           FROM season_snapshots
         ) 
-        SELECT 
-          season_snapshots.id
+        SELECT season_snapshots.id
         FROM season_snapshots
         JOIN elo_changes on elo_changes.id = season_snapshots.id
         ORDER BY elo_change DESC
@@ -282,7 +280,34 @@ module Season
     end
 
     def most_and_least_predictable
-      
+      unpredictability_sql = <<-SQL
+        WITH season_series AS (
+          #{season_series_sql}
+        ), season_snapshots AS (
+          #{SEASON_SNAPSHOTS_SQL}
+        ), snapshot_unpredictability AS (
+          SELECT 
+            season_snapshots.team_id as team_id, 
+            ABS(COALESCE (elo - LAG(elo) OVER (PARTITION BY team_id ORDER BY datetime), 0)) ^ 2 AS unpredictability
+          FROM season_snapshots
+        )
+        select 
+          snapshot_unpredictability.team_id,
+          |/ avg(unpredictability) as average_unpredictability
+        from snapshot_unpredictability
+        group by snapshot_unpredictability.team_id
+        order by |/ avg(unpredictability) ASC;
+      SQL
+
+      team_unpredictability = ActiveRecord::Base.connection.execute(unpredictability_sql).to_a
+      # I should add a check to ensure that new teams aren't put in here.
+      most_predictable_team = season_teams.find { |team| team.id == team_unpredictability.first["team_id"] }
+      least_predictable_team = season_teams.find { |team| team.id == team_unpredictability.last["team_id"] }
+
+      return [
+        { name: most_predictable_team.name, color: most_predictable_team.color },
+        { name: least_predictable_team.name, color: least_predictable_team.color }
+      ]
     end
   end
 end
