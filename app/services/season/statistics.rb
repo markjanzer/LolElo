@@ -20,7 +20,8 @@ module Season
         most_improved: most_improved,
         steepest_decline: most_declined,
         highest_high: highest_high,
-        lowest_low: lowest_low
+        lowest_low: lowest_low,
+        biggest_upset: biggest_upset
       }
     end
 
@@ -64,7 +65,7 @@ module Season
     SQL
 
     SEASON_SNAPSHOTS_SQL = <<-SQL
-      SELECT *
+      SELECT snapshots.*
       FROM snapshots
       JOIN games on snapshots.game_id = games.id
       JOIN matches on games.match_id = matches.id
@@ -242,5 +243,46 @@ module Season
       ]
     end
 
+    # Might be able to trim down some on the fields in elo_changes
+    def biggest_upset
+      upset_sql = <<-SQL
+        WITH season_series AS (
+          #{season_series_sql}
+        ), season_snapshots AS (
+          #{SEASON_SNAPSHOTS_SQL}
+        ), elo_changes AS (
+          SELECT 
+            season_snapshots.id,
+            datetime,
+            elo,
+            LAG(elo) OVER (PARTITION BY team_id ORDER BY datetime) AS previous_elo,
+            COALESCE (elo - LAG(elo) OVER (PARTITION BY team_id ORDER BY datetime), 0) AS elo_change
+          FROM season_snapshots
+        ) 
+        SELECT 
+          season_snapshots.id
+        FROM season_snapshots
+        JOIN elo_changes on elo_changes.id = season_snapshots.id
+        ORDER BY elo_change DESC
+        LIMIT 1;
+      SQL
+
+      upset_snapshot_id = ActiveRecord::Base.connection.execute(upset_sql)[0]["id"]
+      snapshot = Snapshot.find(upset_snapshot_id)
+      
+      winning_team = snapshot.team
+      losing_team = snapshot.game.match.opponent_of(winning_team)
+
+      return {
+        name: winning_team.name,
+        color: winning_team.color,
+        losing_team: losing_team.name,
+        date: snapshot.datetime.strftime("%B %d, %Y")
+      }
+    end
+
+    def most_and_least_predictable
+      
+    end
   end
 end

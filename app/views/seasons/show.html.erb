@@ -83,10 +83,10 @@
       } %>
 
       <%= render partial: "seasons/stat_box", locals: {
-        title: "Biggest upset",
-        team_name: "FlyQuest",
-        team_color: "#18552e",
-        sub_stats: ["Beat C9 3-0 on March 23rd"]
+        title: "Biggest upset (game)",
+        team_name: @stats[:biggest_upset][:name],
+        team_color: @stats[:biggest_upset][:color],
+        sub_stats: ["Beat #{@stats[:biggest_upset][:losing_team]} on #{@stats[:biggest_upset][:date]}"]
       } %>
 
       <%= render partial: "seasons/stat_box", locals: {

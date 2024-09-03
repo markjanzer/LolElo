@@ -14,6 +14,16 @@ class Match < ApplicationRecord
     [opponent1, opponent2]
   end
 
+  def opponent_of(team)
+    if team == opponent1
+      opponent2
+    elsif team == opponent2
+      opponent1
+    else
+      raise ArgumentError, "Team #{team.name} is not in match #{id}"
+    end
+  end
+
   def panda_score_match
     PandaScore::Match.find_by(panda_score_id: panda_score_id)
   end
