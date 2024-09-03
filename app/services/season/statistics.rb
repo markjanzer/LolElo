@@ -99,6 +99,8 @@ module Season
         teams: [] 
       }
 
+      # pre-season elo is a little jank, it might be possible that a team doesn't have
+      # a elo of 1500 if it started halfway through the season
       sql = <<-SQL
         WITH season_series AS (
           #{season_series_sql}
@@ -127,9 +129,9 @@ module Season
         )
         SELECT
           season_teams.id AS team_id,
-          pre_elo.pre_season_elo AS pre_season_elo,
+          COALESCE(pre_elo.pre_season_elo, #{EloCalculator::NEW_TEAM_ELO}) AS pre_season_elo,
           end_elo.end_season_elo AS end_season_elo,
-          end_elo.end_season_elo - pre_elo.pre_season_elo AS elo_change
+          end_elo.end_season_elo - COALESCE(pre_elo.pre_season_elo, #{EloCalculator::NEW_TEAM_ELO}) AS elo_change
         FROM season_teams
         LEFT JOIN pre_season_elo pre_elo ON season_teams.id = pre_elo.team_id
         LEFT JOIN end_season_elo end_elo ON season_teams.id = end_elo.team_id;
