@@ -12,14 +12,14 @@ RSpec.describe EloSnapshots::GameProcessor do
     let(:game) { create(:game, winner: winning_team, end_at: "2020-02-01") }
     let(:winning_team) { create(:team, name: "winning_team") }
     let(:losing_team) { create(:team, name: "losing_team") }
-    let!(:winning_team_snapshot) { create(:snapshot, elo: 1500, serie: serie, team: winning_team, datetime: "2020-01-01") }
-    let!(:losing_team_snapshot) { create(:snapshot, elo: 1500, serie: serie, team: losing_team, datetime: "2020-01-01") }
+    let!(:previous_snapshot_for_winning_team) { create(:snapshot, elo: 1500, serie: serie, team: winning_team, datetime: "2020-01-01") }
+    let!(:previous_snapshot_for_losing_team) { create(:snapshot, elo: 1500, serie: serie, team: losing_team, datetime: "2020-01-01") }
 
     context "teams do not have existing elos from this year" do
       let(:winning_team) { create(:team, name: "winning_team", snapshots: []) }
       let(:losing_team) { create(:team, name: "losing_team", snapshots: []) }
-      let(:winning_team_snapshot) { nil }
-      let(:losing_team_snapshot) { nil }
+      let(:previous_snapshot_for_winning_team) { nil }
+      let(:previous_snapshot_for_losing_team) { nil }
 
       it "creates two snapshots for the winning team" do
         expect { subject }.to change { winning_team.snapshots.count }.by 2
@@ -70,6 +70,12 @@ RSpec.describe EloSnapshots::GameProcessor do
     it "creates a lower elo snapshot for the team that lost" do
       subject
       expect(losing_team.snapshots.reload.last.elo).to be < 1500
+    end
+
+    it "stores the previous elos in the new snapshots" do
+      subject
+      expect(winning_team.snapshots.reload.last.previous_elo).to eq previous_snapshot_for_winning_team.elo
+      expect(losing_team.snapshots.reload.last.previous_elo).to eq previous_snapshot_for_losing_team.elo
     end
   end
 end
