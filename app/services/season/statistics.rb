@@ -181,18 +181,6 @@ module Season
     end
 
     def most_and_least_dominant
-      most_dominant_team_id, most_dominant_team_average_elo = average_elos.first.values_at("id", "average_elo")
-      most_dominant_team = season_teams.find { |team| team.id == most_dominant_team_id }
-      most_dominant = { name: most_dominant_team.name, color: most_dominant_team.color, average_elo: most_dominant_team_average_elo.round }
-
-      worst_team_id, worst_team_average_elo = average_elos.last.values_at("id", "average_elo")
-      worst_team = season_teams.find { |team| team.id == worst_team_id }
-      least_dominant = { name: worst_team.name, color: worst_team.color, average_elo: worst_team_average_elo.round }
-
-      return [most_dominant, least_dominant]
-    end
-
-    def average_elos
       average_elo_sql = <<-SQL
         WITH season_series AS (#{season_series_sql})
         SELECT teams.id, avg(snapshots.elo) AS average_elo
@@ -206,9 +194,19 @@ module Season
         ORDER BY avg(snapshots.elo) DESC;
       SQL
       
-      ActiveRecord::Base.connection
+      average_elos = ActiveRecord::Base.connection
         .execute(average_elo_sql)
         .to_a
+
+      most_dominant_team_id, most_dominant_team_average_elo = average_elos.first.values_at("id", "average_elo")
+      most_dominant_team = season_teams.find { |team| team.id == most_dominant_team_id }
+      most_dominant = { name: most_dominant_team.name, color: most_dominant_team.color, average_elo: most_dominant_team_average_elo.round }
+
+      worst_team_id, worst_team_average_elo = average_elos.last.values_at("id", "average_elo")
+      worst_team = season_teams.find { |team| team.id == worst_team_id }
+      least_dominant = { name: worst_team.name, color: worst_team.color, average_elo: worst_team_average_elo.round }
+
+      return [most_dominant, least_dominant]
     end
 
     def highest_high_and_lowest_low
