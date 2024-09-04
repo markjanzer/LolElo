@@ -6,7 +6,7 @@ require 'benchmark'
 RSpec.describe ChartData do
   describe "#call" do
     it "integrates methods into the response object correctly" do
-      serie = create(:serie)
+      serie = create(:serie, year: 2020)
       instance = described_class.new(serie)
       allow(instance).to receive(:elos_at_dates).and_return("elos_at_dates")
       allow(instance).to receive(:teams_json).and_return("teams_json")
@@ -17,7 +17,8 @@ RSpec.describe ChartData do
       expect(result).to eq({
         data: "elos_at_dates",
         teams: "teams_json",
-        matches: "matches_data"
+        matches: "matches_data",
+        year: 2020
       })
     end
 
@@ -58,6 +59,7 @@ RSpec.describe ChartData do
       ])
       expect(matches_data).to eq([
         {
+          :id=>match.id,
           :date=>"Jan 1", 
           :opponent1=>team1, 
           :opponent2=>team2, 

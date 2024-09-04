@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_08_09_221700) do
+ActiveRecord::Schema[7.0].define(version: 2024_09_04_225905) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -116,6 +116,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_09_221700) do
     t.boolean "elo_reset", default: false, null: false
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.integer "previous_elo"
     t.index ["game_id"], name: "index_snapshots_on_game_id"
     t.index ["serie_id"], name: "index_snapshots_on_serie_id"
     t.index ["team_id"], name: "index_snapshots_on_team_id"
