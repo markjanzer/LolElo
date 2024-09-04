@@ -30,27 +30,6 @@ module Season
 
     private
 
-    def season_series_sql
-      <<-SQL
-        SELECT series.id
-        FROM series
-        WHERE series.league_id = #{@league.id}
-        AND series.year = #{@year}
-      SQL
-    end
-
-    def season_teams
-      season_teams_sql = <<-SQL
-        WITH season_series AS (#{season_series_sql})
-        #{SEASON_TEAMS_SQL};
-      SQL
-
-      season_team_ids = ActiveRecord::Base.connection
-        .execute(season_teams_sql)
-        .map { |r| r["id"] }
-      Team.where(id: season_team_ids)
-    end
-
     SEASON_START_AND_END_SQL = <<-SQL
       SELECT MIN(matches.end_at) AS season_start, MAX(matches.end_at) AS season_end
       FROM series
@@ -76,6 +55,27 @@ module Season
       JOIN season_series on tournaments.serie_id = season_series.id
     SQL
 
+    def season_series_sql
+      <<-SQL
+        SELECT series.id
+        FROM series
+        WHERE series.league_id = #{@league.id}
+        AND series.year = #{@year}
+      SQL
+    end
+
+    def season_teams
+      season_teams_sql = <<-SQL
+        WITH season_series AS (#{season_series_sql})
+        #{SEASON_TEAMS_SQL};
+      SQL
+
+      season_team_ids = ActiveRecord::Base.connection
+        .execute(season_teams_sql)
+        .map { |r| r["id"] }
+      Team.where(id: season_team_ids)
+    end
+
     def season_start_and_end_dates
       sql = <<-SQL
         WITH season_series AS (#{season_series_sql})
@@ -100,7 +100,7 @@ module Season
       }
 
       # pre-season elo is a little jank, it might be possible that a team doesn't have
-      # a elo of 1500 if it started halfway through the season
+      # a elo of EloCalculator::NEW_TEAM_ELO if it started halfway through the season
       sql = <<-SQL
         WITH season_series AS (
           #{season_series_sql}
