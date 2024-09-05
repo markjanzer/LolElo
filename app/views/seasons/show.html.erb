@@ -46,7 +46,7 @@
         title: "Most dominant",
         team_name: @stats[:most_dominant][:name],
         team_color: @stats[:most_dominant][:color],
-        sub_stats: ["Average Elo: #{@stats[:most_dominant][:average_elo]}"]
+        sub_stats: ["Elo Performance: #{@stats[:most_dominant][:performance]}"]
       } %>
 
       <%= render partial: "seasons/stat_box", locals: {
@@ -67,7 +67,7 @@
         title: "Weakest",
         team_name: @stats[:weakest][:name],
         team_color: @stats[:weakest][:color],
-        sub_stats: ["Average Elo: #{@stats[:weakest][:average_elo]}"]
+        sub_stats: ["Elo Performance: #{@stats[:weakest][:performance]}"]
       } %>
 
       <%= render partial: "seasons/stat_box", locals: {

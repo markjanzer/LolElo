@@ -181,30 +181,58 @@ module Season
     end
 
     def most_and_least_dominant
-      average_elo_sql = <<-SQL
-        WITH season_series AS (#{season_series_sql})
-        SELECT teams.id, avg(snapshots.elo) AS average_elo
-        FROM snapshots
-        JOIN teams ON snapshots.team_id = teams.id
-        JOIN games ON snapshots.game_id = games.id
+      team_performances_sql = <<-SQL
+        WITH season_series AS (
+          #{season_series_sql}
+        ), game_performances AS (
+        SELECT
+            games.id,
+            matches.opponent1_id AS team1_id,
+            matches.opponent2_id AS team2_id,
+            CASE 
+                WHEN games.winner_id = matches.opponent1_id THEN opponent2_snapshot.previous_elo + 400
+                ELSE opponent2_snapshot.previous_elo - 400
+            END AS opponent1_performance,
+            CASE 
+                WHEN games.winner_id = matches.opponent2_id THEN opponent1_snapshot.previous_elo + 400
+                ELSE opponent1_snapshot.previous_elo - 400
+            END AS opponent2_performance
+        FROM games
         JOIN matches ON games.match_id = matches.id
         JOIN tournaments ON matches.tournament_id = tournaments.id
         JOIN season_series ON tournaments.serie_id = season_series.id
-        GROUP BY teams.id
-        ORDER BY avg(snapshots.elo) DESC;
+        JOIN snapshots opponent1_snapshot ON opponent1_snapshot.game_id = games.id 
+                                          AND opponent1_snapshot.team_id = matches.opponent1_id
+        JOIN snapshots opponent2_snapshot ON opponent2_snapshot.game_id = games.id 
+                                          AND opponent2_snapshot.team_id = matches.opponent2_id
+        ), team_performances AS (
+          SELECT team1_id AS team_id,
+            opponent1_performance AS performance
+          FROM game_performances
+          UNION ALL
+          SELECT team2_id AS team_id,
+            opponent2_performance AS performance
+          FROM game_performances
+        )
+        SELECT
+          team_id AS id,
+          AVG(performance) AS performance
+        FROM team_performances
+        GROUP BY team_id
+        ORDER BY performance DESC;
       SQL
       
-      average_elos = ActiveRecord::Base.connection
-        .execute(average_elo_sql)
+      team_performances = ActiveRecord::Base.connection
+        .execute(team_performances_sql)
         .to_a
 
-      most_dominant_team_id, most_dominant_team_average_elo = average_elos.first.values_at("id", "average_elo")
+      most_dominant_team_id, most_dominant_team_performance = team_performances.first.values_at("id", "performance")
       most_dominant_team = season_teams.find { |team| team.id == most_dominant_team_id }
-      most_dominant = { name: most_dominant_team.name, color: most_dominant_team.color, average_elo: most_dominant_team_average_elo.round }
+      most_dominant = { name: most_dominant_team.name, color: most_dominant_team.color, performance: most_dominant_team_performance.round }
 
-      worst_team_id, worst_team_average_elo = average_elos.last.values_at("id", "average_elo")
+      worst_team_id, worst_team_performance = team_performances.last.values_at("id", "performance")
       worst_team = season_teams.find { |team| team.id == worst_team_id }
-      least_dominant = { name: worst_team.name, color: worst_team.color, average_elo: worst_team_average_elo.round }
+      least_dominant = { name: worst_team.name, color: worst_team.color, performance: worst_team_performance.round }
 
       return [most_dominant, least_dominant]
     end
