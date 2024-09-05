@@ -31,10 +31,11 @@ module Season
     private
 
     SEASON_START_AND_END_SQL = <<-SQL
-      SELECT MIN(matches.end_at) AS season_start, MAX(matches.end_at) AS season_end
+      SELECT MIN(games.end_at) AS season_start, MAX(games.end_at) AS season_end
       FROM series
-      join tournaments on tournaments.serie_id = series.id
-      join matches on matches.tournament_id = tournaments.id
+      JOIN tournaments ON tournaments.serie_id = series.id
+      JOIN matches ON matches.tournament_id = tournaments.id
+      JOIN games ON games.match_id = matches.id
       JOIN season_series ON season_series.id = tournaments.serie_id
     SQL
 
@@ -111,12 +112,12 @@ module Season
         ), pre_season_elo AS (
           SELECT DISTINCT ON (season_teams.id)
             season_teams.id AS team_id,
-            snapshots.elo AS pre_season_elo
+            snapshots.previous_elo AS pre_season_elo
           FROM season_teams
           JOIN snapshots ON snapshots.team_id = season_teams.id
           CROSS JOIN season_start_and_end
-          WHERE snapshots.datetime < season_start_and_end.season_start
-          ORDER BY season_teams.id, snapshots.datetime DESC
+          WHERE snapshots.datetime >= season_start_and_end.season_start
+          ORDER BY season_teams.id, snapshots.datetime ASC
         ), end_season_elo AS (
           SELECT DISTINCT ON (season_teams.id)
             season_teams.id AS team_id,
@@ -280,16 +281,12 @@ module Season
           #{season_series_sql}
         ), season_snapshots AS (
           #{SEASON_SNAPSHOTS_SQL}
-        ), elo_changes AS (
-          SELECT 
-            season_snapshots.id,
-            COALESCE (elo - LAG(elo) OVER (PARTITION BY team_id ORDER BY datetime), 0) AS elo_change
-          FROM season_snapshots
-        ) 
-        SELECT season_snapshots.id
+        )
+        SELECT 
+          season_snapshots.id as id,
+          season_snapshots.elo - season_snapshots.previous_elo AS elo_change
         FROM season_snapshots
-        JOIN elo_changes on elo_changes.id = season_snapshots.id
-        ORDER BY elo_change DESC
+        ORDER BY season_snapshots.elo - season_snapshots.previous_elo DESC
         LIMIT 1;
       SQL
 
@@ -313,18 +310,13 @@ module Season
           #{season_series_sql}
         ), season_snapshots AS (
           #{SEASON_SNAPSHOTS_SQL}
-        ), snapshot_unpredictability AS (
-          SELECT 
-            season_snapshots.team_id as team_id, 
-            ABS(COALESCE (elo - LAG(elo) OVER (PARTITION BY team_id ORDER BY datetime), 0)) ^ 2 AS unpredictability
-          FROM season_snapshots
         )
-        select 
-          snapshot_unpredictability.team_id,
-          |/ avg(unpredictability) as average_unpredictability
-        from snapshot_unpredictability
-        group by snapshot_unpredictability.team_id
-        order by |/ avg(unpredictability) ASC;
+        select
+          season_snapshots.team_id,
+          |/ AVG(ABS(COALESCE(season_snapshots.elo - season_snapshots.previous_elo, 0)) ^ 2) as average_unpredictability
+        from season_snapshots
+        group by season_snapshots.team_id
+        order by |/ AVG(ABS(COALESCE(season_snapshots.elo - season_snapshots.previous_elo, 0)) ^ 2) ASC;
       SQL
 
       team_unpredictability = ActiveRecord::Base.connection.execute(unpredictability_sql).to_a
