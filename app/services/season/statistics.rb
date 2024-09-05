@@ -22,7 +22,7 @@ module Season
         steepest_decline: most_declined,
         highest_high: highest_high,
         lowest_low: lowest_low,
-        biggest_upset: biggest_upset,
+        biggest_upset: biggest_upset_game,
         most_predictable: most_predictable,
         least_predictable: least_predictable
       }
@@ -275,7 +275,7 @@ module Season
       ]
     end
 
-    def biggest_upset
+    def biggest_upset_game
       upset_sql = <<-SQL
         WITH season_series AS (
           #{season_series_sql}
