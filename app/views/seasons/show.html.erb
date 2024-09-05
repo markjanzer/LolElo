@@ -10,7 +10,7 @@
       <%= link_to "Home", root_path, class: "px-4 invisible" %>
     </div>
 
-    <div class="flex justify-around mt-8">
+    <div class="flex justify-around mt-8 mx-2">
       <div class="bg-purple-popout rounded-xl py-4 md:py-6 px-8 md:px-12 drop-shadow-lg">
         <div class="mb-4">
           <h2 class="text-2xl underline">Starting Elo</h2>
@@ -25,7 +25,7 @@
           <% end %>
         </ul>
       </div>
-      <div class="bg-purple-popout rounded-xl py-4 md:py-6 px-8 md:px-12 drop-shadow-lg">
+      <div class="bg-purple-popout rounded-xl py-4 md:py-6 px-8 md:px-12 mx-2 drop-shadow-lg">
         <div class="mb-4">
           <h2 class="text-2xl underline">Final Elo</h2>
           <p class="text-green-accent text-sm"><%= @stats[:ending_elos][:date] %></p>
@@ -41,7 +41,7 @@
       </div>
     </div>
 
-  <div class="flex flex-wrap -mx-2 my-8">
+    <div class="flex flex-wrap my-8">
       <%= render partial: "seasons/stat_box", locals: {
         title: "Most dominant",
         team_name: @stats[:most_dominant][:name],
