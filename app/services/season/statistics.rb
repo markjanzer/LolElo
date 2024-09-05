@@ -9,15 +9,15 @@ module Season
     def call
       starting_elos, ending_elos, most_improved, most_declined = team_elo_changes
         .values_at(:starting_elos, :ending_elos, :most_improved, :most_declined)
-      most_dominant, weakest = most_and_least_dominant
+      strongest_performance, weakest_performance = strongest_and_weakest_performances
       highest_high, lowest_low = highest_high_and_lowest_low
       most_predictable, least_predictable = most_and_least_predictable
 
       return {
         starting_elos: starting_elos,
         ending_elos: ending_elos,
-        most_dominant: most_dominant,
-        weakest: weakest,
+        strongest_performance: strongest_performance,
+        weakest_performance: weakest_performance,
         most_improved: most_improved,
         steepest_decline: most_declined,
         highest_high: highest_high,
@@ -180,7 +180,7 @@ module Season
       }
     end
 
-    def most_and_least_dominant
+    def strongest_and_weakest_performances
       team_performances_sql = <<-SQL
         WITH season_series AS (
           #{season_series_sql}
@@ -226,15 +226,15 @@ module Season
         .execute(team_performances_sql)
         .to_a
 
-      most_dominant_team_id, most_dominant_team_performance = team_performances.first.values_at("id", "performance")
-      most_dominant_team = season_teams.find { |team| team.id == most_dominant_team_id }
-      most_dominant = { name: most_dominant_team.name, color: most_dominant_team.color, performance: most_dominant_team_performance.round }
+      strongest_performing_team_id, strongest_performance = team_performances.first.values_at("id", "performance")
+      strongest_performing_team = season_teams.find { |team| team.id == strongest_performing_team_id }
+      strongest = { name: strongest_performing_team.name, color: strongest_performing_team.color, performance: strongest_performance.round }
 
-      worst_team_id, worst_team_performance = team_performances.last.values_at("id", "performance")
-      worst_team = season_teams.find { |team| team.id == worst_team_id }
-      least_dominant = { name: worst_team.name, color: worst_team.color, performance: worst_team_performance.round }
+      weakest_performing_team_id, weakest_performance = team_performances.last.values_at("id", "performance")
+      weakest_performing_team = season_teams.find { |team| team.id == weakest_performing_team_id }
+      weakest = { name: weakest_performing_team.name, color: weakest_performing_team.color, performance: weakest_performance.round }
 
-      return [most_dominant, least_dominant]
+      return [strongest, weakest]
     end
 
     def highest_high_and_lowest_low

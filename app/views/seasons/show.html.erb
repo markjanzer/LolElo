@@ -44,9 +44,9 @@
     <div class="flex flex-wrap justify-around my-8 mx-2">
       <%= render partial: "seasons/stat_box", locals: {
         title: "Strongest Performance",
-        team_name: @stats[:most_dominant][:name],
-        team_color: @stats[:most_dominant][:color],
-        sub_stats: ["Elo Performance: #{@stats[:most_dominant][:performance]}"]
+        team_name: @stats[:strongest_performance][:name],
+        team_color: @stats[:strongest_performance][:color],
+        sub_stats: ["Elo Performance: #{@stats[:strongest_performance][:performance]}"]
       } %>
 
       <%= render partial: "seasons/stat_box", locals: {
@@ -65,9 +65,9 @@
 
       <%= render partial: "seasons/stat_box", locals: {
         title: "Weakest Performance",
-        team_name: @stats[:weakest][:name],
-        team_color: @stats[:weakest][:color],
-        sub_stats: ["Elo Performance: #{@stats[:weakest][:performance]}"]
+        team_name: @stats[:weakest_performance][:name],
+        team_color: @stats[:weakest_performance][:color],
+        sub_stats: ["Elo Performance: #{@stats[:weakest_performance][:performance]}"]
       } %>
 
       <%= render partial: "seasons/stat_box", locals: {
