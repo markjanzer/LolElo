@@ -9,6 +9,9 @@ module EloSnapshots
       # This is assuming that all previous snapshots in the same league have been destroyed
       return if team.snapshots.where(serie: same_year_series).present?
 
+      # If this is the first season, set a new elo to the reset amount
+      return create_new_season_elo if previous_year_series.empty?
+
       # If there is a snapshot for this team in the previous season, revert the elo
       return create_reverted_elo if team.snapshots.where(serie: previous_year_series).present?
 
@@ -28,6 +31,10 @@ module EloSnapshots
 
     def previous_year_series
       league.series.where(year: serie.year - 1)
+    end
+
+    def create_new_season_elo
+      Snapshot.create!(team: team, elo: EloCalculator::RESET_ELO, datetime: serie.begin_at, serie: serie, elo_reset: true)
     end
 
     def create_new_team_elo
